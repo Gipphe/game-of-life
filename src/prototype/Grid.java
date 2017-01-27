@@ -64,6 +64,12 @@ public class Grid {
         return num;
     }
 
+    /**
+     * Makes the coordinate wrap around to the other side of the grid if it is out of bounds
+     * @param lim int
+     * @param val int
+     * @return int
+     */
     private static int limit(int lim, int val) {
         if (val >= lim) {
             return val - lim;
