@@ -1,34 +1,34 @@
 package prototype;
 
 public class Grid {
-    private int[][] grid = new int[][]{
-            {0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 1, 0, 0, 0},
-            {0, 0, 0, 1, 0, 0, 0, 0},
-            {0, 0, 0, 1, 1, 1, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0, 0, 0, 0},
+    private byte[][] grid = new byte[][]{
+        {0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 1, 0, 0, 0},
+        {0, 0, 0, 1, 0, 0, 0, 0},
+        {0, 0, 0, 1, 1, 1, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0, 0, 0, 0},
     };
 
     void tick() {
-        int[][] newGrid = new int[grid.length][grid[0].length];
+        byte[][] newGrid = new byte[grid.length][grid[0].length];
         for (int y = 0; y < grid.length; y++) {
-            int[] row = grid[y];
+            byte[] row = grid[y];
             for (int x = 0; x < row.length; x++) {
                 int cell = row[x];
 
                 int numNeighbours = neighbours(x, y);
-                int state = rules(cell, numNeighbours);
+                byte state = rules(cell, numNeighbours);
                 newGrid[y][x] = state;
             }
         }
         grid = newGrid;
     }
 
-    private int rules(int cell, int num) {
+    private byte rules(int cell, int num) {
         if (cell == 0) {
             if (num == 3) {
                 return 1;
@@ -67,7 +67,7 @@ public class Grid {
     @Override
     public String toString() {
         String msg = "";
-        for (int[] row : grid) {
+        for (byte[] row : grid) {
             String s = "";
             for (int cell : row) {
                 String val = cell == 1 ? "0" : ".";
