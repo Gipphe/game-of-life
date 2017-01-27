@@ -47,11 +47,11 @@ public class Grid {
             for (int x = -1; x < 2; x++) {
                 int nx = ox + x;
                 int ny = oy + y;
-                int len = grid.length;
+                int lenx = grid[oy].length;
+                int leny = grid.length;
 
-                if (nx < 0 || ny < 0 || nx >= len || ny >= len) {
-                    continue;
-                }
+                ny = limit(leny, ny);
+                nx = limit(lenx, nx);
 
                 if (x == 0 && y == 0) {
                     continue;
@@ -62,6 +62,16 @@ public class Grid {
             }
         }
         return num;
+    }
+
+    private static int limit(int lim, int val) {
+        if (val >= lim) {
+            return val - lim;
+        } else if (val < 0) {
+            return val + lim;
+        }
+
+        return val;
     }
 
     @Override
