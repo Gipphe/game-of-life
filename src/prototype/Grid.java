@@ -1,40 +1,47 @@
 package prototype;
 
-/**
- * Created by Jonas on 27.01.2017.
- */
 public class Grid {
-    public boolean[][] grid = new boolean[8][8];
+    private int[][] grid = new int[][]{
+            {0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 1, 0, 0, 0},
+            {0, 0, 0, 1, 0, 0, 0, 0},
+            {0, 0, 0, 1, 1, 1, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0},
+    };
 
-    public void tick() {
-        boolean[][] newGrid = new boolean[8][8];
+    void tick() {
+        int[][] newGrid = new int[grid.length][grid[0].length];
         for (int y = 0; y < grid.length; y++) {
-            boolean[] row = grid[y];
+            int[] row = grid[y];
             for (int x = 0; x < row.length; x++) {
-                boolean cell = row[x];
+                int cell = row[x];
 
-                int numNeighbours = neighbours(x, y); // international english ftw
-                boolean state = rules(cell, numNeighbours);
+                int numNeighbours = neighbours(x, y);
+                int state = rules(cell, numNeighbours);
                 newGrid[y][x] = state;
             }
         }
         grid = newGrid;
     }
 
-    public boolean rules(boolean cell, int num) {
-        if (!cell) {
-            if (num >= 3) {
-                return true;
+    private int rules(int cell, int num) {
+        if (cell == 0) {
+            if (num == 3) {
+                return 1;
             }
         } else {
             if (num > 1 && num < 4) {
-                return true;
+                return 1;
             }
         }
-        return false;
+        return 0;
     }
 
-    public int neighbours(int ox, int oy) {
+    private int neighbours(int ox, int oy) {
         int num = 0;
         for (int y = -1; y < 2; y++) {
             for (int x = -1; x < 2; x++) {
@@ -49,8 +56,7 @@ public class Grid {
                 if (x == 0 && y == 0) {
                     continue;
                 }
-
-                if (grid[ny][nx]) {
+                if (grid[ny][nx] == 1) {
                     num++;
                 }
             }
@@ -61,10 +67,10 @@ public class Grid {
     @Override
     public String toString() {
         String msg = "";
-        for (int i = 0; i < grid.length; i++) {
+        for (int[] row : grid) {
             String s = "";
-            for(int j = 0; j < grid[0].length; j++) {
-                int val = grid[i][j] ? 1 : 0;
+            for (int cell : row) {
+                String val = cell == 1 ? "0" : ".";
                 s = s + val + " ";
             }
             msg = msg + "\n" + s;
