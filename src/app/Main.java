@@ -8,6 +8,8 @@ import javafx.stage.Stage;
 
 public class Main extends Application {
 
+    private int[][] grid = new int[5][5];
+
     @Override
     public void start(Stage primaryStage) throws Exception{
         Parent root = FXMLLoader.load(getClass().getResource("window.fxml"));
@@ -18,6 +20,8 @@ public class Main extends Application {
 
 
     public static void main(String[] args) {
+        /*
         launch(args);
+        */
     }
 }
