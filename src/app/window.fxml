@@ -19,7 +19,7 @@
    <bottom>
       <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
          <children>
-            <ToggleButton mnemonicParsing="false" text="Start">
+            <ToggleButton fx:id="startStopButton" mnemonicParsing="false" text="Start" onAction="#start">
                <HBox.margin>
                   <Insets right="30.0" />
                </HBox.margin>
@@ -59,7 +59,7 @@
       </HBox>
    </bottom>
    <center>
-      <Canvas height="250.0" width="500.0" BorderPane.alignment="CENTER" />
+      <Canvas height="250.0" width="500.0" BorderPane.alignment="CENTER" fx:id="canvas" />
    </center>
    <top>
       <MenuBar BorderPane.alignment="CENTER">
