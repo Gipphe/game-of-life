@@ -1,4 +1,4 @@
-package prototype;
+package app;
 
 public class Grid {
     private byte[][] grid = new byte[][]{
