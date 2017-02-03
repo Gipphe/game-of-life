@@ -11,7 +11,7 @@ import javafx.scene.paint.Color;
 import java.awt.*;
 
 public class Controller {
-    private Grid grid = new Grid();
+    private Grid grid = new Grid(15,15);
     private byte scale = 15;
     private AnimationTimer timer;
     private Color aliveColor = Color.BLACK;
