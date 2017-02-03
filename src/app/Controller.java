@@ -4,6 +4,7 @@ import javafx.animation.AnimationTimer;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.ColorPicker;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.paint.Color;
 
@@ -13,7 +14,13 @@ public class Controller {
     private Grid grid = new Grid();
     private byte scale = 15;
     private AnimationTimer timer;
+    private Color aliveColor = Color.BLACK;
+    private Color deadColor = Color.WHITE;
 
+    @FXML
+    private ColorPicker aliveColorPicker;
+    @FXML
+    private ColorPicker deadColorPicker;
     @FXML
     private Canvas canvas;
     @FXML
@@ -44,25 +51,9 @@ public class Controller {
     public void stop() {
         timer.stop();
     }
-    private void drawGrid(GraphicsContext gc) {
-        Canvas canvas = gc.getCanvas();
-        double maxHeight = canvas.getHeight();
-        double maxWidth = canvas.getWidth();
-        double steps = maxWidth / scale;
-        for (int i = 0; i < steps; i++) {
-            int step = i * scale;
-            gc.strokeLine(step,0, step, maxHeight);
-        }
-        steps = maxHeight / scale;
-        for (int i = 0; i < steps; i++) {
-            int step = i * scale;
-            gc.strokeLine(0, step, maxWidth, step);
-        }
-    }
+
     private void drawGame(GraphicsContext gc) {
         Canvas canvas = gc.getCanvas();
-        double maxHeight = canvas.getHeight();
-        double maxWidth = canvas.getWidth();
         byte[][] gameGrid = grid.getGrid();
 
         for (int y = 0; y < gameGrid.length; y++) {
@@ -70,13 +61,23 @@ public class Controller {
             for (int x = 0; x < row.length; x++) {
                 byte cell = row[x];
                 if (cell == 1) {
-                    gc.setFill(Color.BLACK);
+                    gc.setFill(aliveColor);
                 } else {
-                    gc.setFill(Color.WHITE);
+                    gc.setFill(deadColor);
                 }
                 gc.fillRect(x * scale, y * scale, scale, scale);
             }
         }
+    }
+    public void setAliveColor() {
+        aliveColor = aliveColorPicker.getValue();
+        GraphicsContext gc = canvas.getGraphicsContext2D();
+        drawGame(gc);
+    }
+    public void setDeadColor() {
+        deadColor = deadColorPicker.getValue();
+        GraphicsContext gc = canvas.getGraphicsContext2D();
+        drawGame(gc);
     }
 
     public void exit() {
