@@ -93,4 +93,8 @@ public class Grid {
         }
         return msg;
     }
+
+    public byte[][] getGrid() {
+        return grid;
+    }
 }
