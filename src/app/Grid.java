@@ -14,9 +14,9 @@ public class Grid {
         for(byte[] row : grid) {
             Arrays.fill(row, (byte) 0);
         }
-
+        pattern();
     }
-
+    void pattern() {
         grid[5][5]=1;
         grid[5][6]=1;
         grid[5][7]=1;
