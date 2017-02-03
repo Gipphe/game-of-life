@@ -4,10 +4,11 @@ import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.ToggleButton;
+import javafx.scene.paint.Color;
 
 public class Controller {
     private Grid grid = new Grid();
-    private byte scale = 10;
+    private byte scale = 15;
 
     @FXML
     private Canvas canvas;
@@ -16,17 +17,10 @@ public class Controller {
 
 
     public void start() {
-        try {
-            GraphicsContext gc = canvas.getGraphicsContext2D();
-            drawGrid(gc);
-            drawGame(gc);
-            grid.tick();
-            System.out.println(grid);
-            Thread.sleep(500);
-
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        GraphicsContext gc = canvas.getGraphicsContext2D();
+        drawGame(gc);
+        grid.tick();
+        System.out.println(grid);
     }
     private void drawGrid(GraphicsContext gc) {
         Canvas canvas = gc.getCanvas();
@@ -54,8 +48,11 @@ public class Controller {
             for (int x = 0; x < row.length; x++) {
                 byte cell = row[x];
                 if (cell == 1) {
-                    gc.fillRect(x * scale, y * scale, scale, scale);
+                    gc.setFill(Color.BLACK);
+                } else {
+                    gc.setFill(Color.WHITE);
                 }
+                gc.fillRect(x * scale, y * scale, scale, scale);
             }
         }
     }
