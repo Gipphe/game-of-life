@@ -11,14 +11,16 @@ public class Grid {
         this.xaxis=xaxis;
         this.yaxis=yaxis;
         grid = new byte[yaxis][xaxis];
-        creator();
-    }
-
-
-    void creator(){
         for(byte[] row : grid) {
             Arrays.fill(row, (byte) 0);
         }
+
+    }
+
+        grid[5][5]=1;
+        grid[5][6]=1;
+        grid[5][7]=1;
+        grid[6][6]=1;
     }
 
     void tick() {
