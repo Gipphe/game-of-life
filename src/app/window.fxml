@@ -19,7 +19,7 @@
    <bottom>
       <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
          <children>
-            <ToggleButton fx:id="startStopButton" mnemonicParsing="false" text="Start" onAction="#start">
+            <ToggleButton fx:id="startStopButton" mnemonicParsing="false" text="Start" onAction="#toggleStartStop">
                <HBox.margin>
                   <Insets right="30.0" />
                </HBox.margin>
