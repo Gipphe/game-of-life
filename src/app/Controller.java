@@ -10,6 +10,8 @@ import javafx.scene.paint.Color;
 
 import java.awt.*;
 
+
+
 public class Controller {
     private Grid grid = new Grid(15,15);
     private byte scale = 15;
@@ -33,6 +35,13 @@ public class Controller {
             stop();
         }
     };
+
+    public void resetGame(){
+        this.grid= new Grid(15,15);
+        aliveColor = Color.BLACK;
+        deadColor = Color.WHITE;
+    }
+
     public void start() {
         final GraphicsContext gc = canvas.getGraphicsContext2D();
         timer = new AnimationTimer() {

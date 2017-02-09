@@ -11,9 +11,6 @@ public class Grid {
         this.xaxis=xaxis;
         this.yaxis=yaxis;
         grid = new byte[yaxis][xaxis];
-        for(byte[] row : grid) {
-            Arrays.fill(row, (byte) 0);
-        }
         pattern();
     }
     void pattern() {
@@ -21,6 +18,9 @@ public class Grid {
         grid[5][6]=1;
         grid[5][7]=1;
         grid[6][6]=1;
+        for(int i = 0; i<grid.length; i++){
+            grid[4][i]=1;
+        }
     }
 
     void tick() {

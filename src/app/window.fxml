@@ -24,7 +24,7 @@
                   <Insets right="30.0" />
                </HBox.margin>
             </ToggleButton>
-            <Button mnemonicParsing="false" text="Reset">
+            <Button fx:id="resetButton" mnemonicParsing="false" text="Reset" onAction="#resetGame">
                <HBox.margin>
                   <Insets right="30.0" />
                </HBox.margin>
