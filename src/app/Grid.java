@@ -1,13 +1,11 @@
 package app;
 
-import java.util.Arrays;
-
 public class Grid {
     int xaxis;
     int yaxis;
     private byte[][] grid;
 
-    public Grid(int xaxis,int yaxis){
+    public Grid(int xaxis, int yaxis){
         this.xaxis=xaxis;
         this.yaxis=yaxis;
         grid = new byte[yaxis][xaxis];

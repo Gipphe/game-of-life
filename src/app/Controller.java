@@ -15,7 +15,6 @@ import javafx.scene.paint.Color;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-
 public class Controller implements Initializable {
     private Grid grid = new Grid(15,15);
     private byte scale = 15;
@@ -23,7 +22,6 @@ public class Controller implements Initializable {
     private Color aliveColor = Color.BLACK;
     private Color deadColor = Color.WHITE;
     private int frameInterval = 500000000;
-
     private GraphicsContext gc;
 
     @FXML
@@ -69,7 +67,6 @@ public class Controller implements Initializable {
 
             @Override
             public void handle(long now) {
-                System.out.println(frameInterval);
                 if (now - past < frameInterval) return;
                 past = now;
 
@@ -81,7 +78,6 @@ public class Controller implements Initializable {
     }
 
     private void draw(GraphicsContext gc) {
-        Canvas canvas = gc.getCanvas();
         byte[][] gameGrid = grid.getGrid();
 
         for (int y = 0; y < gameGrid.length; y++) {
@@ -120,11 +116,6 @@ public class Controller implements Initializable {
 
         int val = Math.min(max, (newValue * step) + min);
         frameInterval = val;
-        System.out.println("newValue: " + newValue);
-        System.out.println("Max: " + max);
-        System.out.println("Min: " + min);
-        System.out.println("Step: " + step);
-        System.out.println("Val: " + val);
     }
 
     public void nextFrame() {
