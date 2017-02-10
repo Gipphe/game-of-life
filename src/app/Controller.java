@@ -12,7 +12,6 @@ import javafx.scene.control.Slider;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.paint.Color;
 
-import java.awt.*;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -24,6 +23,8 @@ public class Controller implements Initializable {
     private Color aliveColor = Color.BLACK;
     private Color deadColor = Color.WHITE;
     private int frameInterval = 500000000;
+
+    private GraphicsContext gc;
 
     @FXML
     private ColorPicker aliveColorPicker;
@@ -56,11 +57,21 @@ public class Controller implements Initializable {
 
     public void start() {
         final GraphicsContext gc = canvas.getGraphicsContext2D();
-        timer = new AnimationTimer() {
+        timer = getAnimationTimer(gc);
+        timer.start();
+    }
+    public void stop() {
+        timer.stop();
+    }
+
+    private AnimationTimer getAnimationTimer(GraphicsContext gcd) {
+        final GraphicsContext gc = gcd;
+        final AnimationTimer timer = new AnimationTimer() {
             private long past;
+
             @Override
             public void handle(long now) {
-               System.out.println(frameInterval);
+                System.out.println(frameInterval);
                 if (now - past < frameInterval) return;
                 past = now;
 
@@ -68,10 +79,7 @@ public class Controller implements Initializable {
                 draw(gc);
             }
         };
-        timer.start();
-    }
-    public void stop() {
-        timer.stop();
+        return timer;
     }
 
     private void draw(GraphicsContext gc) {
@@ -91,6 +99,7 @@ public class Controller implements Initializable {
             }
         }
     }
+
     public void setAliveColor() {
         aliveColor = aliveColorPicker.getValue();
         GraphicsContext gc = canvas.getGraphicsContext2D();
@@ -120,6 +129,12 @@ public class Controller implements Initializable {
         System.out.println("Min: " + min);
         System.out.println("Step: " + step);
         System.out.println("Val: " + val);
+    }
+
+    public void nextFrame() {
+        GraphicsContext gc = canvas.getGraphicsContext2D();
+        grid.nextGeneration();
+        draw(gc);
     }
 
     @Override
