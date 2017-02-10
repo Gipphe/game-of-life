@@ -1,7 +1,10 @@
 package app;
 
 import javafx.animation.AnimationTimer;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.ColorPicker;
@@ -10,15 +13,17 @@ import javafx.scene.control.ToggleButton;
 import javafx.scene.paint.Color;
 
 import java.awt.*;
+import java.net.URL;
+import java.util.ResourceBundle;
 
 
-
-public class Controller {
+public class Controller implements Initializable {
     private Grid grid = new Grid(15,15);
     private byte scale = 15;
     private AnimationTimer timer;
     private Color aliveColor = Color.BLACK;
     private Color deadColor = Color.WHITE;
+    private int frameInterval = 500000000;
 
     @FXML
     private ColorPicker aliveColorPicker;
@@ -53,7 +58,8 @@ public class Controller {
             private long past;
             @Override
             public void handle(long now) {
-                if (now - past < 500000000) return;
+               System.out.println(frameInterval);
+                if (now - past < frameInterval) return;
                 past = now;
 
                 grid.nextGeneration();
@@ -97,5 +103,30 @@ public class Controller {
     public void exit() {
         System.out.println("Goodbye");
         System.exit(0);
+    }
+
+    private void setFrameInterval(int newValue) {
+        int mult = 1000000;
+        int max = 1100 * mult;
+        int min = 100 * mult;
+        int step = (max - min) / 10;
+
+        int val = Math.min(max, (newValue * step) + min);
+        frameInterval = val;
+        System.out.println("newValue: " + newValue);
+        System.out.println("Max: " + max);
+        System.out.println("Min: " + min);
+        System.out.println("Step: " + step);
+        System.out.println("Val: " + val);
+    }
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        tickSlider.valueProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+                setFrameInterval(newValue.intValue());
+            }
+        });
     }
 }
