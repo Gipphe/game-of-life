@@ -33,8 +33,10 @@ public class Controller {
 
     public void toggleStartStop() {
         if (startStopButton.selectedProperty().getValue()) {
+            startStopButton.setText("Stop");
             start();
         } else {
+            startStopButton.setText("Start");
             stop();
         }
     };
