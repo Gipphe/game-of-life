@@ -51,12 +51,10 @@ public class Controller implements Initializable {
         this.grid= new Grid(15,15);
         aliveColor = Color.BLACK;
         deadColor = Color.WHITE;
-        GraphicsContext gc = canvas.getGraphicsContext2D();
         draw(gc);
     }
 
     public void start() {
-        final GraphicsContext gc = canvas.getGraphicsContext2D();
         timer = getAnimationTimer(gc);
         timer.start();
     }
@@ -102,12 +100,10 @@ public class Controller implements Initializable {
 
     public void setAliveColor() {
         aliveColor = aliveColorPicker.getValue();
-        GraphicsContext gc = canvas.getGraphicsContext2D();
         draw(gc);
     }
     public void setDeadColor() {
         deadColor = deadColorPicker.getValue();
-        GraphicsContext gc = canvas.getGraphicsContext2D();
         draw(gc);
     }
 
@@ -132,7 +128,6 @@ public class Controller implements Initializable {
     }
 
     public void nextFrame() {
-        GraphicsContext gc = canvas.getGraphicsContext2D();
         grid.nextGeneration();
         draw(gc);
     }
@@ -145,5 +140,7 @@ public class Controller implements Initializable {
                 setFrameInterval(newValue.intValue());
             }
         });
+        gc = canvas.getGraphicsContext2D();
+        draw(gc);
     }
 }
