@@ -14,16 +14,16 @@ public class Grid {
         pattern();
     }
     void pattern() {
-        grid[5][5]=1;
         grid[5][6]=1;
         grid[5][7]=1;
-        grid[6][6]=1;
+        grid[5][8]=1;
+        grid[6][7]=1;
         for(int i = 0; i<grid.length; i++){
             grid[4][i]=1;
         }
     }
 
-    void tick() {
+    void nextGeneration() {
         byte[][] newGrid = new byte[grid.length][grid[0].length];
         for (int y = 0; y < grid.length; y++) {
             byte[] row = grid[y];

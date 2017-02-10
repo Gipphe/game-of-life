@@ -5,6 +5,7 @@ import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.ColorPicker;
+import javafx.scene.control.Slider;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.paint.Color;
 
@@ -27,6 +28,8 @@ public class Controller {
     private Canvas canvas;
     @FXML
     private ToggleButton startStopButton;
+    @FXML
+    private Slider tickSlider;
 
     public void toggleStartStop() {
         if (startStopButton.selectedProperty().getValue()) {
@@ -40,6 +43,8 @@ public class Controller {
         this.grid= new Grid(15,15);
         aliveColor = Color.BLACK;
         deadColor = Color.WHITE;
+        GraphicsContext gc = canvas.getGraphicsContext2D();
+        draw(gc);
     }
 
     public void start() {
@@ -51,8 +56,8 @@ public class Controller {
                 if (now - past < 500000000) return;
                 past = now;
 
-                grid.tick();
-                drawGame(gc);
+                grid.nextGeneration();
+                draw(gc);
             }
         };
         timer.start();
@@ -61,7 +66,7 @@ public class Controller {
         timer.stop();
     }
 
-    private void drawGame(GraphicsContext gc) {
+    private void draw(GraphicsContext gc) {
         Canvas canvas = gc.getCanvas();
         byte[][] gameGrid = grid.getGrid();
 
@@ -81,12 +86,12 @@ public class Controller {
     public void setAliveColor() {
         aliveColor = aliveColorPicker.getValue();
         GraphicsContext gc = canvas.getGraphicsContext2D();
-        drawGame(gc);
+        draw(gc);
     }
     public void setDeadColor() {
         deadColor = deadColorPicker.getValue();
         GraphicsContext gc = canvas.getGraphicsContext2D();
-        drawGame(gc);
+        draw(gc);
     }
 
     public void exit() {
