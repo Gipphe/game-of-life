@@ -1,8 +1,8 @@
 package app;
 
 public class Grid {
-    int xaxis;
-    int yaxis;
+    public int xaxis;
+    public int yaxis;
     private byte[][] grid;
 
     public Grid(int xaxis, int yaxis){
@@ -10,6 +10,7 @@ public class Grid {
         this.yaxis=yaxis;
         grid = new byte[yaxis][xaxis];
         pattern();
+        overlay();
     }
     void pattern() {
         grid[5][6]=1;
@@ -19,6 +20,10 @@ public class Grid {
         for(int i = 0; i<grid.length; i++){
             grid[4][i]=1;
         }
+    }
+
+    void overlay(){
+
     }
 
     void nextGeneration() {

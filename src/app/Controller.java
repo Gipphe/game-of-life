@@ -46,7 +46,7 @@ public class Controller implements Initializable {
     };
 
     public void resetGame(){
-        this.grid= new Grid(15,15);
+        this.grid= new Grid(grid.xaxis,grid.yaxis);
         aliveColor = Color.BLACK;
         deadColor = Color.WHITE;
         draw(gc);
