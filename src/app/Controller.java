@@ -17,7 +17,7 @@ import java.util.ResourceBundle;
 
 public class Controller implements Initializable {
     private Grid grid = new Grid(15,15);
-    private byte scale = 15;
+    private byte scale = 20;
     private AnimationTimer timer;
     private Color aliveColor = Color.BLACK;
     private Color deadColor = Color.WHITE;
@@ -56,6 +56,7 @@ public class Controller implements Initializable {
         timer = getAnimationTimer(gc);
         timer.start();
     }
+
     public void stop() {
         timer.stop();
     }
@@ -78,18 +79,22 @@ public class Controller implements Initializable {
     }
 
     private void draw(GraphicsContext gc) {
+
         byte[][] gameGrid = grid.getGrid();
 
         for (int y = 0; y < gameGrid.length; y++) {
             byte[] row = gameGrid[y];
-            for (int x = 0; x < row.length; x++) {
+            //for (int x = 0; x < row.length; x++) {
+            for (int x = 0; x < grid.getGrid()[0].length; x++) {
                 byte cell = row[x];
                 if (cell == 1) {
                     gc.setFill(aliveColor);
+                    gc.fillRect(x * scale, y * scale, scale-1, scale-1);
                 } else {
                     gc.setFill(deadColor);
+                    gc.fillRect(x * scale, y * scale, scale-1, scale-1);
                 }
-                gc.fillRect(x * scale, y * scale, scale, scale);
+                //gc.fillRect(x * scale, y * scale, scale, scale);
             }
         }
     }

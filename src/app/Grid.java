@@ -1,5 +1,7 @@
 package app;
 
+import javafx.application.Platform;
+
 public class Grid {
     public int xaxis;
     public int yaxis;
@@ -10,35 +12,30 @@ public class Grid {
         this.yaxis=yaxis;
         grid = new byte[yaxis][xaxis];
         pattern();
-        overlay();
     }
+
     void pattern() {
         grid[5][6]=1;
         grid[5][7]=1;
-        grid[5][8]=1;
-        grid[6][7]=1;
-        for(int i = 0; i<grid.length; i++){
+        grid[6][6]=1;
+        for(int i = 0; i<grid[0].length; i++){
             grid[4][i]=1;
         }
     }
 
-    void overlay(){
-
-    }
-
     void nextGeneration() {
-        byte[][] newGrid = new byte[grid.length][grid[0].length];
-        for (int y = 0; y < grid.length; y++) {
-            byte[] row = grid[y];
-            for (int x = 0; x < row.length; x++) {
-                int cell = row[x];
+            byte[][] newGrid = new byte[grid.length][grid[0].length];
+            for (int y = 0; y < grid.length; y++) {
+                byte[] row = grid[y];
+                for (int x = 0; x < row.length; x++) {
+                    int cell = row[x];
 
-                int numNeighbours = neighbours(x, y);
-                byte state = rules(cell, numNeighbours);
-                newGrid[y][x] = state;
+                    int numNeighbours = neighbours(x, y);
+                    byte state = rules(cell, numNeighbours);
+                    newGrid[y][x] = state;
+                }
             }
-        }
-        grid = newGrid;
+            grid = newGrid;
     }
 
     private byte rules(int cell, int num) {
@@ -89,7 +86,6 @@ public class Grid {
         } else if (val < 0) {
             return val + lim;
         }
-
         return val;
     }
 
@@ -110,4 +106,5 @@ public class Grid {
     public byte[][] getGrid() {
         return grid;
     }
+
 }
