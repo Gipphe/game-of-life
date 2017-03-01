@@ -1,6 +1,7 @@
 package app;
 
 import javafx.application.Platform;
+import javafx.scene.control.Alert;
 
 public class Grid {
     public int xaxis;
@@ -11,7 +12,16 @@ public class Grid {
         this.xaxis=xaxis;
         this.yaxis=yaxis;
         grid = new byte[yaxis][xaxis];
-        pattern();
+        try{
+            pattern();
+        }catch(ArrayIndexOutOfBoundsException aioobe){
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Runtime Error");
+            alert.setHeaderText("Pattern out of bounds!");
+            alert.setContentText(aioobe + "\nContinuing application without initial pattern");
+
+            alert.showAndWait();;
+        }
     }
 
     void pattern() {
