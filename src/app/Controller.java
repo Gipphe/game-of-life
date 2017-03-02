@@ -5,18 +5,20 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.control.Slider;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.paint.Color;
+import javafx.stage.Screen;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
 public class Controller implements Initializable {
-    private Grid grid = new Grid(15,15);
+    private Grid grid = new Grid(20,10);
     private byte scale = 20;
     private AnimationTimer timer;
     private Color aliveColor = Color.BLACK;
@@ -34,6 +36,8 @@ public class Controller implements Initializable {
     private ToggleButton startStopButton;
     @FXML
     private Slider tickSlider;
+    @FXML
+    private Slider scaleSlider;
 
     public void toggleStartStop() {
         if (startStopButton.selectedProperty().getValue()) {
@@ -123,6 +127,10 @@ public class Controller implements Initializable {
         frameInterval = val;
     }
 
+    private void setScale(byte newValue) {
+        this.scale=newValue;
+    }
+
     public void nextFrame() {
         grid.nextGeneration();
         draw(gc);
@@ -136,6 +144,15 @@ public class Controller implements Initializable {
                 setFrameInterval(newValue.intValue());
             }
         });
+
+        scaleSlider.valueProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+                gc.clearRect(0,0,scale*grid.xaxis,scale*grid.yaxis);
+                setScale(newValue.byteValue());
+            }
+        });
+
         gc = canvas.getGraphicsContext2D();
         draw(gc);
     }
