@@ -12,28 +12,10 @@ public class Grid {
         this.xaxis=xaxis;
         this.yaxis=yaxis;
         grid = new byte[yaxis][xaxis];
-        try{
-            pattern();
-        }catch(ArrayIndexOutOfBoundsException aioobe){
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Runtime Error");
-            alert.setHeaderText("Pattern out of bounds!");
-            alert.setContentText(aioobe + "\n\nContinuing application without initial pattern");
-
-            alert.showAndWait();;
-        }
     }
 
-    void pattern() {
-        grid[1][2]=1;
-        grid[1][3]=1;
-        grid[2][1]=1;
-        grid[2][2]=1;
-        grid[3][2]=1;
-
-        for(int i = 0; i<grid[0].length; i++){
-            grid[4][i]=1;
-        }
+    public void setGrid(byte[][] newGrid) {
+        grid = newGrid;
     }
 
     void nextGeneration() {

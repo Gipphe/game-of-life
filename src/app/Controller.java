@@ -5,20 +5,19 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.geometry.Rectangle2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Alert;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.control.Slider;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.paint.Color;
-import javafx.stage.Screen;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
 public class Controller implements Initializable {
-    private Grid grid = new Grid(20,10);
+    private Grid grid;
     private byte scale = 20;
     private AnimationTimer timer;
     private Color aliveColor = Color.BLACK;
@@ -47,27 +46,27 @@ public class Controller implements Initializable {
             startStopButton.setText("Start");
             stop();
         }
-    };
+    }
 
     public void resetGame(){
-        this.grid= new Grid(grid.xaxis,grid.yaxis);
+        this.grid= new Grid(grid.xaxis, grid.yaxis);
         aliveColor = Color.BLACK;
         deadColor = Color.WHITE;
         draw(gc);
     }
 
-    public void start() {
+    private void start() {
         timer = getAnimationTimer(gc);
         timer.start();
     }
 
-    public void stop() {
+    private void stop() {
         timer.stop();
     }
 
     private AnimationTimer getAnimationTimer(GraphicsContext gcd) {
         final GraphicsContext gc = gcd;
-        final AnimationTimer timer = new AnimationTimer() {
+        return new AnimationTimer() {
             private long past;
 
             @Override
@@ -79,7 +78,6 @@ public class Controller implements Initializable {
                 draw(gc);
             }
         };
-        return timer;
     }
 
     private void draw(GraphicsContext gc) {
@@ -88,17 +86,12 @@ public class Controller implements Initializable {
 
         for (int y = 0; y < gameGrid.length; y++) {
             byte[] row = gameGrid[y];
-            //for (int x = 0; x < row.length; x++) {
+
             for (int x = 0; x < grid.getGrid()[0].length; x++) {
                 byte cell = row[x];
-                if (cell == 1) {
-                    gc.setFill(aliveColor);
-                    gc.fillRect(x * scale, y * scale, scale-1, scale-1);
-                } else {
-                    gc.setFill(deadColor);
-                    gc.fillRect(x * scale, y * scale, scale-1, scale-1);
-                }
-                //gc.fillRect(x * scale, y * scale, scale, scale);
+                if (cell == 1) gc.setFill(aliveColor);
+                else gc.setFill(deadColor);
+                gc.fillRect(x * scale, y * scale, scale-1, scale-1);
             }
         }
     }
@@ -123,8 +116,7 @@ public class Controller implements Initializable {
         int min = 100 * mult;
         int step = (max - min) / 10;
 
-        int val = Math.min(max, (newValue * step) + min);
-        frameInterval = val;
+        frameInterval = Math.min(max, (newValue * step) + min);
     }
 
     private void setScale(byte newValue) {
@@ -153,6 +145,31 @@ public class Controller implements Initializable {
                 draw(gc);
             }
         });
+
+        int xaxis = 20;
+        int yaxis = 10;
+        grid = new Grid(xaxis, yaxis);
+        byte[][] foo = new byte[xaxis][yaxis];
+
+        try {
+            foo[1][2]=1;
+            foo[1][3]=1;
+            foo[2][1]=1;
+            foo[2][2]=1;
+            foo[3][2]=1;
+
+            for(int i = 0; i<foo[0].length; i++){
+                foo[4][i]=1;
+            }
+        } catch(ArrayIndexOutOfBoundsException aioobe) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Runtime Error");
+            alert.setHeaderText("Pattern out of bounds!");
+            alert.setContentText(aioobe + "\n\nContinuing application without initial pattern");
+
+            alert.showAndWait();
+        }
+        grid.setGrid(foo);
 
         gc = canvas.getGraphicsContext2D();
         draw(gc);
