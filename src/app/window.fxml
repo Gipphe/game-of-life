@@ -28,10 +28,13 @@
                            <cursor>
                               <Cursor fx:constant="HAND" />
                            </cursor>
+                           <HBox.margin>
+                              <Insets right="10.0" />
+                           </HBox.margin>
                         </Button>
                         <ToggleButton fx:id="startStopButton" mnemonicParsing="false" onAction="#toggleStartStop" text="Start">
                            <HBox.margin>
-                              <Insets right="30.0" />
+                              <Insets right="10.0" />
                            </HBox.margin>
                            <cursor>
                               <Cursor fx:constant="HAND" />
@@ -44,7 +47,11 @@
                         </Button>
                      </children>
                   </HBox>
-                  <ComboBox prefWidth="150.0" />
+                  <ComboBox prefWidth="150.0">
+                     <VBox.margin>
+                        <Insets top="20.0" />
+                     </VBox.margin>
+                  </ComboBox>
                </children>
                <HBox.margin>
                   <Insets right="30.0" />
