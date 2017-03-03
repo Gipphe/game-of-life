@@ -150,6 +150,7 @@ public class Controller implements Initializable {
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
                 gc.clearRect(0,0,scale*grid.xaxis,scale*grid.yaxis);
                 setScale(newValue.byteValue());
+                draw(gc);
             }
         });
 
