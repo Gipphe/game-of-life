@@ -20,6 +20,8 @@ class GridTest {
 
         assertEquals("0000011001100000", testGrid.toString());
     }
+    
+    @Test
     void single_dot_dies() {
         byte[][] testBoard = {
                 {0,0,0},
