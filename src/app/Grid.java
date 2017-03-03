@@ -90,12 +90,19 @@ public class Grid {
         for (byte[] row : grid) {
             String s = "";
             for (int cell : row) {
-                String val = cell == 1 ? "0" : ".";
-                s = s + val + " ";
+                String val = cell == 1 ? "1" : "0";
+                s = s + val;
             }
-            msg = msg + "\n" + s;
+            msg = msg + s;
         }
         return msg;
+    }
+
+    public void setBoard(byte[][] newBoard){
+        /***
+         *         Setter newgrid stringen til en pre-made board board
+         */
+
     }
 
     public byte[][] getGrid() {

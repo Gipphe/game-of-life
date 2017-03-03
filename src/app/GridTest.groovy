@@ -5,13 +5,19 @@ import static org.junit.jupiter.api.Assertions.*
 
 class GridTest {
 
-    public String toString(Grid grid){
-
-    }
-
     @Test
     void testNextGeneration() {
+//        Grid testGrid = new Grid(4,4);
 
+        byte[][] testBoard = {
+            { 0, 0, 0, 0 },
+            { 0, 1, 1, 0 },
+            { 0, 1, 1, 0 },
+            { 0, 0, 0, 0 }
+        };
+
+//        testGrid.setBoard(testBoard);
+//        System.out.println(testGrid.toString());
 
 //        byte[][] array = new byte[4][4];
 //        array[1][0] = 1;
