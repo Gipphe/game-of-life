@@ -18,7 +18,7 @@ public class Grid {
         grid = newGrid;
     }
 
-    void nextGeneration() {
+    public void nextGeneration() {
             byte[][] newGrid = new byte[grid.length][grid[0].length];
             for (int y = 0; y < grid.length; y++) {
                 byte[] row = grid[y];
@@ -99,10 +99,7 @@ public class Grid {
     }
 
     public void setBoard(byte[][] newBoard){
-        /***
-         *         Setter newgrid stringen til en pre-made board board
-         */
-
+        grid = newBoard;
     }
 
     public byte[][] getGrid() {
