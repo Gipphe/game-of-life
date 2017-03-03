@@ -130,24 +130,8 @@ public class Controller implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        tickSlider.valueProperty().addListener(new ChangeListener<Number>() {
-            @Override
-            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                setFrameInterval(newValue.intValue());
-            }
-        });
-
-        scaleSlider.valueProperty().addListener(new ChangeListener<Number>() {
-            @Override
-            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                gc.clearRect(0,0,scale*grid.xaxis,scale*grid.yaxis);
-                setScale(newValue.byteValue());
-                draw(gc);
-            }
-        });
-
         int xaxis = 20;
-        int yaxis = 10;
+        int yaxis = 20;
         grid = new Grid(xaxis, yaxis);
         byte[][] foo = new byte[xaxis][yaxis];
 
@@ -170,6 +154,22 @@ public class Controller implements Initializable {
             alert.showAndWait();
         }
         grid.setGrid(foo);
+
+        tickSlider.valueProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+                setFrameInterval(newValue.intValue());
+            }
+        });
+
+        scaleSlider.valueProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+                gc.clearRect(0,0,scale*grid.xaxis,scale*grid.yaxis);
+                setScale(newValue.byteValue());
+                draw(gc);
+            }
+        });
 
         gc = canvas.getGraphicsContext2D();
         draw(gc);
