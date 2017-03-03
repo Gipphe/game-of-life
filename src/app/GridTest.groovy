@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.*
 
 class GridTest {
 
-    public String gridToString(Grid grid){
+    public String toString(Grid grid){
 
     }
 

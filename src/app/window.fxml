@@ -5,6 +5,7 @@
 <?import javafx.scene.canvas.Canvas?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ColorPicker?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
@@ -15,40 +16,47 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.Controller">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.Controller">
    <bottom>
       <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
          <children>
-            <ToggleButton fx:id="startStopButton" mnemonicParsing="false" onAction="#toggleStartStop" text="Start">
+            <VBox alignment="CENTER" prefHeight="200.0" prefWidth="200.0">
+               <children>
+                  <HBox alignment="CENTER">
+                     <children>
+                        <Button mnemonicParsing="false" onAction="#nextFrame" text="NextFrame">
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                        </Button>
+                        <ToggleButton fx:id="startStopButton" mnemonicParsing="false" onAction="#toggleStartStop" text="Start">
+                           <HBox.margin>
+                              <Insets right="30.0" />
+                           </HBox.margin>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                        </ToggleButton>
+                        <Button fx:id="resetButton" mnemonicParsing="false" onAction="#resetGame" text="Reset">
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                        </Button>
+                     </children>
+                  </HBox>
+                  <ComboBox prefWidth="150.0" />
+               </children>
                <HBox.margin>
                   <Insets right="30.0" />
                </HBox.margin>
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
-            </ToggleButton>
-            <Button fx:id="resetButton" mnemonicParsing="false" onAction="#resetGame" text="Reset">
-               <HBox.margin>
-                  <Insets right="30.0" />
-               </HBox.margin>
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
-            </Button>
-            <Button mnemonicParsing="false" onAction="#nextFrame" text="NextFrame">
-               <HBox.margin>
-                  <Insets right="30.0" />
-               </HBox.margin>
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
-            </Button>
+            </VBox>
             <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
                <children>
                   <ColorPicker fx:id="aliveColorPicker" onAction="#setAliveColor">
                      <cursor>
                         <Cursor fx:constant="HAND" />
-                     </cursor></ColorPicker>
+                     </cursor>
+                  </ColorPicker>
                   <ColorPicker fx:id="deadColorPicker" onAction="#setDeadColor">
                      <VBox.margin>
                         <Insets top="20.0" />
