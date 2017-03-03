@@ -8,6 +8,13 @@ class Pattern {
         this.name = name;
         this.pattern = pattern;
     }
+
+    public String getName() {
+        return name;
+    }
+    public byte[][] getPattern() {
+        return pattern;
+    }
 }
 
 public class PatternCollection {

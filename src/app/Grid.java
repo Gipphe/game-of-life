@@ -1,8 +1,5 @@
 package app;
 
-import javafx.application.Platform;
-import javafx.scene.control.Alert;
-
 public class Grid {
     public int xaxis;
     public int yaxis;
@@ -55,8 +52,8 @@ public class Grid {
                 int lenx = grid[oy].length;
                 int leny = grid.length;
 
-                ny = limit(leny, ny);
-                nx = limit(lenx, nx);
+                ny = wrap(leny, ny);
+                nx = wrap(lenx, nx);
 
                 if (x == 0 && y == 0) {
                     continue;
@@ -75,7 +72,7 @@ public class Grid {
      * @param val int
      * @return int
      */
-    private static int limit(int lim, int val) {
+    public static int wrap(int lim, int val) {
         if (val >= lim) {
             return val - lim;
         } else if (val < 0) {
