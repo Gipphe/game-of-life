@@ -128,6 +128,15 @@ public class Controller implements Initializable {
         draw(gc);
     }
 
+    private int wrap(int lim, int coord) {
+        if (coord >= lim) {
+            return coord - lim;
+        } else if (coord < 0) {
+            return coord + lim;
+        }
+        return coord;
+    }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         int xaxis = 20;
@@ -136,14 +145,16 @@ public class Controller implements Initializable {
         byte[][] foo = new byte[xaxis][yaxis];
 
         try {
-            foo[1][2]=1;
-            foo[1][3]=1;
-            foo[2][1]=1;
-            foo[2][2]=1;
-            foo[3][2]=1;
-
-            for(int i = 0; i<foo[0].length; i++){
-                foo[4][i]=1;
+            Pattern shape = PatternCollection.getCollection()[5];
+        byte[][] pattern = shape.getPattern();
+        int midy = foo.length / 2 - 3;
+        int midx = foo[0].length / 2 - 3;
+            for (byte[] cell : pattern) {
+                int rely = midy + cell[0];
+                int relx = midx + cell[1];
+                rely = wrap(foo.length, rely);
+                relx = wrap(foo[0].length, relx);
+                foo[rely][relx] = 1;
             }
         } catch(ArrayIndexOutOfBoundsException aioobe) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
