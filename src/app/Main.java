@@ -12,7 +12,7 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception{
         javafx.geometry.Rectangle2D visualBounds = Screen.getPrimary().getVisualBounds();
 
-        Parent root = FXMLLoader.load(getClass().getResource("window.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("window.fxml")); 
         Scene primaryScene = new Scene(root, visualBounds.getWidth()/1.5, visualBounds.getHeight()/1.5);
         primaryStage.setTitle("Hello World");
         primaryStage.setScene(primaryScene);
