@@ -142,7 +142,7 @@ public class Controller implements Initializable {
         int xaxis = 20;
         int yaxis = 20;
         grid = new Grid(xaxis, yaxis);
-        byte[][] foo = new byte[xaxis][yaxis];
+        byte[][] foo = new byte[yaxis][xaxis];
 
         try {
             Pattern shape = PatternCollection.getCollection()[5];
