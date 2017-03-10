@@ -12,8 +12,8 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception{
         javafx.geometry.Rectangle2D visualBounds = Screen.getPrimary().getVisualBounds();
 
-        Parent root = FXMLLoader.load(getClass().getResource("window.fxml")); 
-        Scene primaryScene = new Scene(root, visualBounds.getWidth()/1.5, visualBounds.getHeight()/1.5);
+        Parent root = FXMLLoader.load(getClass().getResource("window.fxml"));
+        Scene primaryScene = new Scene(root, visualBounds.getWidth()/1.2, visualBounds.getHeight()/1.2);
         primaryStage.setTitle("Hello World");
         primaryStage.setScene(primaryScene);
         primaryStage.show();
