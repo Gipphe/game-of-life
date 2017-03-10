@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class GridTest {
+class BoardTest {
     @Test
     void squares_remain_squares() {
         byte[][] testBoard = {
