@@ -5,16 +5,21 @@ public class Board {
     public int yaxis;
     private byte[][] board;
 
+    /**
+     * Constructor for the board object.
+     *
+     * @param xaxis int length of the board
+     * @param yaxis int height of the board
+     */
     public Board(int xaxis, int yaxis){
         this.xaxis=xaxis;
         this.yaxis=yaxis;
         board = new byte[yaxis][xaxis];
     }
 
-    public void setBoard(byte[][] newBoard) {
-        board = newBoard;
-    }
-
+    /**
+     * Creates and stores the next generation of the current board, then sets the stored board as the board
+     */
     public void nextGeneration() {
             byte[][] newBoard = new byte[board.length][board[0].length];
             for (int y = 0; y < board.length; y++) {
@@ -30,6 +35,13 @@ public class Board {
             board = newBoard;
     }
 
+    /**
+     * Decides if a cell has to be dead or alive for the nextGeneration method
+     *
+     * @param cell int tells if cell is dead (0) or alive (1)
+     * @param num int amount of neighbours the target cell has (0 to 8)
+     * @return either 1 or 0 in a single byte, signifying if the cell is dead or alive
+     */
     private byte rules(int cell, int num) {
         if (cell == 0) {
             if (num == 3) {
@@ -43,6 +55,13 @@ public class Board {
         return 0;
     }
 
+    /**
+     * Method for checking a cells neighbour count
+     *
+     * @param ox int x-position of cell
+     * @param oy int y-position of cell
+     * @return number of neighbours
+     */
     private int neighbours(int ox, int oy) {
         int num = 0;
         for (int y = -1; y < 2; y++) {
@@ -81,6 +100,11 @@ public class Board {
         return val;
     }
 
+    /**
+     * Overriden toString. Transforms the board to a single String of 0/1
+     *
+     * @return String of 1 and 0 representing the byte[][] array
+     */
     @Override
     public String toString() {
         String msg = "";
@@ -97,6 +121,15 @@ public class Board {
 
     public byte[][] getBoard() {
         return board;
+    }
+
+    /**
+     * setBoard method for the board
+     *
+     * @param newBoard byte[][] "2D" byte array which will be set as the new board array
+     */
+    public void setBoard(byte[][] newBoard) {
+        board = newBoard;
     }
 
 }
