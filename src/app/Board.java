@@ -90,6 +90,7 @@ public class Board {
      * @param lim int
      * @param val int
      * @return int
+     * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! METHOD TO BE ADDED TO UTILITIES CLASS !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      */
     public static int wrap(int lim, int val) {
         if (val >= lim) {
@@ -119,6 +120,11 @@ public class Board {
         return msg;
     }
 
+    /**
+     * getBoard method for the board
+     *
+     * @return the current board
+     */
     public byte[][] getBoard() {
         return board;
     }
@@ -127,6 +133,8 @@ public class Board {
      * setBoard method for the board
      *
      * @param newBoard byte[][] "2D" byte array which will be set as the new board array
+     *
+     * @return the new board
      */
     public void setBoard(byte[][] newBoard) {
         board = newBoard;
