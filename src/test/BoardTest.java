@@ -1,6 +1,6 @@
 package test;
 
-import app.Grid;
+import app.Board;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -14,7 +14,7 @@ class GridTest {
                 { 0, 1, 1, 0 },
                 { 0, 0, 0, 0 }
         };
-        Grid testGrid = new Grid(4, 4);
+        Board testGrid = new Board(4, 4);
         testGrid.setBoard(testBoard);
         testGrid.nextGeneration();
 
@@ -28,7 +28,7 @@ class GridTest {
                 {0,1,0},
                 {0,0,0}
         };
-        Grid testGrid = new Grid(3, 3);
+        Board testGrid = new Board(3, 3);
         testGrid.setBoard(testBoard);
         testGrid.nextGeneration();
 
