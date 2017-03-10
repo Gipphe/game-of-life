@@ -1,33 +1,33 @@
 package app;
 
-public class Grid {
+public class Board {
     public int xaxis;
     public int yaxis;
-    private byte[][] grid;
+    private byte[][] board;
 
-    public Grid(int xaxis, int yaxis){
+    public Board(int xaxis, int yaxis){
         this.xaxis=xaxis;
         this.yaxis=yaxis;
-        grid = new byte[yaxis][xaxis];
+        board = new byte[yaxis][xaxis];
     }
 
-    public void setGrid(byte[][] newGrid) {
-        grid = newGrid;
+    public void setBoard(byte[][] newBoard) {
+        board = newBoard;
     }
 
     public void nextGeneration() {
-            byte[][] newGrid = new byte[grid.length][grid[0].length];
-            for (int y = 0; y < grid.length; y++) {
-                byte[] row = grid[y];
+            byte[][] newBoard = new byte[board.length][board[0].length];
+            for (int y = 0; y < board.length; y++) {
+                byte[] row = board[y];
                 for (int x = 0; x < row.length; x++) {
                     int cell = row[x];
 
                     int numNeighbours = neighbours(x, y);
                     byte state = rules(cell, numNeighbours);
-                    newGrid[y][x] = state;
+                    newBoard[y][x] = state;
                 }
             }
-            grid = newGrid;
+            board = newBoard;
     }
 
     private byte rules(int cell, int num) {
@@ -49,8 +49,8 @@ public class Grid {
             for (int x = -1; x < 2; x++) {
                 int nx = ox + x;
                 int ny = oy + y;
-                int lenx = grid[oy].length;
-                int leny = grid.length;
+                int lenx = board[oy].length;
+                int leny = board.length;
 
                 ny = wrap(leny, ny);
                 nx = wrap(lenx, nx);
@@ -58,7 +58,7 @@ public class Grid {
                 if (x == 0 && y == 0) {
                     continue;
                 }
-                if (grid[ny][nx] == 1) {
+                if (board[ny][nx] == 1) {
                     num++;
                 }
             }
@@ -67,7 +67,7 @@ public class Grid {
     }
 
     /**
-     * Makes the coordinate wrap around to the other side of the grid if it is out of bounds
+     * Makes the coordinate wrap around to the other side of the board if it is out of bounds
      * @param lim int
      * @param val int
      * @return int
@@ -84,7 +84,7 @@ public class Grid {
     @Override
     public String toString() {
         String msg = "";
-        for (byte[] row : grid) {
+        for (byte[] row : board) {
             String s = "";
             for (int cell : row) {
                 String val = cell == 1 ? "1" : "0";
@@ -95,12 +95,8 @@ public class Grid {
         return msg;
     }
 
-    public void setBoard(byte[][] newBoard){
-        grid = newBoard;
-    }
-
-    public byte[][] getGrid() {
-        return grid;
+    public byte[][] getBoard() {
+        return board;
     }
 
 }

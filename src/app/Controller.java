@@ -17,7 +17,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class Controller implements Initializable {
-    private Grid grid;
+    private Board board;
     private byte scale = 20;
     private AnimationTimer timer;
     private Color aliveColor = Color.BLACK;
@@ -49,7 +49,7 @@ public class Controller implements Initializable {
     }
 
     public void resetGame(){
-        this.grid= new Grid(grid.xaxis, grid.yaxis);
+        this.board = new Board(board.xaxis, board.yaxis);
         aliveColor = Color.BLACK;
         deadColor = Color.WHITE;
         draw(gc);
@@ -74,7 +74,7 @@ public class Controller implements Initializable {
                 if (now - past < frameInterval) return;
                 past = now;
 
-                grid.nextGeneration();
+                board.nextGeneration();
                 draw(gc);
             }
         };
@@ -82,12 +82,12 @@ public class Controller implements Initializable {
 
     private void draw(GraphicsContext gc) {
 
-        byte[][] gameGrid = grid.getGrid();
+        byte[][] gameGrid = board.getBoard();
 
         for (int y = 0; y < gameGrid.length; y++) {
             byte[] row = gameGrid[y];
 
-            for (int x = 0; x < grid.getGrid()[0].length; x++) {
+            for (int x = 0; x < board.getBoard()[0].length; x++) {
                 byte cell = row[x];
                 if (cell == 1) gc.setFill(aliveColor);
                 else gc.setFill(deadColor);
@@ -124,7 +124,7 @@ public class Controller implements Initializable {
     }
 
     public void nextFrame() {
-        grid.nextGeneration();
+        board.nextGeneration();
         draw(gc);
     }
 
@@ -141,7 +141,7 @@ public class Controller implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         int xaxis = 20;
         int yaxis = 20;
-        grid = new Grid(xaxis, yaxis);
+        board = new Board(xaxis, yaxis);
         byte[][] foo = new byte[yaxis][xaxis];
 
         try {
@@ -164,7 +164,7 @@ public class Controller implements Initializable {
 
             alert.showAndWait();
         }
-        grid.setGrid(foo);
+        board.setBoard(foo);
 
         tickSlider.valueProperty().addListener(new ChangeListener<Number>() {
             @Override
@@ -176,7 +176,7 @@ public class Controller implements Initializable {
         scaleSlider.valueProperty().addListener(new ChangeListener<Number>() {
             @Override
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                gc.clearRect(0,0,scale*grid.xaxis,scale*grid.yaxis);
+                gc.clearRect(0,0,scale* board.xaxis,scale* board.yaxis);
                 setScale(newValue.byteValue());
                 draw(gc);
             }
