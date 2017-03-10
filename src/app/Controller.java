@@ -38,6 +38,9 @@ public class Controller implements Initializable {
     @FXML
     private Slider scaleSlider;
 
+    /**
+     * Toggles between start() and stop() methods.
+     */
     public void toggleStartStop() {
         if (startStopButton.selectedProperty().getValue()) {
             startStopButton.setText("Stop");
@@ -48,6 +51,9 @@ public class Controller implements Initializable {
         }
     }
 
+    /**
+     * Re-creates and re-draws the initial board.
+     */
     public void resetGame(){
         this.board = new Board(board.xaxis, board.yaxis);
         aliveColor = Color.BLACK;
@@ -55,15 +61,28 @@ public class Controller implements Initializable {
         draw(gc);
     }
 
+    /**
+     * Gets and starts the GraphicContext's AnimationTimer.
+     */
     private void start() {
         timer = getAnimationTimer(gc);
         timer.start();
     }
 
+    /**
+     * Stops the GraphicContext's AnimationTimer.
+     */
     private void stop() {
         timer.stop();
     }
 
+    /**
+     * Counts down frame intervals, used for determining time between new generations.
+     *
+     * @param gcd (GraphicsContext) a GraphicsContext instance which gets drawn
+     *
+     * @return (AnimationTimer) an Animation timer instance
+     */
     private AnimationTimer getAnimationTimer(GraphicsContext gcd) {
         final GraphicsContext gc = gcd;
         return new AnimationTimer() {
@@ -80,12 +99,17 @@ public class Controller implements Initializable {
         };
     }
 
+    /**
+     * Draws the current board onto a GraphicsContext, using the aliveColor method for the value 1, and deadColor method for the value 0.
+     *
+     * @param gc (GraphicsContext) The GraphicsContext on which the board will be drawn
+     */
     private void draw(GraphicsContext gc) {
 
-        byte[][] gameGrid = board.getBoard();
+        byte[][] gameBoard = board.getBoard();
 
-        for (int y = 0; y < gameGrid.length; y++) {
-            byte[] row = gameGrid[y];
+        for (int y = 0; y < gameBoard.length; y++) {
+            byte[] row = gameBoard[y];
 
             for (int x = 0; x < board.getBoard()[0].length; x++) {
                 byte cell = row[x];
@@ -96,20 +120,34 @@ public class Controller implements Initializable {
         }
     }
 
+    /**
+     * Sets the aliveColor value to the current value of the aliveColorPicker, then draws the GraphicsContext.
+     */
     public void setAliveColor() {
         aliveColor = aliveColorPicker.getValue();
         draw(gc);
     }
+
+    /**
+     * Sets the deadColor value to the current value of the deadColorPicker, then draws the GraphicsContext.
+     */
     public void setDeadColor() {
         deadColor = deadColorPicker.getValue();
         draw(gc);
     }
 
+    /**
+     * Exits the program.
+     */
     public void exit() {
-        System.out.println("Goodbye");
         System.exit(0);
     }
 
+    /**
+     * Sets the time between each next generation.
+     *
+     * @param newValue (int) the requested value of the frame interval.
+     */
     private void setFrameInterval(int newValue) {
         int mult = 1000000;
         int max = 1100 * mult;
@@ -119,15 +157,26 @@ public class Controller implements Initializable {
         frameInterval = Math.min(max, (newValue * step) + min);
     }
 
+    /**
+     * Sets the size of each individual cell.
+     *
+     * @param newValue (byte) the requested scale in pixels.
+     */
     private void setScale(byte newValue) {
         this.scale=newValue;
     }
 
+    /**
+     * Calls the boards nextGeneration() method and re-draws the grid.
+     */
     public void nextFrame() {
         board.nextGeneration();
         draw(gc);
     }
 
+    /**
+     * !!!!!!!!!!!!!!!!!!!!! METHOD TO BE ADDED TO UTILITIES CLASS !!!!!!!!!!!!!!!!!!!!!!!!
+     */
     private int wrap(int lim, int coord) {
         if (coord >= lim) {
             return coord - lim;
@@ -137,6 +186,9 @@ public class Controller implements Initializable {
         return coord;
     }
 
+    /**
+     * Creates, tests and draws the board onto the GraphicsContext. Contains Listeners for various sliders.
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         int xaxis = 20;
