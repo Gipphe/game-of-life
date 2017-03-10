@@ -1,13 +1,13 @@
 package app;
 
 public class Grid {
-    public int xaxis;
     public int yaxis;
+    public int xaxis;
     private byte[][] grid;
 
     public Grid(int xaxis, int yaxis){
-        this.xaxis=xaxis;
-        this.yaxis=yaxis;
+        this.yaxis =xaxis;
+        this.xaxis =yaxis;
         grid = new byte[yaxis][xaxis];
     }
 

@@ -49,7 +49,7 @@ public class Controller implements Initializable {
     }
 
     public void resetGame(){
-        this.grid= new Grid(grid.xaxis, grid.yaxis);
+        this.grid= new Grid(grid.yaxis, grid.xaxis);
         aliveColor = Color.BLACK;
         deadColor = Color.WHITE;
         draw(gc);
@@ -139,10 +139,10 @@ public class Controller implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        int xaxis = 20;
         int yaxis = 20;
-        grid = new Grid(xaxis, yaxis);
-        byte[][] foo = new byte[xaxis][yaxis];
+        int xaxis = 20;
+        grid = new Grid(yaxis, xaxis);
+        byte[][] foo = new byte[yaxis][xaxis];
 
         try {
             Pattern shape = PatternCollection.getCollection()[5];
@@ -176,7 +176,7 @@ public class Controller implements Initializable {
         scaleSlider.valueProperty().addListener(new ChangeListener<Number>() {
             @Override
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                gc.clearRect(0,0,scale*grid.xaxis,scale*grid.yaxis);
+                gc.clearRect(0,0,scale*grid.yaxis,scale*grid.xaxis);
                 setScale(newValue.byteValue());
                 draw(gc);
             }
