@@ -10,6 +10,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
+import javafx.scene.control.Alert;
 import javafx.scene.paint.Color;
 
 import java.net.URL;
@@ -216,12 +217,7 @@ public class Controller implements Initializable {
                 foo[rely][relx] = 1;
             }
         } catch(ArrayIndexOutOfBoundsException aioobe) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Runtime Error");
-            alert.setHeaderText("Pattern out of bounds!");
-            alert.setContentText(aioobe + "\n\nContinuing application without initial pattern");
-
-            alert.showAndWait();
+            AlertLibrary.aioobe(aioobe);
         }
         board.setBoard(foo);
 
