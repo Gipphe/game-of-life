@@ -3,14 +3,13 @@ package app;
 import javafx.animation.AnimationTimer;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ColorPicker;
-import javafx.scene.control.Slider;
-import javafx.scene.control.ToggleButton;
+import javafx.scene.control.*;
 import javafx.scene.paint.Color;
 
 import java.net.URL;
@@ -37,6 +36,13 @@ public class Controller implements Initializable {
     private Slider tickSlider;
     @FXML
     private Slider scaleSlider;
+    @FXML
+    private ComboBox comboBox;
+    @FXML
+
+    ObservableList list = FXCollections.observableArrayList (
+        "Clear", "Glider", "Blinker", "Toad", "Beacon", "Pulsar",
+            "Pentadecathlon", "LightweightSpaceship");
 
     public void toggleStartStop() {
         if (startStopButton.selectedProperty().getValue()) {
@@ -143,6 +149,7 @@ public class Controller implements Initializable {
         int yaxis = 20;
         board = new Board(xaxis, yaxis);
         byte[][] foo = new byte[yaxis][xaxis];
+        comboBox.setItems(list);
 
         try {
             Pattern shape = PatternCollection.getCollection()[5];
