@@ -6,7 +6,43 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-class RLEContents {
+class ReadableBoard {
+    private byte[][] board;
+    private int y;
+    private int x;
+
+    Stack<String> rows = new Stack<String>();
+
+    public void setBoard(byte[][] board) {
+        this.board = board;
+
+        this.y = board.length;
+        this.x = board[0].length;
+
+        StringBuilder sb = new StringBuilder();
+        for (byte[] row : board) {
+            for (byte cell : row) {
+                sb.append(cell);
+            }
+            rows.add(sb.toString());
+            sb.setLength(0);
+        }
+    }
+    ReadableBoard(byte[][] board) {
+        setBoard(board);
+    }
+
+    int getX() {
+        return x;
+    }
+    int getY() {
+        return y;
+    }
+    Stack<String> getRows() {
+        return rows;
+    }
+}
+class RLEContents implements Iterable<String> {
     private int x;
     private int y;
     private String rule;
@@ -40,6 +76,7 @@ class RLEContents {
         }
         return "";
     }
+    @NotNull
     private static List<String> splitByNewline(String source) {
         return Arrays.asList(source.split("\\r?\\n"));
     }
@@ -103,6 +140,11 @@ class RLEContents {
         return stack;
     }
 
+    @Override
+    public Iterator<String> iterator() {
+        return commands.iterator();
+    }
+
     RLEContents(String contents) {
         String bareData = stripMeta(contents);
 
@@ -112,10 +154,8 @@ class RLEContents {
         this.rule = getRule(header);
 
         String justCommands = removeRuleLine(bareData);
-        System.out.println("justCommands: " + justCommands);
 
         this.commands = extractCommands(justCommands);
-        System.out.println("commands: " + commands.toString());
     }
 }
 public class RLE {
@@ -136,7 +176,7 @@ public class RLE {
 
         int count = 1;
 
-        for (String command : contents.getCommands()) {
+        for (String command : contents) {
             System.out.println("command: " + command);
             Stack<String> commandBits = new Stack<String>();
             commandBits.addAll(Arrays.asList(command.split("")));
@@ -179,52 +219,79 @@ public class RLE {
         return board;
     }
 
-    private static String accumulate(String source) {
+    private static String concentrate(String source) {
         int length = source.length();
         String lengthString = length == 1 ? "" : "" + length;
         return lengthString + source.charAt(0);
     }
+    private static boolean isEmptyRow(String row) {
+        Pattern pattern = Pattern.compile("[^0,\\]\\[ ]");
+        Matcher match = pattern.matcher(row);
+        boolean isEmpty = true;
+        if (match.find()) {
+            isEmpty = false;
+        }
+        return isEmpty;
+    }
     public static String fromBoard(byte[][] board) {
-        StringBuilder result = new StringBuilder();
-        int dimy = board.length;
-        int dimx = board[0].length;
-        String rule = "B3/S23";
-        result.append("x = ");
-        result.append(dimx);
-        result.append(", y = ");
-        result.append(dimy);
-        result.append(", rule = ");
-        result.append(rule);
-        result.append("\n");
-        String accumulator = "";
+        ReadableBoard rboard = new ReadableBoard(board);
 
-        for (int y = 0; y < board.length; y++) {
-            byte[] row = board[y];
-            for (int x = 0; x < row.length; x++) {
-                byte cell = row[x];
-                String value = cell == 1 ? "o" : "b";
-                accumulator += value;
-                if (x + 1 < board[y].length) {
-                    if (cell != board[y][x + 1]) {
-                        result.append(accumulate(accumulator));
-                        accumulator = "";
-                    }
-                } else {
-                    result.append(accumulate(accumulator));
-                    accumulator = "";
-                }
+        StringBuilder result = new StringBuilder();
+        result
+            .append("x = ")
+            .append(rboard.getX())
+            .append(", y = ")
+            .append(rboard.getY())
+            .append(", rule = B3/S23")
+            .append("\n");
+
+        StringBuilder newlineCharacters = new StringBuilder();
+        Stack<String> rows = rboard.getRows();
+        int lastRowIndex = rows.size() - 1;
+        for (int rowIndex = 0; rowIndex < rows.size(); rowIndex++) {
+            String row = rows.get(rowIndex);
+            if (isEmptyRow(row)) {
+                newlineCharacters.append("$");
+                continue;
             }
-            if (y < board.length - 1) {
-                accumulator += "$";
-                int lastChar = result.length() - 1;
-                if (result.charAt(lastChar) != "$") {
-                    
+            if (rowIndex != 0) {
+                newlineCharacters.append("$");
+                result.append(concentrate(newlineCharacters.toString()));
+                newlineCharacters.setLength(0);
+            }
+            String[] statesInRow = row.split("");
+
+            StringBuilder stateCharacters = new StringBuilder();
+            int indexOfLastState = statesInRow.length - 1;
+
+            int colsToRun = statesInRow.length;
+            if (rowIndex == lastRowIndex) {
+                System.out.println(row);
+                int lastAlive = row.lastIndexOf('1');
+                colsToRun = (lastAlive == -1) ? statesInRow.length : lastAlive + 1;
+                System.out.println(colsToRun);
+            }
+
+            for (int i = 0; i < colsToRun; i++) {
+                String state = statesInRow[i];
+                String value = (state.equals("1") ? "o" : "b");
+
+                String nextState = "";
+                if (i < indexOfLastState) {
+                    nextState = statesInRow[i + 1];
                 }
-                result.append("$");
+
+                if (state.equals(nextState)) {
+                    stateCharacters.append(value);
+                    continue;
+                }
+                stateCharacters.append(value);
+                result.append(concentrate(stateCharacters.toString()));
+                stateCharacters.setLength(0);
             }
         }
-
         result.append("!");
+
         return result.toString();
     }
 }
