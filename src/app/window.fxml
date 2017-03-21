@@ -16,66 +16,9 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.Controller">
-   <bottom>
-      <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-         <children>
-            <VBox alignment="CENTER">
-               <children>
-                  <HBox alignment="CENTER">
-                     <children>
-                        <Button mnemonicParsing="false" onAction="#nextFrame" text="NextFrame">
-                           <cursor>
-                              <Cursor fx:constant="HAND" />
-                           </cursor>
-                           <HBox.margin>
-                              <Insets right="10.0" />
-                           </HBox.margin>
-                        </Button>
-                        <ToggleButton fx:id="startStopButton" mnemonicParsing="false" onAction="#toggleStartStop" text="Start">
-                           <HBox.margin>
-                              <Insets right="10.0" />
-                           </HBox.margin>
-                           <cursor>
-                              <Cursor fx:constant="HAND" />
-                           </cursor>
-                        </ToggleButton>
-                        <Button fx:id="resetButton" mnemonicParsing="false" onAction="#resetGame" text="Reset">
-                           <cursor>
-                              <Cursor fx:constant="HAND" />
-                           </cursor>
-                        </Button>
-                     </children>
-                  </HBox>
-                  <ComboBox fx:id="comboBox" prefWidth="150.0" promptText="Select pattern">
-                     <VBox.margin>
-                        <Insets top="20.0" />
-                     </VBox.margin>
-                  </ComboBox>
-               </children>
-               <HBox.margin>
-                  <Insets right="30.0" />
-               </HBox.margin>
-            </VBox>
-            <VBox alignment="CENTER">
-               <children>
-                  <Slider fx:id="tickSlider" blockIncrement="1" max="10" min="0" showTickMarks="true" value="5">
-                     <cursor>
-                        <Cursor fx:constant="HAND" />
-                     </cursor></Slider>
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Time between ticks" />
-                  <Slider fx:id="scaleSlider" blockIncrement="1" max="40" min="10" showTickMarks="true" value="15">
-                     <cursor>
-                        <Cursor fx:constant="HAND" />
-                     </cursor></Slider>
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Scaling" />
-               </children>
-            </VBox>
-         </children>
-      </HBox>
-   </bottom>
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.Controller">
    <center>
-      <Canvas fx:id="canvas" height="500.0" width="1000.0" BorderPane.alignment="CENTER">
+      <Canvas fx:id="canvas" height="1000" width="1000" BorderPane.alignment="TOP_LEFT">
          <cursor>
             <Cursor fx:constant="CROSSHAIR" />
          </cursor></Canvas>
@@ -129,4 +72,59 @@
         </menus>
       </MenuBar>
    </top>
+   <bottom>
+      <HBox fx:id="BottomHBox" alignment="CENTER" prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+         <children>
+            <HBox alignment="CENTER">
+               <children>
+                  <Button mnemonicParsing="false" onAction="#nextFrame" text="NextFrame">
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                     <HBox.margin>
+                        <Insets right="10.0" />
+                     </HBox.margin>
+                  </Button>
+                  <ToggleButton fx:id="startStopButton" mnemonicParsing="false" onAction="#toggleStartStop" text="Start">
+                     <HBox.margin>
+                        <Insets right="10.0" />
+                     </HBox.margin>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                  </ToggleButton>
+                  <Button fx:id="resetButton" mnemonicParsing="false" onAction="#resetGame" text="Reset">
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                  </Button>
+               </children>
+               <HBox.margin>
+                  <Insets right="10.0" />
+               </HBox.margin>
+            </HBox>
+            <ComboBox fx:id="comboBox" prefWidth="150.0" promptText="Select pattern">
+               <HBox.margin>
+                  <Insets right="10.0" />
+               </HBox.margin>
+            </ComboBox>
+            <VBox alignment="CENTER">
+               <children>
+                  <Slider fx:id="tickSlider" blockIncrement="1" max="10" min="0" showTickMarks="true" value="5">
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                  </Slider>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Time between ticks" />
+                  <Slider fx:id="scaleSlider" blockIncrement="1" max="40" min="10" showTickMarks="true" value="15">
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                  </Slider>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Scaling" />
+               </children>
+            </VBox>
+         </children>
+      </HBox>
+   </bottom>
 </BorderPane>
