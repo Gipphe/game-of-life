@@ -206,16 +206,16 @@ public class Controller implements Initializable {
 
         try {
             Pattern shape = PatternCollection.getCollection()[5];
-        byte[][] pattern = shape.getPattern();
-        int midy = foo.length / 2 - 3;
-        int midx = foo[0].length / 2 - 3;
-            for (byte[] cell : pattern) {
-                int rely = midy + cell[0];
-                int relx = midx + cell[1];
-                rely = wrap(foo.length, rely);
-                relx = wrap(foo[0].length, relx);
-                foo[rely][relx] = 1;
-            }
+            byte[][] pattern = shape.getPattern();
+            int midy = foo.length / 2 - 3;
+            int midx = foo[0].length / 2 - 3;
+                for (byte[] cell : pattern) {
+                    int rely = midy + cell[0];
+                    int relx = midx + cell[1];
+                    rely = wrap(foo.length, rely);
+                    relx = wrap(foo[0].length, relx);
+                    foo[rely][relx] = 1;
+                }
         } catch(ArrayIndexOutOfBoundsException aioobe) {
             AlertLibrary.aioobe(aioobe);
         }
