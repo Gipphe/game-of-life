@@ -61,6 +61,17 @@ class RLETest {
 
         assertEquals(boardToString(expected), boardToString(result));
     }
+    @Test
+    void converts_from_RLE_even_with_double_digit_length_encoding() {
+        String base = "x = 18, y = 1, rule = B3/S23\n18o!";
+        byte[][] result = RLE.toBoard(base);
+
+        byte[][] expected = {
+                {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
+        };
+
+        assertEquals(boardToString(expected), boardToString(result));
+    }
 
     @Test
     void converts_pulsar_from_RLE_to_board() {
@@ -136,6 +147,19 @@ class RLETest {
         String expected = "x = 13, y = 13, rule = B3/S23\n" +
                 "2b3o3b3o2b2$o4bobo4bo$o4bobo4bo$o4bobo4bo$2b3o3b3o2b2$2b3o3b3o2b$o4bobo4bo$o4bobo4bo$o4bobo4bo2$2b3o3b3o!";
 
+        String result = RLE.fromBoard(base);
+
+        assertEquals(expected, result);
+    }
+
+    @Test
+    void converts_from_board_even_when_there_are_double_digits_length_encoding() {
+        byte[][] base = {
+                {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
+        };
+
+        String expected = "x = 18, y = 1, rule = B3/S23\n" +
+                "18o!";
         String result = RLE.fromBoard(base);
 
         assertEquals(expected, result);
