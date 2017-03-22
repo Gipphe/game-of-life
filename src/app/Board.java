@@ -120,20 +120,21 @@ public class Board {
      */
     @Override
     public String toString() {
-        BoundingBox bb = getBoundingBox();
-        String str = "";
         if(board.length == 0) {
             return "";
         }
+
+        BoundingBox bb = getBoundingBox();
+        StringBuilder sb = new StringBuilder();
         for(int i = bb.firstRow; i <= bb.lastRow; i++) {
             for(int j = bb.firstCol; j <= bb.lastCol; j++) {
                 if (board[i][j] == 1) {
-                    str = str + "1";
+                    sb.append("1");
                 } else {
-                    str = str + "0";
+                    sb.append("0");
                 }
             }
-        } return str;
+        } return sb.toString();
     }
 
     /**
