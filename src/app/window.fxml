@@ -47,7 +47,7 @@
             <items>
                   <Menu mnemonicParsing="false" text="Color">
                     <items>
-                        <MenuItem mnemonicParsing="false" text="aliveColor">
+                        <MenuItem mnemonicParsing="false" text="Alive color">
                            <graphic>
                               <ColorPicker fx:id="aliveColorPicker" onAction="#setAliveColor">
                                  <opaqueInsets>
@@ -55,7 +55,7 @@
                                  </opaqueInsets></ColorPicker>
                            </graphic>
                         </MenuItem>
-                        <MenuItem mnemonicParsing="false" text="deadColor">
+                        <MenuItem mnemonicParsing="false" text="Dead color">
                            <graphic>
                               <ColorPicker fx:id="deadColorPicker" onAction="#setDeadColor" />
                            </graphic>
