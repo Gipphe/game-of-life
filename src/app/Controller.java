@@ -100,6 +100,7 @@ public class Controller implements Initializable {
                 if (now - past < frameInterval) return;
                 past = now;
 
+                System.out.println(board);
                 board.nextGeneration();
                 draw(gc);
             }
@@ -205,17 +206,11 @@ public class Controller implements Initializable {
         comboBox.setItems(list);
 
         try {
-            Pattern shape = PatternCollection.getCollection()[5];
-            byte[][] pattern = shape.getPattern();
-            int midy = foo.length / 2 - 3;
-            int midx = foo[0].length / 2 - 3;
-                for (byte[] cell : pattern) {
-                    int rely = midy + cell[0];
-                    int relx = midx + cell[1];
-                    rely = wrap(foo.length, rely);
-                    relx = wrap(foo[0].length, relx);
-                    foo[rely][relx] = 1;
-                }
+            foo[0][1]=1;
+            foo[1][2]=1;
+            foo[2][0]=1;
+            foo[2][1]=1;
+            foo[2][2]=1;
         } catch(ArrayIndexOutOfBoundsException aioobe) {
             AlertLibrary.aioobe(aioobe);
         }

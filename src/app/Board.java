@@ -1,8 +1,20 @@
 package app;
 
+class BoundingBox {
+    int firstRow;
+    int firstCol;
+    int lastRow;
+    int lastCol;
+    BoundingBox(int firstRow, int firstCol, int lastRow, int lastCol) {
+        this.firstRow = firstRow;
+        this.firstCol = firstCol;
+        this.lastRow = lastRow;
+        this.lastCol = lastCol;
+    }
+}
 public class Board {
-    public int xaxis;
-    public int yaxis;
+    int xaxis;
+    int yaxis;
     private byte[][] board;
 
     /**
@@ -92,7 +104,7 @@ public class Board {
      * @return int
      * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! METHOD TO BE ADDED TO UTILITIES CLASS !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      */
-    public static int wrap(int lim, int val) {
+    private static int wrap(int lim, int val) {
         if (val >= lim) {
             return val - lim;
         } else if (val < 0) {
@@ -102,22 +114,26 @@ public class Board {
     }
 
     /**
-     * Overriden toString. Transforms the board to a single String of 0/1
+     * Overrides toString. Transforms the board to a single String of 0/1
      *
      * @return String of 1 and 0 representing the byte[][] array
      */
     @Override
     public String toString() {
-        String msg = "";
-        for (byte[] row : board) {
-            String s = "";
-            for (int cell : row) {
-                String val = cell == 1 ? "1" : "0";
-                s = s + val;
-            }
-            msg = msg + s;
+        BoundingBox bb = getBoundingBox();
+        String str = "";
+        if(board.length == 0) {
+            return "";
         }
-        return msg;
+        for(int i = bb.firstRow; i <= bb.lastRow; i++) {
+            for(int j = bb.firstCol; j <= bb.lastCol; j++) {
+                if (board[i][j] == 1) {
+                    str = str + "1";
+                } else {
+                    str = str + "0";
+                }
+            }
+        } return str;
     }
 
     /**
@@ -125,7 +141,7 @@ public class Board {
      *
      * @return the current board
      */
-    public byte[][] getBoard() {
+    byte[][] getBoard() {
         return board;
     }
 
@@ -138,6 +154,34 @@ public class Board {
      */
     public void setBoard(byte[][] newBoard) {
         board = newBoard;
+    }
+
+    private BoundingBox getBoundingBox() {
+        BoundingBox bb = new BoundingBox(board.length, board[0].length, 0, 0);
+        for(int i = 0; i < board.length; i++) {
+            for(int j = 0; j < board[i].length; j++) {
+                if (board[i][j] == 0) continue;
+                if (i < bb.firstRow) {
+                    bb.firstRow = i;
+                }
+                if (i > bb.lastRow) {
+                    bb.lastRow = i;
+                }
+                if (j < bb.firstCol) {
+                    bb.firstCol = j;
+                }
+                if (j > bb.lastCol) {
+                    bb.lastCol = j;
+                }
+            }
+        }
+        System.out.println("board " + board.length);
+        System.out.println("board[0] " + board[0].length);
+        System.out.println("minrow: " + bb.firstRow);
+        System.out.println("maxrow: " + bb.lastRow);
+        System.out.println("mincolumn: " + bb.firstCol);
+        System.out.println("maxcolumn: " + bb.lastCol);
+        return bb;
     }
 
 }
