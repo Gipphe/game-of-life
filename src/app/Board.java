@@ -1,5 +1,8 @@
 package app;
 
+import java.util.ArrayList;
+import java.util.List;
+
 class BoundingBox {
     int firstRow;
     int firstCol;
@@ -14,38 +17,108 @@ class BoundingBox {
 }
 
 public class Board {
-    int xaxis;
-    int yaxis;
-    private byte[][] board;
+    private ArrayList<ArrayList<Cell>> board;
 
     /**
      * Constructor for the board object.
      *
-     * @param xaxis int length of the board
-     * @param yaxis int height of the board
+     * @param sizeX int length of the board
+     * @param sizeY int height of the board
      */
-    public Board(int xaxis, int yaxis){
-        this.xaxis=xaxis;
-        this.yaxis=yaxis;
-        board = new byte[yaxis][xaxis];
+    public Board(int sizeX, int sizeY){
+        initBoard(sizeX, sizeY);
     }
 
+    private void initBoard(int sizeX, int sizeY) {
+        board = new ArrayList<ArrayList<Cell>>(sizeY);
+        for (int i = 0; i < sizeY; i++) {
+            ArrayList<Cell> row = new ArrayList<Cell>(sizeX);
+            board.add(row);
+            for (int j = 0; j < sizeX; j++) {
+                Cell cell = new Cell();
+                row.add(cell);
+            }
+        }
+    }
+
+    private void doubleRows() {
+        int currRowCount = board.size();
+        int targetRowCount = currRowCount * 2;
+        for (int y = 0; y < targetRowCount; y++) {
+            try {
+                board.get(y);
+            } catch (IndexOutOfBoundsException e) {
+                board.add(new ArrayList<Cell>());
+            }
+        }
+    }
+    private void doubleCols() {
+        int currColCount = board.get(0).size();
+        int targetColCount = currColCount * 2;
+        for (ArrayList<Cell> row : board) {
+            for (int x = 0; x < targetColCount; x++) {
+                try {
+                    row.get(x);
+                } catch (IndexOutOfBoundsException e) {
+                    row.add(new Cell());
+                }
+            }
+        }
+    }
+    private void doubleBoard() {
+        doubleRows();
+        doubleCols();
+    }
+
+    public void insertPattern(byte[][] pattern) {
+        while (pattern.length > board.size() ||
+                pattern[0].length > board.get(0).size()) {
+            doubleBoard();
+        }
+        for (int y = 0; y < pattern.length; y++) {
+            byte[] row = pattern[y];
+            for (int x = 0; x < row.length; x++) {
+                byte cell = row[x];
+
+                board.get(y).get(x).setState(cell);
+            }
+        }
+    }
+
+    public void fill(byte state) {
+        for (ArrayList<Cell> row : board) {
+            for (Cell cell : row) {
+                cell.setState(state);
+            }
+        }
+    }
+
+    private static ArrayList<ArrayList<Cell>> cloneBoard(ArrayList<ArrayList<Cell>> oldBoard) {
+        ArrayList<ArrayList<Cell>> clone = new ArrayList<ArrayList<Cell>>(oldBoard.size());
+        for (ArrayList<Cell> oldRow : oldBoard) {
+            ArrayList<Cell> newRow = new ArrayList<Cell>();
+            clone.add(newRow);
+            for (Cell cell : oldRow) {
+                newRow.add(new Cell(cell));
+            }
+        }
+        return clone;
+    }
     /**
      * Creates and stores the next generation of the current board, then sets the stored board as the board
      */
     public void nextGeneration() {
-            byte[][] newBoard = new byte[board.length][board[0].length];
-            for (int y = 0; y < board.length; y++) {
-                byte[] row = board[y];
-                for (int x = 0; x < row.length; x++) {
-                    int cell = row[x];
+            ArrayList<ArrayList<Cell>> oldBoard = cloneBoard(board);
+            for (int y = 0; y < oldBoard.size(); y++) {
+                List<Cell> row = oldBoard.get(y);
+                for (int x = 0; x < row.size(); x++) {
+                    Cell cell = row.get(x);
 
                     int numNeighbours = neighbours(x, y);
-                    byte state = rules(cell, numNeighbours);
-                    newBoard[y][x] = state;
+                    byte state = rules(cell.getState(), numNeighbours);
+                    board.get(y).get(x).setState(state);
                 }
             }
-            board = newBoard;
     }
 
     /**
@@ -81,8 +154,8 @@ public class Board {
             for (int x = -1; x < 2; x++) {
                 int nx = ox + x;
                 int ny = oy + y;
-                int lenx = board[oy].length;
-                int leny = board.length;
+                int lenx = board.get(oy).size();
+                int leny = board.size();
 
                 ny = wrap(leny, ny);
                 nx = wrap(lenx, nx);
@@ -90,7 +163,7 @@ public class Board {
                 if (x == 0 && y == 0) {
                     continue;
                 }
-                if (board[ny][nx] == 1) {
+                if (board.get(ny).get(nx).getState() == 1) {
                     num++;
                 }
             }
@@ -121,14 +194,14 @@ public class Board {
      */
     @Override
     public String toString() {
-        if(board.length == 0) {
+        if (board.size() == 0) {
             return "";
         }
 
         StringBuilder sb = new StringBuilder();
-        for(byte[] row : board) {
-            for(byte cell : row) {
-                if (cell == 1) {
+        for(ArrayList<Cell> row : board) {
+            for(Cell cell : row) {
+                if (cell.getState() == 1) {
                     sb.append("1");
                 } else {
                     sb.append("0");
@@ -142,7 +215,7 @@ public class Board {
      *
      * @return the current board
      */
-    byte[][] getBoard() {
+    ArrayList<ArrayList<Cell>> getBoard() {
         return board;
     }
 
@@ -153,15 +226,16 @@ public class Board {
      *
      * @return the new board
      */
-    public void setBoard(byte[][] newBoard) {
+    public void setBoard(ArrayList<ArrayList<Cell>> newBoard) {
         board = newBoard;
     }
 
     public BoundingBox getBoundingBox() {
-        BoundingBox bb = new BoundingBox(board.length, board[0].length, 0, 0);
-        for(int i = 0; i < board.length; i++) {
-            for(int j = 0; j < board[i].length; j++) {
-                if (board[i][j] == 0) continue;
+        BoundingBox bb = new BoundingBox(board.size(), board.get(0).size(), 0, 0);
+        for(int i = 0; i < board.size(); i++) {
+            for(int j = 0; j < board.get(i).size(); j++) {
+                if (board.get(i).get(j).getState() == 0) continue;
+
                 if (i < bb.firstRow) {
                     bb.firstRow = i;
                 }
@@ -176,13 +250,14 @@ public class Board {
                 }
             }
         }
-        System.out.println("board " + board.length);
-        System.out.println("board[0] " + board[0].length);
-        System.out.println("minrow: " + bb.firstRow);
-        System.out.println("maxrow: " + bb.lastRow);
-        System.out.println("mincolumn: " + bb.firstCol);
-        System.out.println("maxcolumn: " + bb.lastCol);
         return bb;
     }
 
+    public int getSizeX() {
+        return board.get(0).size();
+    }
+
+    public int getSizeY() {
+        return board.size();
+    }
 }
