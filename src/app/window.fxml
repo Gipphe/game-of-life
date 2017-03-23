@@ -75,39 +75,40 @@
    <bottom>
       <HBox fx:id="BottomHBox" alignment="CENTER" prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
          <children>
-            <HBox alignment="CENTER">
+            <VBox alignment="CENTER">
                <children>
-                  <Button mnemonicParsing="false" onAction="#nextFrame" text="NextFrame">
-                     <cursor>
-                        <Cursor fx:constant="HAND" />
-                     </cursor>
-                     <HBox.margin>
-                        <Insets right="10.0" />
-                     </HBox.margin>
-                  </Button>
-                  <ToggleButton fx:id="startStopButton" mnemonicParsing="false" onAction="#toggleStartStop" text="Start">
-                     <HBox.margin>
-                        <Insets right="10.0" />
-                     </HBox.margin>
-                     <cursor>
-                        <Cursor fx:constant="HAND" />
-                     </cursor>
-                  </ToggleButton>
-                  <Button fx:id="resetButton" mnemonicParsing="false" onAction="#resetGame" text="Reset">
-                     <cursor>
-                        <Cursor fx:constant="HAND" />
-                     </cursor>
-                  </Button>
+                  <HBox alignment="CENTER" maxWidth="1.7976931348623157E308">
+                     <children>
+                        <Button mnemonicParsing="false" onAction="#nextFrame" text="NextFrame">
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                           <HBox.margin>
+                              <Insets right="10.0" />
+                           </HBox.margin>
+                        </Button>
+                        <ToggleButton fx:id="startStopButton" mnemonicParsing="false" onAction="#toggleStartStop" text="Start">
+                           <HBox.margin>
+                              <Insets right="10.0" />
+                           </HBox.margin>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                        </ToggleButton>
+                        <Button fx:id="resetButton" mnemonicParsing="false" onAction="#resetGame" text="Reset">
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                        </Button>
+                     </children>
+                  </HBox>
+                  <ComboBox fx:id="comboBox" promptText="Pattern">
+                     <VBox.margin>
+                        <Insets top="10.0" />
+                     </VBox.margin>
+                  </ComboBox>
                </children>
-               <HBox.margin>
-                  <Insets right="10.0" />
-               </HBox.margin>
-            </HBox>
-            <ComboBox fx:id="comboBox" prefWidth="150.0" promptText="Select pattern">
-               <HBox.margin>
-                  <Insets right="10.0" />
-               </HBox.margin>
-            </ComboBox>
+            </VBox>
             <VBox alignment="CENTER">
                <children>
                   <Slider fx:id="tickSlider" blockIncrement="1" max="10" min="0" showTickMarks="true" value="5">
