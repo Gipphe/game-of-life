@@ -125,11 +125,10 @@ public class Board {
             return "";
         }
 
-        BoundingBox bb = getBoundingBox();
         StringBuilder sb = new StringBuilder();
-        for(int i = bb.firstRow; i <= bb.lastRow; i++) {
-            for(int j = bb.firstCol; j <= bb.lastCol; j++) {
-                if (board[i][j] == 1) {
+        for(byte[] row : board) {
+            for(byte cell : row) {
+                if (cell == 1) {
                     sb.append("1");
                 } else {
                     sb.append("0");
