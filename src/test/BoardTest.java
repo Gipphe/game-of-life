@@ -18,7 +18,7 @@ class BoardTest {
         testGrid.setBoard(testBoard);
         testGrid.nextGeneration();
 
-        assertEquals("1111", testGrid.toString());
+        assertEquals("0000011001100000", testGrid.toString());
     }
     
     @Test
@@ -32,7 +32,7 @@ class BoardTest {
         testGrid.setBoard(testBoard);
         testGrid.nextGeneration();
 
-        assertEquals("", testGrid.toString());
+        assertEquals("000000000", testGrid.toString());
     }
 
 }
