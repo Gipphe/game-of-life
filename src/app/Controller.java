@@ -46,23 +46,11 @@ public class Controller implements Initializable {
             "Pentadecathlon", "LightweightSpaceship");
 
     public void setPremadePattern(String premadePattern){
-        switch (premadePattern){
-            case "Clear":
-                break;
-            case "Glider":
-                break;
-            case "Blinker":
-                break;
-            case "Toad":
-                break;
-            case "Beacon":
-                break;
-            case "Pulsar":
-                break;
-            case "Pentadecathlon":
-                break;
-            case "LightweightSpaceship":
-                break;
+        Pattern[] patterns = PatternCollection.getCollection();
+        for(int i = 0; i < patterns.length; i++){
+            if(patterns[i].getName()==premadePattern){
+                board.setBoard(patterns[i].getPattern());
+            }
         }
     }
 
@@ -256,6 +244,7 @@ public class Controller implements Initializable {
         comboBox.valueProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+
                 setPremadePattern(newValue);
                 gc.clearRect(0,0,scale* board.xaxis,scale* board.yaxis);
                 draw(gc);
