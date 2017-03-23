@@ -10,10 +10,10 @@ import javafx.fxml.Initializable;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
-import javafx.scene.control.Alert;
 import javafx.scene.paint.Color;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 public class Controller implements Initializable {
@@ -41,15 +41,18 @@ public class Controller implements Initializable {
     private ComboBox comboBox;
     @FXML
 
-    ObservableList list = FXCollections.observableArrayList (
+    private ObservableList list = FXCollections.observableArrayList (
         "Clear", "Glider", "Blinker", "Toad", "Beacon", "Pulsar",
             "Pentadecathlon", "LightweightSpaceship");
 
     public void setPremadePattern(String premadePattern){
         Pattern[] patterns = PatternCollection.getCollection();
-        for(int i = 0; i < patterns.length; i++){
-            if(patterns[i].getName()==premadePattern){
-                board.setBoard(patterns[i].getPattern());
+        for (int i = 0; i < patterns.length; i++) {
+            if (patterns[i].getName() == premadePattern) {
+
+                board.insertPattern(patterns[i].getPattern());
+
+                break;
             }
         }
     }
@@ -71,7 +74,7 @@ public class Controller implements Initializable {
      * Re-creates and re-draws the initial board.
      */
     public void resetGame(){
-        this.board = new Board(board.xaxis, board.yaxis);
+        this.board = new Board(board.getSizeX(), board.getSizeY());
         aliveColor = Color.BLACK;
         deadColor = Color.WHITE;
         draw(gc);
@@ -123,14 +126,14 @@ public class Controller implements Initializable {
      */
     private void draw(GraphicsContext gc) {
 
-        byte[][] gameBoard = board.getBoard();
+        ArrayList<ArrayList<Cell>> gameBoard = board.getBoard();
 
-        for (int y = 0; y < gameBoard.length; y++) {
-            byte[] row = gameBoard[y];
+        for (int y = 0; y < gameBoard.size(); y++) {
+            ArrayList<Cell> row = gameBoard.get(y);
 
-            for (int x = 0; x < board.getBoard()[0].length; x++) {
-                byte cell = row[x];
-                if (cell == 1) gc.setFill(aliveColor);
+            for (int x = 0; x < board.getBoard().get(0).size(); x++) {
+                Cell cell = row.get(x);
+                if (cell.getState() == 1) gc.setFill(aliveColor);
                 else gc.setFill(deadColor);
                 gc.fillRect(x * scale, y * scale, scale-1, scale-1);
             }
@@ -211,19 +214,7 @@ public class Controller implements Initializable {
         int xaxis = 20;
         int yaxis = 20;
         board = new Board(xaxis, yaxis);
-        byte[][] foo = new byte[yaxis][xaxis];
         comboBox.setItems(list);
-
-        try {
-            foo[0][1]=1;
-            foo[1][2]=1;
-            foo[2][0]=1;
-            foo[2][1]=1;
-            foo[2][2]=1;
-        } catch(ArrayIndexOutOfBoundsException aioobe) {
-            AlertLibrary.aioobe(aioobe);
-        }
-        board.setBoard(foo);
 
         tickSlider.valueProperty().addListener(new ChangeListener<Number>() {
             @Override
@@ -235,7 +226,7 @@ public class Controller implements Initializable {
         scaleSlider.valueProperty().addListener(new ChangeListener<Number>() {
             @Override
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                gc.clearRect(0,0,scale* board.xaxis,scale* board.yaxis);
+                gc.clearRect(0,0,scale* board.getSizeX(),scale* board.getSizeY());
                 setScale(newValue.byteValue());
                 draw(gc);
             }
@@ -246,7 +237,7 @@ public class Controller implements Initializable {
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
 
                 setPremadePattern(newValue);
-                gc.clearRect(0,0,scale* board.xaxis,scale* board.yaxis);
+                gc.clearRect(0,0,scale * board.getSizeX(), scale * board.getSizeY());
                 draw(gc);
             }
         });
