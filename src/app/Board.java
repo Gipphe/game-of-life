@@ -12,6 +12,7 @@ class BoundingBox {
         this.lastCol = lastCol;
     }
 }
+
 public class Board {
     int xaxis;
     int yaxis;
@@ -157,7 +158,7 @@ public class Board {
         board = newBoard;
     }
 
-    private BoundingBox getBoundingBox() {
+    public BoundingBox getBoundingBox() {
         BoundingBox bb = new BoundingBox(board.length, board[0].length, 0, 0);
         for(int i = 0; i < board.length; i++) {
             for(int j = 0; j < board[i].length; j++) {

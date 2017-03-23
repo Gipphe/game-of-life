@@ -45,6 +45,27 @@ public class Controller implements Initializable {
         "Clear", "Glider", "Blinker", "Toad", "Beacon", "Pulsar",
             "Pentadecathlon", "LightweightSpaceship");
 
+    public void setPremadePattern(String premadePattern){
+        switch (premadePattern){
+            case "Clear":
+                break;
+            case "Glider":
+                break;
+            case "Blinker":
+                break;
+            case "Toad":
+                break;
+            case "Beacon":
+                break;
+            case "Pulsar":
+                break;
+            case "Pentadecathlon":
+                break;
+            case "LightweightSpaceship":
+                break;
+        }
+    }
+
     /**
      * Toggles between start() and stop() methods.
      */
@@ -157,7 +178,7 @@ public class Controller implements Initializable {
      * @param newValue (int) the requested value of the frame interval.
      */
     private void setFrameInterval(int newValue) {
-        int mult = 1000000;
+        int mult = 100000;
         int max = 1100 * mult;
         int min = 100 * mult;
         int step = (max - min) / 10;
@@ -228,6 +249,15 @@ public class Controller implements Initializable {
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
                 gc.clearRect(0,0,scale* board.xaxis,scale* board.yaxis);
                 setScale(newValue.byteValue());
+                draw(gc);
+            }
+        });
+
+        comboBox.valueProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                setPremadePattern(newValue);
+                gc.clearRect(0,0,scale* board.xaxis,scale* board.yaxis);
                 draw(gc);
             }
         });
