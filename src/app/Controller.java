@@ -39,11 +39,17 @@ public class Controller implements Initializable {
     private Slider scaleSlider;
     @FXML
     private ComboBox comboBox;
-    @FXML
 
     private ObservableList list = FXCollections.observableArrayList (
         "Clear", "Glider", "Blinker", "Toad", "Beacon", "Pulsar",
             "Pentadecathlon", "LightweightSpaceship");
+
+    /**
+     * For testing purposes.
+     */
+    public void testing(){
+        System.out.println(board.patternToString());
+    }
 
     public void setPremadePattern(String premadePattern){
         Pattern[] patterns = PatternCollection.getCollection();
@@ -211,8 +217,8 @@ public class Controller implements Initializable {
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        int xaxis = 20;
-        int yaxis = 20;
+        int xaxis = 200;
+        int yaxis = 200;
         board = new Board(xaxis, yaxis);
         comboBox.setItems(list);
 
