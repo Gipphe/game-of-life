@@ -112,6 +112,7 @@ class RLEContents {
         if (result == null) {
             return 0;
         }
+
         return Integer.parseInt(result);
     }
 
@@ -160,7 +161,7 @@ class RLEContents {
         StringBuilder result = new StringBuilder();
 
         for (String line : lines) {
-            if (line.startsWith("#")) {
+            if (line.matches(".*#.*")) {
                 continue;
             }
             result.append(line);
@@ -236,7 +237,6 @@ public class RLE {
         int count = 1;
 
         for (String command : contents.getCommands()) {
-            System.out.println("command: " + command);
             Stack<String> commandBits = new Stack<String>();
             commandBits.addAll(Arrays.asList(command.split("")));
 
@@ -262,9 +262,6 @@ public class RLE {
             for (int i = 0; i < count; i++) {
                 try {
                     byte newState = state.equals("o") ? (byte) 1 : (byte) 0;
-                    System.out.println("pX: " + pX);
-                    System.out.println("pY: " + pY);
-                    System.out.println("newState: " + newState);
                     board[pY][pX] = newState;
                     pX++;
                 } catch (ArrayIndexOutOfBoundsException e) {
@@ -344,10 +341,8 @@ public class RLE {
 
             int colsToRun = statesInRow.length;
             if (rowIndex == lastRowIndex) {
-                System.out.println(row);
                 int lastAlive = row.lastIndexOf('1');
                 colsToRun = (lastAlive == -1) ? statesInRow.length : lastAlive + 1;
-                System.out.println(colsToRun);
             }
 
             for (int i = 0; i < colsToRun; i++) {

@@ -14,7 +14,7 @@ import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.paint.Color;
-
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
@@ -50,7 +50,7 @@ public class Controller implements Initializable {
 
 
     private ObservableList list = FXCollections.observableArrayList (
-        "Clear", "Glider", "Blinker", "Toad", "Beacon", "Pulsar",
+            "Clear", "Glider", "Blinker", "Toad", "Beacon", "Pulsar",
             "Pentadecathlon", "LightweightSpaceship");
 
     public void setPremadePattern(String premadePattern){
@@ -60,6 +60,49 @@ public class Controller implements Initializable {
 
                 break;
             }
+        }
+    }
+
+    /**
+     * Import RLE file.
+     */
+    public void importFile() {
+        FileHandler fileHandler = new FileHandler();
+        try {
+            String data = fileHandler.readGameBoardFromDisk();
+            byte[][] newBoard = RLE.toBoard(data);
+            board.insertPattern(newBoard);
+            draw(gc);
+        } catch (IOException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error Dialog");
+            alert.setHeaderText("Look, an Error Dialog");
+            alert.setContentText(e.getMessage());
+
+            alert.showAndWait();
+
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Import URL.
+     */
+    public void importURL() {
+        FileHandler fileHandler = new FileHandler();
+        try {
+            String data = fileHandler.readGameBoardFromURL();
+            byte[][] newBoard = RLE.toBoard(data);
+            board.insertPattern(newBoard);
+            draw(gc);
+        } catch (IOException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error Dialog");
+            alert.setHeaderText("Look, an Error Dialog");
+            alert.setContentText(e.getMessage());
+
+            alert.showAndWait();
+            e.printStackTrace();
         }
     }
 

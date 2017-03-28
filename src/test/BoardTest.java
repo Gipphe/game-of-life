@@ -55,7 +55,7 @@ class BoardTest {
 
         assertEquals("0000011001100000", testBoard.toString());
     }
-    
+
     @Test
     void single_dot_dies() {
         byte[][] testBoard = {
