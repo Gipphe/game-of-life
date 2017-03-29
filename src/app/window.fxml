@@ -16,7 +16,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.Controller">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.Controller">
     <center>
         <Canvas fx:id="canvas" height="1000" width="1000" BorderPane.alignment="TOP_LEFT">
             <cursor>
@@ -28,16 +28,15 @@
             <menus>
                 <Menu mnemonicParsing="false" text="File">
                     <items>
-                        <Menu mnemonicParsing="false" text="Import From (...)">
+                        <Menu mnemonicParsing="false" text="Import from...">
                             <items>
                                 <MenuItem mnemonicParsing="false" text="*.RLE" />
-                                <MenuItem mnemonicParsing="false" text="*.LIF, *.LIFE" />
+                                <MenuItem mnemonicParsing="false" text="URL" />
                             </items>
                         </Menu>
-                        <Menu mnemonicParsing="false" text="Export As (...)">
+                        <Menu mnemonicParsing="false" text="Export as...">
                             <items>
                                 <MenuItem mnemonicParsing="false" text="*.RLE" />
-                                <MenuItem mnemonicParsing="false" text="*.LIF, *.LIFE" />
                             </items>
                         </Menu>
                         <MenuItem mnemonicParsing="false" onAction="#exit" text="Exit" />
@@ -108,16 +107,19 @@
                             </VBox.margin>
                         </ComboBox>
                     </children>
+               <padding>
+                  <Insets right="15.0" />
+               </padding>
                 </VBox>
                 <VBox alignment="CENTER">
                     <children>
-                        <Slider fx:id="tickSlider" blockIncrement="1" max="10" min="0" showTickMarks="true" value="5">
+                        <Slider fx:id="tickSlider" blockIncrement="1" max="10" min="0" prefHeight="18.0" prefWidth="298.0" value="5">
                             <cursor>
                                 <Cursor fx:constant="HAND" />
                             </cursor>
                         </Slider>
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Time between ticks" />
-                        <Slider fx:id="scaleSlider" blockIncrement="1" max="40" min="10" showTickMarks="true" value="15">
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Speed" />
+                        <Slider fx:id="scaleSlider" blockIncrement="1" max="40" min="10" showTickMarks="true" value="25">
                             <cursor>
                                 <Cursor fx:constant="HAND" />
                             </cursor>
