@@ -94,31 +94,39 @@ public class Board {
     }
 
     private static ArrayList<ArrayList<Cell>> cloneBoard(ArrayList<ArrayList<Cell>> oldBoard) {
-        ArrayList<ArrayList<Cell>> clone = new ArrayList<ArrayList<Cell>>(oldBoard.size());
+        int oldSizeY = oldBoard.size();
+        int oldSizeX = oldBoard.get(0).size();
+        ArrayList<ArrayList<Cell>> newBoard = new ArrayList<>(oldSizeY);
         for (ArrayList<Cell> oldRow : oldBoard) {
-            ArrayList<Cell> newRow = new ArrayList<Cell>();
-            clone.add(newRow);
+            ArrayList<Cell> newRow = new ArrayList<>(oldSizeX);
+            newBoard.add(newRow);
             for (Cell cell : oldRow) {
-                newRow.add(new Cell(cell));
+                newRow.add(new Cell(cell.getState()));
             }
         }
-        return clone;
+        return newBoard;
     }
     /**
      * Creates and stores the next generation of the current board, then sets the stored board as the board
      */
     public void nextGeneration() {
-            ArrayList<ArrayList<Cell>> oldBoard = cloneBoard(board);
-            for (int y = 0; y < oldBoard.size(); y++) {
-                List<Cell> row = oldBoard.get(y);
-                for (int x = 0; x < row.size(); x++) {
-                    Cell cell = row.get(x);
+        ArrayList<ArrayList<Cell>> oldBoard = cloneBoard(board);
+        for (int y = 0; y < oldBoard.size(); y++) {
+            List<Cell> row = oldBoard.get(y);
+            for (int x = 0; x < row.size(); x++) {
+                Cell cell = row.get(x);
 
-                    int numNeighbours = neighbours(x, y);
-                    byte state = rules(cell.getState(), numNeighbours);
-                    board.get(y).get(x).setState(state);
-                }
+                int numNeighbours = neighbours(x, y);
+                System.out.println("\nCell: " + y + ", " + x);
+                System.out.println("Neighbors: " + numNeighbours);
+                System.out.println("OldState: " + cell.getState());
+                byte newState = rules(cell.getState(), numNeighbours);
+                board.get(y).get(x).setState(newState);
+                System.out.println("NewState: " + board.get(y).get(x).getState());
             }
+        }
+        System.out.println(toString(oldBoard));
+        System.out.println(toString(board));
     }
 
     /**
@@ -144,26 +152,45 @@ public class Board {
     /**
      * Method for checking a cells neighbour count
      *
-     * @param ox int x-position of cell
-     * @param oy int y-position of cell
+     * @param cellX int x-position of cell
+     * @param cellY int y-position of cell
      * @return number of neighbours
      */
-    private int neighbours(int ox, int oy) {
+    private int neighbours(int cellX, int cellY) {
+        board.get(cellY).get(cellX).setNeighbors((byte) 0);
+
+        int lenX = board.get(0).size();
+        int lenY = board.size();
         int num = 0;
-        for (int y = -1; y < 2; y++) {
-            for (int x = -1; x < 2; x++) {
-                int nx = ox + x;
-                int ny = oy + y;
-                int lenx = board.get(oy).size();
-                int leny = board.size();
-
-                ny = wrap(leny, ny);
-                nx = wrap(lenx, nx);
-
-                if (x == 0 && y == 0) {
+        for (int relativeY = -1; relativeY < 2; relativeY++) {
+            for (int relativeX = -1; relativeX < 2; relativeX++) {
+                if (relativeX == 0 && relativeY == 0) {
                     continue;
                 }
-                if (board.get(ny).get(nx).getState() == 1) {
+
+                int neighborX = cellX + relativeX;
+                int neighborY = cellY + relativeY;
+
+                if (cellX == 2 && cellY == 0) {
+                    System.out.println("\nneighY: " + neighborY);
+                    System.out.println("neighX: " + neighborX);
+                }
+
+                neighborY = wrap(lenY, neighborY);
+                neighborX = wrap(lenX, neighborX);
+
+                if (cellX == 2 && cellY == 0) {
+                    System.out.println("neighY: " + neighborY);
+                    System.out.println("neighX: " + neighborX);
+                    System.out.println("lenY: " + lenY);
+                    System.out.println("lenX: " + lenX);
+                    System.out.println("neighState: " + board.get(neighborY).get(neighborX).getState());
+                    System.out.println("NeighBool: " + (board.get(neighborY).get(neighborX).getState() == 1));
+                    System.out.println();
+                }
+
+                if (board.get(neighborY).get(neighborX).getState() == 1) {
+                    board.get(cellY).get(cellX).incrementNeighbors();
                     num++;
                 }
             }
@@ -172,11 +199,10 @@ public class Board {
     }
 
     /**
-     * Makes the coordinate wrap around to the other side of the board if it is out of bounds
-     * @param lim int
-     * @param val int
-     * @return int
-     * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! METHOD TO BE ADDED TO UTILITIES CLASS !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     * Returns a corresponding value within [0, lim] for val, wrapping it around the boundaries of the set.
+     * @param lim int Upper limit for val.
+     * @param val int Value to limit.
+     * @return Value within [0, lim].
      */
     private static int wrap(int lim, int val) {
         if (val >= lim) {
@@ -194,6 +220,9 @@ public class Board {
      */
     @Override
     public String toString() {
+        return toString(board);
+    }
+    private String toString(ArrayList<ArrayList<Cell>> board) {
         if (board.size() == 0) {
             return "";
         }
@@ -207,7 +236,8 @@ public class Board {
                     sb.append("0");
                 }
             }
-        } return sb.toString();
+        }
+        return sb.toString();
     }
 
     /**

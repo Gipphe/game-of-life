@@ -13,18 +13,18 @@ class BoardTest {
                 {0,1}
         };
         Board board = new Board(2, 2);
-        assertEquals("", board.toString());
+        assertEquals("0000", board.toString());
         board.insertPattern(testBoard);
         assertEquals("1001", board.toString());
     }
     @Test
     void should_fill_all_cells_with_passed_state() {
         Board board = new Board(4, 4);
-        assertEquals("", board.toString());
+        assertEquals("0000000000000000", board.toString());
         board.fill((byte) 1);
         assertEquals("1111111111111111", board.toString());
         board.fill((byte) 0);
-        assertEquals("", board.toString());
+        assertEquals("0000000000000000", board.toString());
     }
     @Test
     void should_expand_when_insering_too_large_pattern() {
@@ -79,8 +79,9 @@ class BoardTest {
         };
         Board board = new Board(5, 5);
         board.insertPattern(glider);
+        assertEquals("0100000100111000000000000", board.toString());
         board.nextGeneration();
-        assertEquals("101011010", board.toString());
+        assertEquals("0000010100011000100000000", board.toString());
     }
 
 }
