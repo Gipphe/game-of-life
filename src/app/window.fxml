@@ -125,7 +125,7 @@
         </HBox>
     </bottom>
     <center>
-        <Canvas fx:id="canvas" height="300.0" onMouseDragged="#onDrag" onMousePressed="#onClick" onScroll="#scrollHandler" width="520.0" BorderPane.alignment="CENTER">
+        <Canvas fx:id="canvas" height="250.0" onMouseDragged="#onDrag" onMousePressed="#onClick" onScroll="#scrollEvent" width="600.0" BorderPane.alignment="CENTER">
             <cursor>
                 <Cursor fx:constant="CROSSHAIR" />
             </cursor></Canvas>
