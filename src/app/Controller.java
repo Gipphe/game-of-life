@@ -48,76 +48,6 @@ public class Controller implements Initializable {
         "Clear", "Glider", "Blinker", "Toad", "Beacon", "Pulsar",
             "Pentadecathlon", "LightweightSpaceship");
 
-    @FXML public void scrollHandler(ScrollEvent event){
-        double zoomRate = 1.5;
-        if (event.getDeltaY() <= 0) {
-            zoom(1/zoomRate, event.getSceneX(), event.getSceneY());
-            return;
-        }
-        zoom(zoomRate, event.getSceneX(), event.getSceneY());
-    }
-
-    @FXML
-    public void onClick(MouseEvent event) {
-        if (!event.isPrimaryButtonDown()){
-            pressedX = event.getX();
-            pressedY = event.getY();
-            return;
-        }
-        int x = (int) event.getX() / 20;
-        int y = (int) event.getY() / 20;
-
-        System.out.println("X er: " + x + "\nY er: " + y);
-
-        if (board.getValue(x, y) == 0) {
-            board.setValue(x, y, (byte) 1);
-            draw(gc);
-        } else {
-            board.setValue(x, y, (byte) 0);
-            draw(gc);
-        }
-    }
-
-    @FXML
-    public void onDrag(MouseEvent event) {
-        if(!event.isPrimaryButtonDown()) {
-            canvas.setTranslateX(canvas.getTranslateX() + event.getX() - pressedX);
-            canvas.setTranslateY(canvas.getTranslateY() + event.getY() - pressedY);
-
-            return;
-        }
-
-        int x = (int)event.getX()/20;
-        int y = (int)event.getY()/20;
-        System.out.println("X er: " + x + "\nY er: " + y);
-
-        if(board.getValue(x,y) == 0){
-            board.setValue(x, y, (byte) 1);
-            draw(gc);
-        } else {
-            board.setValue(x, y, (byte) 1);
-            draw(gc);
-        }
-    }
-
-    public void zoom(double factor, double x, double y) {
-        double oldScale = canvas.getScaleX();
-        double scale = oldScale * factor;
-        if(!(scale < 5)){
-            return;
-        }
-        double f = (scale / oldScale) - 1;
-
-        Bounds bounds = canvas.localToScene(canvas.getBoundsInLocal());
-        double dx = (x - (bounds.getWidth() / 2 + bounds.getMinX()));
-        double dy = (y - (bounds.getHeight() / 2 + bounds.getMinY()));
-
-        canvas.setTranslateX(canvas.getTranslateX()-f*dx);
-        canvas.setTranslateY(canvas.getTranslateY()-f*dy);
-        canvas.setScaleX(scale);
-        canvas.setScaleY(scale);
-    }
-
     public void setPremadePattern(String premadePattern){
         for (int i = 0; i < patterns.length; i++) {
             if (patterns[i].getName() == premadePattern) {
@@ -183,7 +113,6 @@ public class Controller implements Initializable {
                 if (now - past < frameInterval) return;
                 past = now;
 
-                System.out.println(board);
                 board.nextGeneration();
                 draw(gc);
             }
@@ -269,12 +198,106 @@ public class Controller implements Initializable {
     }
 
     /**
+     * Handles scrolling and starts the zoom() method for each.
+     * Initializes on each mouse-scroll.
+     *
+     * @param event (ScrollEvent)
+     */
+    @FXML public void scrollEvent(ScrollEvent event){
+        double scrollRate = 1.5;
+        if (event.getDeltaY() > 0) {
+            zoom(event.getSceneX(), event.getSceneY(), scrollRate);
+        } else {
+            zoom(event.getSceneX(), event.getSceneY(), 1/scrollRate);
+        }
+    }
+
+    /**
+     * Adjusts the scale of the canvas relative to the mouse cursor.
+     * If-statement stops scrolling when canvas gets too close/too far.
+     *
+     * @param x (double) X-position of mouse cursor
+     * @param y (double) Y-position of mouse cursor
+     * @param scrollRate (double) Either 0.05 or -0.05
+     */
+    public void zoom(double x, double y, double scrollRate) {
+        double oldScale = canvas.getScaleX();
+        double newScale = oldScale * scrollRate;
+        if(newScale > 4){
+            return;
+        } else if(newScale < 0.1){
+            return;
+        }
+
+        double relativeZoom = (newScale / oldScale) - 1;
+
+        Bounds bounds = canvas.localToScene(canvas.getBoundsInLocal());
+        double dx = (x - (bounds.getWidth() / 2 + bounds.getMinX()));
+        double dy = (y - (bounds.getHeight() / 2 + bounds.getMinY()));
+
+        canvas.setTranslateX(canvas.getTranslateX()-relativeZoom*dx);           //1. handle relative
+        canvas.setTranslateY(canvas.getTranslateY()-relativeZoom*dy);           //2. zoom
+        canvas.setScaleX(newScale);
+        canvas.setScaleY(newScale);
+    }
+
+    /**
+     * Handles clicks on the canvas.
+     * Toggles alive/dead cells on click.
+     *
+     * @param event (MouseEvent)
+     */
+    @FXML
+    public void onClick(MouseEvent event) {
+        if (!event.isPrimaryButtonDown()){
+            pressedX = event.getX();
+            pressedY = event.getY();
+            return;
+        }
+        int x = (int) event.getX() / 20;
+        int y = (int) event.getY() / 20;
+
+        if (board.getValue(x, y) == 0) {
+            board.setValue(x, y, (byte) 1);
+            draw(gc);
+        } else {
+            board.setValue(x, y, (byte) 0);
+            draw(gc);
+        }
+    }
+
+    /**
+     * Handles "prolonged clicks" - drags.
+     * Toggles alive/dead cells on drag.
+     *
+     * @param event (MouseEvent)
+     */
+    @FXML
+    public void onDrag(MouseEvent event) {
+        if(!event.isPrimaryButtonDown()) {
+            canvas.setTranslateX(canvas.getTranslateX() + event.getX() - pressedX);
+            canvas.setTranslateY(canvas.getTranslateY() + event.getY() - pressedY);
+            return;
+        }
+        int x = (int)event.getX()/20;
+        int y = (int)event.getY()/20;
+
+        if(board.getValue(x,y) == 0){
+            board.setValue(x, y, (byte) 1);
+            draw(gc);
+        } else {
+            board.setValue(x, y, (byte) 1);
+            draw(gc);
+        }
+    }
+
+    /**
      * Creates, tests and draws the board onto the GraphicsContext. Contains Listeners for various sliders.
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        int xaxis = 20;
-        int yaxis = 20;
+        int xaxis = 30;
+        int yaxis = 12;
         board = new Board(xaxis, yaxis);
         comboBox.setItems(list);
 
