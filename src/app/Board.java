@@ -188,6 +188,25 @@ public class Board {
     }
 
     /**
+     * Returns a String only showing the pattern between the bounding box.
+     *
+     * @return String of 1 and 0 representing the byte[][] array between bounding box.
+     */
+    public String patternToString() {
+        BoundingBox bb = getBoundingBox();
+        StringBuilder sb = new StringBuilder();
+        for(int i = bb.firstRow; i <= bb.lastRow; i++) {
+            for(int j = bb.firstCol; j <= bb.lastCol; j++) {
+                if (board[i][j] == 1) {
+                    sb.append("1");
+                } else {
+                    sb.append("0");
+                }
+            }
+        } return sb.toString();
+    }
+
+    /**
      * Overrides toString. Transforms the board to a single String of 0/1
      *
      * @return String of 1 and 0 representing the byte[][] array

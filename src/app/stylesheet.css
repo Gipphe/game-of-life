@@ -8,3 +8,7 @@
     -fx-base: #adadad;
     -fx-background: #dadada;
 }
+
+#testButton {
+    -fx-background-color: red;
+}

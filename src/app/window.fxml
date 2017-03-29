@@ -14,6 +14,7 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Text?>
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.Controller">
@@ -73,11 +74,11 @@
       </MenuBar>
    </top>
    <bottom>
-      <HBox fx:id="BottomHBox" alignment="CENTER" prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+      <HBox fx:id="BottomHBox" alignment="CENTER" BorderPane.alignment="CENTER">
          <children>
             <VBox alignment="CENTER">
                <children>
-                  <HBox alignment="CENTER" maxWidth="1.7976931348623157E308">
+                  <HBox alignment="CENTER">
                      <children>
                         <Button mnemonicParsing="false" onAction="#nextFrame" text="NextFrame">
                            <cursor>
@@ -102,13 +103,36 @@
                         </Button>
                      </children>
                   </HBox>
-                  <ComboBox fx:id="comboBox" promptText="Pattern">
+                  <HBox alignment="CENTER">
+                     <children>
+                        <ComboBox fx:id="comboBox" promptText="Pattern">
+                           <HBox.margin>
+                              <Insets right="10.0" />
+                           </HBox.margin>
+                        </ComboBox>
+                         <Button fx:id="testButton" mnemonicParsing="false" onAction="#testing" text="TEST">
+                             <!--
+
+
+                             DENNE KNAPPEN ER KUN TIL TESTING
+
+
+                             -->
+                         </Button>
+                     </children>
                      <VBox.margin>
                         <Insets top="10.0" />
                      </VBox.margin>
-                  </ComboBox>
+                     <padding>
+                        <Insets right="10.0" />
+                     </padding>
+                  </HBox>
                </children>
             </VBox>
+            <Line endY="100.0">
+               <HBox.margin>
+                  <Insets left="10.0" right="10.0" />
+               </HBox.margin></Line>
             <VBox alignment="CENTER">
                <children>
                   <Slider fx:id="tickSlider" blockIncrement="1" max="10" min="0" showTickMarks="true" value="5">
