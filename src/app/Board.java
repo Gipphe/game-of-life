@@ -116,17 +116,11 @@ public class Board {
             for (int x = 0; x < row.size(); x++) {
                 Cell cell = row.get(x);
 
-                int numNeighbours = neighbours(x, y);
-                System.out.println("\nCell: " + y + ", " + x);
-                System.out.println("Neighbors: " + numNeighbours);
-                System.out.println("OldState: " + cell.getState());
+                int numNeighbours = neighbours(oldBoard, x, y);
                 byte newState = rules(cell.getState(), numNeighbours);
                 board.get(y).get(x).setState(newState);
-                System.out.println("NewState: " + board.get(y).get(x).getState());
             }
         }
-        System.out.println(toString(oldBoard));
-        System.out.println(toString(board));
     }
 
     /**
@@ -156,7 +150,7 @@ public class Board {
      * @param cellY int y-position of cell
      * @return number of neighbours
      */
-    private int neighbours(int cellX, int cellY) {
+    private int neighbours(ArrayList<ArrayList<Cell>> board, int cellX, int cellY) {
         board.get(cellY).get(cellX).setNeighbors((byte) 0);
 
         int lenX = board.get(0).size();
@@ -171,23 +165,8 @@ public class Board {
                 int neighborX = cellX + relativeX;
                 int neighborY = cellY + relativeY;
 
-                if (cellX == 2 && cellY == 0) {
-                    System.out.println("\nneighY: " + neighborY);
-                    System.out.println("neighX: " + neighborX);
-                }
-
                 neighborY = wrap(lenY, neighborY);
                 neighborX = wrap(lenX, neighborX);
-
-                if (cellX == 2 && cellY == 0) {
-                    System.out.println("neighY: " + neighborY);
-                    System.out.println("neighX: " + neighborX);
-                    System.out.println("lenY: " + lenY);
-                    System.out.println("lenX: " + lenX);
-                    System.out.println("neighState: " + board.get(neighborY).get(neighborX).getState());
-                    System.out.println("NeighBool: " + (board.get(neighborY).get(neighborX).getState() == 1));
-                    System.out.println();
-                }
 
                 if (board.get(neighborY).get(neighborX).getState() == 1) {
                     board.get(cellY).get(cellX).incrementNeighbors();
