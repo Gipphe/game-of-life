@@ -219,7 +219,8 @@ public class Controller implements Initializable {
         tickSlider.valueProperty().addListener(new ChangeListener<Number>() {
             @Override
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                setFrameInterval(newValue.intValue());
+                int newInterval = 10 - newValue.intValue();
+                setFrameInterval(newInterval);
             }
         });
 
