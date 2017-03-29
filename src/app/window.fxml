@@ -17,12 +17,6 @@
 <?import javafx.scene.text.Text?>
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.Controller">
-    <center>
-        <Canvas fx:id="canvas" height="1000" width="1000" BorderPane.alignment="TOP_LEFT">
-            <cursor>
-                <Cursor fx:constant="CROSSHAIR" />
-            </cursor></Canvas>
-    </center>
     <top>
         <MenuBar BorderPane.alignment="CENTER">
             <menus>
@@ -107,9 +101,9 @@
                             </VBox.margin>
                         </ComboBox>
                     </children>
-               <padding>
-                  <Insets right="15.0" />
-               </padding>
+                    <padding>
+                        <Insets right="15.0" />
+                    </padding>
                 </VBox>
                 <VBox alignment="CENTER">
                     <children>
@@ -130,4 +124,10 @@
             </children>
         </HBox>
     </bottom>
+    <center>
+        <Canvas fx:id="canvas" height="300.0" onMouseDragged="#onDrag" onMousePressed="#onClick" onScroll="#scrollHandler" width="520.0" BorderPane.alignment="CENTER">
+            <cursor>
+                <Cursor fx:constant="CROSSHAIR" />
+            </cursor></Canvas>
+    </center>
 </BorderPane>
