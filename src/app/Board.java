@@ -65,6 +65,7 @@ public class Board {
             }
         }
     }
+
     private void doubleBoard() {
         doubleRows();
         doubleCols();
@@ -93,6 +94,14 @@ public class Board {
         }
     }
 
+    public byte getValue(int x, int y){
+        return board.get(y).get(x).getState();
+    }
+
+    public void setValue(int x, int y, byte state){
+        board.get(y).get(x).setState(state);
+    }
+
     private static ArrayList<ArrayList<Cell>> cloneBoard(ArrayList<ArrayList<Cell>> oldBoard) {
         int oldSizeY = oldBoard.size();
         int oldSizeX = oldBoard.get(0).size();
@@ -106,6 +115,7 @@ public class Board {
         }
         return newBoard;
     }
+
     /**
      * Creates and stores the next generation of the current board, then sets the stored board as the board
      */

@@ -7,9 +7,12 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Bounds;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.input.ScrollEvent;
 import javafx.scene.paint.Color;
 
 import java.net.URL;
@@ -18,12 +21,13 @@ import java.util.ResourceBundle;
 
 public class Controller implements Initializable {
     private Board board;
-    private byte scale = 20;
     private AnimationTimer timer;
     private Color aliveColor = Color.BLACK;
     private Color deadColor = Color.WHITE;
     private int frameInterval = 500000000;
     private GraphicsContext gc;
+    private Pattern[] patterns = PatternCollection.getCollection();
+    private double pressedX, pressedY;
 
     @FXML
     private ColorPicker aliveColorPicker;
@@ -36,20 +40,87 @@ public class Controller implements Initializable {
     @FXML
     private Slider tickSlider;
     @FXML
-    private Slider scaleSlider;
-    @FXML
     private ComboBox comboBox;
     @FXML
+
 
     private ObservableList list = FXCollections.observableArrayList (
         "Clear", "Glider", "Blinker", "Toad", "Beacon", "Pulsar",
             "Pentadecathlon", "LightweightSpaceship");
 
+    @FXML public void scrollHandler(ScrollEvent event){
+        double zoomRate = 1.5;
+        if (event.getDeltaY() <= 0) {
+            zoom(1/zoomRate, event.getSceneX(), event.getSceneY());
+            return;
+        }
+        zoom(zoomRate, event.getSceneX(), event.getSceneY());
+    }
+
+    @FXML
+    public void onClick(MouseEvent event) {
+        if (!event.isPrimaryButtonDown()){
+            pressedX = event.getX();
+            pressedY = event.getY();
+            return;
+        }
+        int x = (int) event.getX() / 20;
+        int y = (int) event.getY() / 20;
+
+        System.out.println("X er: " + x + "\nY er: " + y);
+
+        if (board.getValue(x, y) == 0) {
+            board.setValue(x, y, (byte) 1);
+            draw(gc);
+        } else {
+            board.setValue(x, y, (byte) 0);
+            draw(gc);
+        }
+    }
+
+    @FXML
+    public void onDrag(MouseEvent event) {
+        if(!event.isPrimaryButtonDown()) {
+            canvas.setTranslateX(canvas.getTranslateX() + event.getX() - pressedX);
+            canvas.setTranslateY(canvas.getTranslateY() + event.getY() - pressedY);
+
+            return;
+        }
+
+        int x = (int)event.getX()/20;
+        int y = (int)event.getY()/20;
+        System.out.println("X er: " + x + "\nY er: " + y);
+
+        if(board.getValue(x,y) == 0){
+            board.setValue(x, y, (byte) 1);
+            draw(gc);
+        } else {
+            board.setValue(x, y, (byte) 1);
+            draw(gc);
+        }
+    }
+
+    public void zoom(double factor, double x, double y) {
+        double oldScale = canvas.getScaleX();
+        double scale = oldScale * factor;
+        if(!(scale < 5)){
+            return;
+        }
+        double f = (scale / oldScale) - 1;
+
+        Bounds bounds = canvas.localToScene(canvas.getBoundsInLocal());
+        double dx = (x - (bounds.getWidth() / 2 + bounds.getMinX()));
+        double dy = (y - (bounds.getHeight() / 2 + bounds.getMinY()));
+
+        canvas.setTranslateX(canvas.getTranslateX()-f*dx);
+        canvas.setTranslateY(canvas.getTranslateY()-f*dy);
+        canvas.setScaleX(scale);
+        canvas.setScaleY(scale);
+    }
+
     public void setPremadePattern(String premadePattern){
-        Pattern[] patterns = PatternCollection.getCollection();
         for (int i = 0; i < patterns.length; i++) {
             if (patterns[i].getName() == premadePattern) {
-
                 board.insertPattern(patterns[i].getPattern());
 
                 break;
@@ -135,7 +206,7 @@ public class Controller implements Initializable {
                 Cell cell = row.get(x);
                 if (cell.getState() == 1) gc.setFill(aliveColor);
                 else gc.setFill(deadColor);
-                gc.fillRect(x * scale, y * scale, scale-1, scale-1);
+                gc.fillRect(x * 20, y * 20, 20-1, 20-1);
             }
         }
     }
@@ -178,15 +249,6 @@ public class Controller implements Initializable {
     }
 
     /**
-     * Sets the size of each individual cell.
-     *
-     * @param newValue (byte) the requested scale in pixels.
-     */
-    private void setScale(byte newValue) {
-        this.scale=newValue;
-    }
-
-    /**
      * Calls the boards nextGeneration() method and re-draws the grid.
      */
     public void nextFrame() {
@@ -224,24 +286,17 @@ public class Controller implements Initializable {
             }
         });
 
-        scaleSlider.valueProperty().addListener(new ChangeListener<Number>() {
-            @Override
-            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                gc.clearRect(0,0,scale* board.getSizeX(),scale* board.getSizeY());
-                setScale(newValue.byteValue());
-                draw(gc);
-            }
-        });
-
         comboBox.valueProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
 
                 setPremadePattern(newValue);
-                gc.clearRect(0,0,scale * board.getSizeX(), scale * board.getSizeY());
+                gc.clearRect(0,0,20 * board.getSizeX(), 20 * board.getSizeY());
                 draw(gc);
             }
         });
+
+
 
         gc = canvas.getGraphicsContext2D();
         draw(gc);
