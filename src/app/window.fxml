@@ -113,12 +113,6 @@
                             </cursor>
                         </Slider>
                         <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Speed" />
-                        <Slider fx:id="scaleSlider" blockIncrement="1" max="40" min="10" showTickMarks="true" value="25">
-                            <cursor>
-                                <Cursor fx:constant="HAND" />
-                            </cursor>
-                        </Slider>
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Scaling" />
                     </children>
                 </VBox>
             </children>

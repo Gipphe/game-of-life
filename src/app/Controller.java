@@ -288,6 +288,7 @@ public class Controller implements Initializable {
         try {
             board.setValue(x, y, onDragValue);
         } catch (IndexOutOfBoundsException e) {
+            AlertLibrary.ioobe(e, "User holding LMB outside of Canvas.");
         }
 
         draw(gc);
