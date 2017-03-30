@@ -21,4 +21,13 @@ public class AlertLibrary {
         alert.showAndWait();
     }
 
+    public static void ioobe(IndexOutOfBoundsException ioobe, String message){
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Information Message");
+        alert.setHeaderText("Runtime Error");
+        alert.setContentText(ioobe + "\n\n" + message);
+
+        alert.showAndWait();
+    }
+
 }

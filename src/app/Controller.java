@@ -28,6 +28,7 @@ public class Controller implements Initializable {
     private GraphicsContext gc;
     private Pattern[] patterns = PatternCollection.getCollection();
     private double pressedX, pressedY;
+    private byte onDragValue;           //if the user starts their drag on a dead cell, prints alive cells all the way through (and vice versa).
 
     @FXML
     private ColorPicker aliveColorPicker;
@@ -259,9 +260,11 @@ public class Controller implements Initializable {
 
         if (board.getValue(x, y) == 0) {
             board.setValue(x, y, (byte) 1);
+            onDragValue = 1;
             draw(gc);
         } else {
             board.setValue(x, y, (byte) 0);
+            onDragValue = 0;
             draw(gc);
         }
     }
@@ -282,13 +285,12 @@ public class Controller implements Initializable {
         int x = (int)event.getX()/20;
         int y = (int)event.getY()/20;
 
-        if(board.getValue(x,y) == 0){
-            board.setValue(x, y, (byte) 1);
-            draw(gc);
-        } else {
-            board.setValue(x, y, (byte) 1);
-            draw(gc);
+        try {
+            board.setValue(x, y, onDragValue);
+        } catch (IndexOutOfBoundsException e) {
         }
+
+        draw(gc);
     }
 
     /**
