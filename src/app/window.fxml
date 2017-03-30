@@ -16,7 +16,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.Controller">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.Controller">
     <top>
         <MenuBar BorderPane.alignment="CENTER">
             <menus>
@@ -66,7 +66,7 @@
         </MenuBar>
     </top>
     <bottom>
-        <HBox fx:id="BottomHBox" alignment="CENTER" prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+        <HBox fx:id="BottomHBox" alignment="CENTER" BorderPane.alignment="CENTER">
             <children>
                 <VBox alignment="CENTER">
                     <children>
@@ -95,19 +95,27 @@
                                 </Button>
                             </children>
                         </HBox>
-                        <ComboBox fx:id="comboBox" promptText="Pattern">
-                            <VBox.margin>
-                                <Insets top="10.0" />
-                            </VBox.margin>
-                        </ComboBox>
+                  <HBox alignment="CENTER">
+                     <children>
+                              <ComboBox fx:id="comboBox" promptText="Pattern">
+                           <HBox.margin>
+                              <Insets right="10.0" />
+                           </HBox.margin>
+                              </ComboBox>
+                        <Button fx:id="testButton" mnemonicParsing="false" onAction="#testButton" text="Test" />
+                     </children>
+                     <VBox.margin>
+                        <Insets top="10.0" />
+                     </VBox.margin>
+                  </HBox>
                     </children>
-                    <padding>
-                        <Insets right="15.0" />
-                    </padding>
+               <HBox.margin>
+                  <Insets right="10.0" />
+               </HBox.margin>
                 </VBox>
                 <VBox alignment="CENTER">
                     <children>
-                        <Slider fx:id="tickSlider" blockIncrement="1" max="10" min="0" prefHeight="18.0" prefWidth="298.0" value="5">
+                        <Slider fx:id="tickSlider" blockIncrement="1" max="10" min="0" prefWidth="225.0" value="5">
                             <cursor>
                                 <Cursor fx:constant="HAND" />
                             </cursor>
@@ -116,6 +124,9 @@
                     </children>
                 </VBox>
             </children>
+         <padding>
+            <Insets bottom="20.0" top="20.0" />
+         </padding>
         </HBox>
     </bottom>
     <center>

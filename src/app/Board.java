@@ -230,6 +230,25 @@ public class Board {
     }
 
     /**
+     * Returns a 1/0 String of only the pattern between the bounding box.
+     *
+     * @return String of 1 and 0 representing the byte[][] pattern
+     */
+    public String patternToString(){
+        BoundingBox bb = getBoundingBox();
+        StringBuilder sb = new StringBuilder();
+        for(int x = bb.firstRow; x < bb.lastRow; x++) {
+            for(int y = bb.firstCol; y < bb.lastCol; y++) {
+                if(board.get(x).get(y).getState() == 0){
+                    sb.append("0");
+                } else {
+                    sb.append("1");
+                }
+            }
+        } return sb.toString();
+    }
+
+    /**
      * getBoard method for the board
      *
      * @return the current board

@@ -42,7 +42,11 @@ public class Controller implements Initializable {
     private Slider tickSlider;
     @FXML
     private ComboBox comboBox;
-    @FXML
+
+
+    public void testButton() {
+        System.out.println(board.patternToString());
+    }
 
 
     private ObservableList list = FXCollections.observableArrayList (
