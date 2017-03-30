@@ -1,10 +1,14 @@
-#BottomHBox {
-    -fx-background-color: #adadad;
-}
-
 .root{
     -fx-font-size: 16pt;
     -fx-font-family: "Verdana";
     -fx-base: #adadad;
     -fx-background: #dadada;
+}
+
+#BottomHBox {
+    -fx-background-color: #247BA0;
+}
+
+#testButton {
+    -fx-background-color: #FF1654;
 }
