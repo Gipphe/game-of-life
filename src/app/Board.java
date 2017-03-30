@@ -245,7 +245,8 @@ public class Board {
                     sb.append("1");
                 }
             }
-        } return sb.toString();
+        }
+        return sb.toString();
     }
 
     /**
