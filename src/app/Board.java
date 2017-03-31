@@ -8,11 +8,16 @@ class BoundingBox {
     int firstCol;
     int lastRow;
     int lastCol;
+
     BoundingBox(int firstRow, int firstCol, int lastRow, int lastCol) {
         this.firstRow = firstRow;
         this.firstCol = firstCol;
         this.lastRow = lastRow;
         this.lastCol = lastCol;
+    }
+
+    public String toString() {
+        return "\n First row: " + firstRow + "\n Last row: " + lastRow + "\n First column: " + firstCol + "\n Last column: " + lastCol;
     }
 }
 
@@ -236,14 +241,12 @@ public class Board {
      */
     public String patternToString(){
         BoundingBox bb = getBoundingBox();
+        System.out.println(bb.toString());
         StringBuilder sb = new StringBuilder();
-        for(int x = bb.firstRow; x < bb.lastRow; x++) {
-            for(int y = bb.firstCol; y < bb.lastCol; y++) {
-                if(board.get(x).get(y).getState() == 0){
-                    sb.append("0");
-                } else {
-                    sb.append("1");
-                }
+
+        for(int row = bb.firstRow; row <= bb.lastRow; row++) {
+            for(int col = bb.firstCol; col <= bb.lastCol; col++) {
+                sb.append(board.get(row).get(col).getState());
             }
         }
         return sb.toString();
@@ -290,6 +293,10 @@ public class Board {
             }
         }
         return bb;
+    }
+
+    public String boundingBoxToString(BoundingBox bb) {
+        return "\n First row: " + bb.firstRow + "\n Last row: " + bb.lastRow + "\n First column: " + bb.firstCol + "\n Last column: " + bb.lastCol;
     }
 
     public int getSizeX() {
