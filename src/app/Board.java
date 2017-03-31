@@ -16,6 +16,7 @@ class BoundingBox {
         this.lastCol = lastCol;
     }
 
+    @Override
     public String toString() {
         return "\n First row: " + firstRow + "\n Last row: " + lastRow + "\n First column: " + firstCol + "\n Last column: " + lastCol;
     }
