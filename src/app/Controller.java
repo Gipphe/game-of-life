@@ -11,6 +11,8 @@ import javafx.geometry.Bounds;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.paint.Color;
@@ -18,6 +20,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
+
+import static javafx.scene.input.KeyCode.SHIFT;
 
 public class Controller implements Initializable {
     private Board board;
@@ -29,6 +33,8 @@ public class Controller implements Initializable {
     private Pattern[] patterns = PatternCollection.getCollection();
     private double pressedX, pressedY;
     private byte onDragValue;           //if the user starts their drag on a dead cell, prints alive cells all the way through (and vice versa).
+    private byte moveSpeed = 10;
+
 
     @FXML
     private ColorPicker aliveColorPicker;
@@ -165,6 +171,23 @@ public class Controller implements Initializable {
                 draw(gc);
             }
         };
+    }
+
+    /**
+     * Handles the user pressing a button on their keyboard.
+     *
+     * @param event (KeyEvent)
+     */
+    public void onKeyPressed(KeyEvent event){
+        if(event.getCode() == SHIFT){
+            moveSpeed *= 10;
+        }
+        switch (event.getCode()) {
+            case W:         canvas.setTranslateY(canvas.getTranslateY() - moveSpeed); break;
+            case A:         canvas.setTranslateX(canvas.getTranslateX() - moveSpeed); break;
+            case S:         canvas.setTranslateY(canvas.getTranslateY() + moveSpeed); break;
+            case D:         canvas.setTranslateX(canvas.getTranslateX() + moveSpeed); break;
+        }
     }
 
     /**
@@ -337,7 +360,6 @@ public class Controller implements Initializable {
         try {
             board.setValue(x, y, onDragValue);
         } catch (IndexOutOfBoundsException e) {
-            AlertLibrary.ioobe(e, "User holding LMB outside of Canvas.");
         }
 
         draw(gc);

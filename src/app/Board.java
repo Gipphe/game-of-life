@@ -1,6 +1,7 @@
 package app;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 class BoundingBox {
@@ -28,8 +29,8 @@ public class Board {
     /**
      * Constructor for the board object.
      *
-     * @param sizeX int length of the board
-     * @param sizeY int height of the board
+     * @param sizeX (int) length of the board
+     * @param sizeY (int) height of the board
      */
     public Board(int sizeX, int sizeY){
         initBoard(sizeX, sizeY);
@@ -142,8 +143,8 @@ public class Board {
     /**
      * Decides if a cell has to be dead or alive for the nextGeneration method
      *
-     * @param cell int tells if cell is dead (0) or alive (1)
-     * @param num int amount of neighbours the target cell has (0 to 8)
+     * @param cell (int) tells if cell is dead (0) or alive (1)
+     * @param num (int) amount of neighbours the target cell has (0 to 8)
      * @return either 1 or 0 in a single byte, signifying if the cell is dead or alive
      */
     private byte rules(int cell, int num) {
@@ -162,8 +163,8 @@ public class Board {
     /**
      * Method for checking a cells neighbour count
      *
-     * @param cellX int x-position of cell
-     * @param cellY int y-position of cell
+     * @param cellX (int) x-position of cell
+     * @param cellY (int) y-position of cell
      * @return number of neighbours
      */
     private int neighbours(ArrayList<ArrayList<Cell>> board, int cellX, int cellY) {
@@ -195,8 +196,8 @@ public class Board {
 
     /**
      * Returns a corresponding value within [0, lim] for val, wrapping it around the boundaries of the set.
-     * @param lim int Upper limit for val.
-     * @param val int Value to limit.
+     * @param lim (int) Upper limit for val.
+     * @param val (int) Value to limit.
      * @return Value within [0, lim].
      */
     private static int wrap(int lim, int val) {
@@ -250,6 +251,8 @@ public class Board {
                 sb.append(board.get(row).get(col).getState());
             }
         }
+
+
         return sb.toString();
     }
 
@@ -265,7 +268,7 @@ public class Board {
     /**
      * setBoard method for the board
      *
-     * @param newBoard byte[][] "2D" byte array which will be set as the new board array
+     * @param newBoard (byte[][]) "2D" byte array which will be set as the new board array
      *
      * @return the new board
      */
@@ -296,6 +299,13 @@ public class Board {
         return bb;
     }
 
+    /**
+     * Returns the boundingbox parameters
+     *
+     * @param (bb) (BoundingBox)
+     *
+     * @return the new board
+     */
     public String boundingBoxToString(BoundingBox bb) {
         return "\n First row: " + bb.firstRow + "\n Last row: " + bb.lastRow + "\n First column: " + bb.firstCol + "\n Last column: " + bb.lastCol;
     }
