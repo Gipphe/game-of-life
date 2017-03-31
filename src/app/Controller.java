@@ -24,7 +24,7 @@ public class Controller implements Initializable {
     private AnimationTimer timer;
     private Color aliveColor = Color.BLACK;
     private Color deadColor = Color.WHITE;
-    private int frameInterval = 500000000;
+    private double frameInterval;
     private GraphicsContext gc;
     private Pattern[] patterns = PatternCollection.getCollection();
     private double pressedX, pressedY;
@@ -214,15 +214,17 @@ public class Controller implements Initializable {
     /**
      * Sets the time between each next generation.
      *
-     * @param newValue (int) the requested value of the frame interval.
+     * @param interval int The value, from 1 to 10, indicating the requested speed of the simulation.
      */
-    private void setFrameInterval(int newValue) {
-        int mult = 100000;
-        int max = 1100 * mult;
-        int min = 100 * mult;
-        int step = (max - min) / 10;
+    private void setFrameInterval(double interval) {
+        interval += 1;
+        double newValue = - Math.log10(interval) + 1;
+        int multiplier = 100000;
+        int max = 1750 * multiplier;
+        int min = 150 * multiplier;
+        int step = max - min;
 
-        frameInterval = Math.min(max, (newValue * step) + min);
+        frameInterval = min + (step * newValue);
     }
 
     /**
@@ -351,13 +353,7 @@ public class Controller implements Initializable {
         board = new Board(xaxis, yaxis);
         comboBox.setItems(list);
 
-        tickSlider.valueProperty().addListener(new ChangeListener<Number>() {
-            @Override
-            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                int newInterval = 10 - newValue.intValue();
-                setFrameInterval(newInterval);
-            }
-        });
+        tickSlider.valueProperty().addListener((observable, oldValue, newValue) -> setFrameInterval(newValue.intValue()));
 
         comboBox.valueProperty().addListener(new ChangeListener<String>() {
             @Override
@@ -369,7 +365,8 @@ public class Controller implements Initializable {
             }
         });
 
-
+        // Init simulation interval with slider's default value
+        setFrameInterval(tickSlider.getValue());
 
         gc = canvas.getGraphicsContext2D();
         draw(gc);

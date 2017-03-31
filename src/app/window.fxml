@@ -115,7 +115,7 @@
                 </VBox>
                 <VBox alignment="CENTER">
                     <children>
-                        <Slider fx:id="tickSlider" blockIncrement="1" max="10" min="0" prefWidth="225.0" value="5">
+                        <Slider fx:id="tickSlider" blockIncrement="1" max="10" min="0" prefWidth="225.0" value="5" snapToTicks="true" showTickMarks="true" majorTickUnit="1" minorTickCount="0">
                             <cursor>
                                 <Cursor fx:constant="HAND" />
                             </cursor>
