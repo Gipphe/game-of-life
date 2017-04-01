@@ -1,8 +1,6 @@
 package app;
 
 import javafx.animation.AnimationTimer;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -11,7 +9,6 @@ import javafx.geometry.Bounds;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
-import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
@@ -32,9 +29,12 @@ public class Controller implements Initializable {
     private GraphicsContext gc;
     private Pattern[] patterns = PatternCollection.getCollection();
     private double pressedX, pressedY;
-    private byte onDragValue;           //if the user starts their drag on a dead cell, prints alive cells all the way through (and vice versa).
+    /**
+     * Value to paste onto the cells dragged over by the user when clicking and dragging the mouse over the canvas.
+     * Is set to the inverse of the value of the first cell clicked.
+     */
+    private byte onDragValue;
     private byte moveSpeed = 10;
-
 
     @FXML
     private ColorPicker aliveColorPicker;
@@ -47,22 +47,16 @@ public class Controller implements Initializable {
     @FXML
     private Slider tickSlider;
     @FXML
-    private ComboBox comboBox;
-
+    private ComboBox<String> comboBox;
 
     public void testButton() {
         System.out.println(board.patternToString());
     }
 
-
-    private ObservableList list = FXCollections.observableArrayList (
-            "Clear", "Glider", "Blinker", "Toad", "Beacon", "Pulsar",
-            "Pentadecathlon", "LightweightSpaceship");
-
-    public void setPremadePattern(String premadePattern){
-        for (int i = 0; i < patterns.length; i++) {
-            if (patterns[i].getName() == premadePattern) {
-                board.insertPattern(patterns[i].getPattern());
+    private void setPremadePattern(String premadePattern) {
+        for (Pattern pattern : patterns) {
+            if (pattern.getName().equals(premadePattern)) {
+                board.insertPattern(pattern.getPattern());
 
                 break;
             }
@@ -71,6 +65,8 @@ public class Controller implements Initializable {
 
     /**
      * Import RLE file.
+     *
+     * Displays a file browser for the user to select a file to be imported into the board.
      */
     public void importFile() {
         FileHandler fileHandler = new FileHandler();
@@ -78,7 +74,7 @@ public class Controller implements Initializable {
             String data = fileHandler.readGameBoardFromDisk();
             byte[][] newBoard = RLE.toBoard(data);
             board.insertPattern(newBoard);
-            draw(gc);
+            draw();
         } catch (IOException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error Dialog");
@@ -93,6 +89,9 @@ public class Controller implements Initializable {
 
     /**
      * Import URL.
+     *
+     * Displays a field for the user to input a URI pointing to an RLE file on the network, which is subsequently
+     * downloaded and inserted into the board.
      */
     public void importURL() {
         FileHandler fileHandler = new FileHandler();
@@ -100,7 +99,7 @@ public class Controller implements Initializable {
             String data = fileHandler.readGameBoardFromURL();
             byte[][] newBoard = RLE.toBoard(data);
             board.insertPattern(newBoard);
-            draw(gc);
+            draw();
         } catch (IOException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error Dialog");
@@ -113,7 +112,7 @@ public class Controller implements Initializable {
     }
 
     /**
-     * Toggles between start() and stop() methods.
+     * Calls the start or stop method depending on the state of the Start/Stop ToggleButton.
      */
     public void toggleStartStop() {
         if (startStopButton.selectedProperty().getValue()) {
@@ -126,39 +125,35 @@ public class Controller implements Initializable {
     }
 
     /**
-     * Re-creates and re-draws the initial board.
+     * Clears the board entirely.
      */
-    public void resetGame(){
+    public void clearBoard(){
         this.board = new Board(board.getSizeX(), board.getSizeY());
         aliveColor = Color.BLACK;
         deadColor = Color.WHITE;
-        draw(gc);
+        draw();
     }
 
     /**
-     * Gets and starts the GraphicContext's AnimationTimer.
+     * Starts the simulation.
      */
     private void start() {
-        timer = getAnimationTimer(gc);
         timer.start();
     }
 
     /**
-     * Stops the GraphicContext's AnimationTimer.
+     * Stops the simulation.
      */
     private void stop() {
         timer.stop();
     }
 
     /**
-     * Counts down frame intervals, used for determining time between new generations.
-     *
-     * @param gcd (GraphicsContext) a GraphicsContext instance which gets drawn
+     * Returns a new animation timer to be used
      *
      * @return (AnimationTimer) an Animation timer instance
      */
-    private AnimationTimer getAnimationTimer(GraphicsContext gcd) {
-        final GraphicsContext gc = gcd;
+    private AnimationTimer getAnimationTimer() {
         return new AnimationTimer() {
             private long past;
 
@@ -168,7 +163,7 @@ public class Controller implements Initializable {
                 past = now;
 
                 board.nextGeneration();
-                draw(gc);
+                draw();
             }
         };
     }
@@ -182,31 +177,48 @@ public class Controller implements Initializable {
         if(event.getCode() == SHIFT){
             moveSpeed *= 10;
         }
+        double currYPos = canvas.getTranslateY();
+        double currXPos = canvas.getTranslateX();
         switch (event.getCode()) {
-            case W:         canvas.setTranslateY(canvas.getTranslateY() - moveSpeed); break;
-            case A:         canvas.setTranslateX(canvas.getTranslateX() - moveSpeed); break;
-            case S:         canvas.setTranslateY(canvas.getTranslateY() + moveSpeed); break;
-            case D:         canvas.setTranslateX(canvas.getTranslateX() + moveSpeed); break;
+            case W:
+                canvas.setTranslateY(currYPos - moveSpeed);
+                break;
+            case A:
+                canvas.setTranslateX(currXPos - moveSpeed);
+                break;
+            case S:
+                canvas.setTranslateY(currYPos + moveSpeed);
+                break;
+            case D:
+                canvas.setTranslateX(currXPos + moveSpeed);
+                break;
         }
     }
 
     /**
-     * Draws the current board onto a GraphicsContext, using the aliveColor method for the value 1, and deadColor method for the value 0.
-     *
-     * @param gc (GraphicsContext) The GraphicsContext on which the board will be drawn
+     * Draws the current board onto the GraphicsContext, using the aliveColor method for the value 1,
+     * and deadColor method for the value 0.
      */
-    private void draw(GraphicsContext gc) {
+    private void draw() {
+        GraphicsContext gcd = gc;
 
         ArrayList<ArrayList<Cell>> gameBoard = board.getBoard();
+        int cellWidth = 20;
+        int borderWidth = 1;
+        int cellWithBorder = cellWidth - borderWidth;
 
         for (int y = 0; y < gameBoard.size(); y++) {
             ArrayList<Cell> row = gameBoard.get(y);
 
             for (int x = 0; x < board.getBoard().get(0).size(); x++) {
                 Cell cell = row.get(x);
-                if (cell.getState() == 1) gc.setFill(aliveColor);
-                else gc.setFill(deadColor);
-                gc.fillRect(x * 20, y * 20, 20-1, 20-1);
+
+                if (cell.getState() == 1) {
+                    gcd.setFill(aliveColor);
+                } else {
+                    gcd.setFill(deadColor);
+                }
+                gcd.fillRect(x * cellWidth, y * cellWidth, cellWithBorder, cellWithBorder);
             }
         }
     }
@@ -216,7 +228,7 @@ public class Controller implements Initializable {
      */
     public void setAliveColor() {
         aliveColor = aliveColorPicker.getValue();
-        draw(gc);
+        draw();
     }
 
     /**
@@ -224,7 +236,7 @@ public class Controller implements Initializable {
      */
     public void setDeadColor() {
         deadColor = deadColorPicker.getValue();
-        draw(gc);
+        draw();
     }
 
     /**
@@ -255,19 +267,7 @@ public class Controller implements Initializable {
      */
     public void nextFrame() {
         board.nextGeneration();
-        draw(gc);
-    }
-
-    /**
-     * !!!!!!!!!!!!!!!!!!!!! METHOD TO BE ADDED TO UTILITIES CLASS !!!!!!!!!!!!!!!!!!!!!!!!
-     */
-    private int wrap(int lim, int coord) {
-        if (coord >= lim) {
-            return coord - lim;
-        } else if (coord < 0) {
-            return coord + lim;
-        }
-        return coord;
+        draw();
     }
 
     /**
@@ -293,12 +293,12 @@ public class Controller implements Initializable {
      * @param y (double) Y-position of mouse cursor
      * @param scrollRate (double) Either 0.05 or -0.05
      */
-    public void zoom(double x, double y, double scrollRate) {
+    private void zoom(double x, double y, double scrollRate) {
         double oldScale = canvas.getScaleX();
         double newScale = oldScale * scrollRate;
-        if(newScale > 4){
+        if (newScale > 4) {
             return;
-        } else if(newScale < 0.1){
+        } else if (newScale < 0.1) {
             return;
         }
 
@@ -308,8 +308,9 @@ public class Controller implements Initializable {
         double dx = (x - (bounds.getWidth() / 2 + bounds.getMinX()));
         double dy = (y - (bounds.getHeight() / 2 + bounds.getMinY()));
 
-        canvas.setTranslateX(canvas.getTranslateX()-relativeZoom*dx);           //1. handle relative
-        canvas.setTranslateY(canvas.getTranslateY()-relativeZoom*dy);           //2. zoom
+        // Handle relative zoom
+        canvas.setTranslateX(canvas.getTranslateX() - relativeZoom * dx);
+        canvas.setTranslateY(canvas.getTranslateY() - relativeZoom * dy);
         canvas.setScaleX(newScale);
         canvas.setScaleY(newScale);
     }
@@ -333,11 +334,11 @@ public class Controller implements Initializable {
         if (board.getValue(x, y) == 0) {
             board.setValue(x, y, (byte) 1);
             onDragValue = 1;
-            draw(gc);
+            draw();
         } else {
             board.setValue(x, y, (byte) 0);
             onDragValue = 0;
-            draw(gc);
+            draw();
         }
     }
 
@@ -359,10 +360,9 @@ public class Controller implements Initializable {
 
         try {
             board.setValue(x, y, onDragValue);
-        } catch (IndexOutOfBoundsException e) {
-        }
+        } catch (IndexOutOfBoundsException ignored) {}
 
-        draw(gc);
+        draw();
     }
 
     /**
@@ -370,27 +370,30 @@ public class Controller implements Initializable {
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        int xaxis = 30;
-        int yaxis = 12;
-        board = new Board(xaxis, yaxis);
-        comboBox.setItems(list);
+        int sizeX = 30;
+        int sizeY = 12;
+        board = new Board(sizeX, sizeY);
+
+        ObservableList<String> patternNames = FXCollections.observableArrayList(PatternCollection.getNames());
+        comboBox.setItems(patternNames);
 
         tickSlider.valueProperty().addListener((observable, oldValue, newValue) -> setFrameInterval(newValue.intValue()));
 
-        comboBox.valueProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-
-                setPremadePattern(newValue);
-                gc.clearRect(0,0,20 * board.getSizeX(), 20 * board.getSizeY());
-                draw(gc);
-            }
+        comboBox.valueProperty().addListener((observable, oldValue, newValue) -> {
+            setPremadePattern(newValue);
+            gc.clearRect(0,0,20 * board.getSizeX(), 20 * board.getSizeY());
+            draw();
         });
 
-        // Init simulation interval with slider's default value
+        // Init simulation interval with slider's default value.
         setFrameInterval(tickSlider.getValue());
 
+        // Get main GraphicsContext for the canvas.
         gc = canvas.getGraphicsContext2D();
-        draw(gc);
+
+        // Init main animation timer for the simulation.
+        timer = getAnimationTimer();
+
+        draw();
     }
 }

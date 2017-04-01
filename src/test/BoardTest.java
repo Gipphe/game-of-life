@@ -27,7 +27,7 @@ class BoardTest {
         assertEquals("0000000000000000", board.toString());
     }
     @Test
-    void should_expand_when_insering_too_large_pattern() {
+    void should_expand_when_inserting_too_large_pattern() {
         Board board = new Board(2, 2);
         byte[][] pattern = new byte[][] {
                 {1,1,1,0},
