@@ -9,7 +9,7 @@ import javafx.stage.Stage;
 
 public class Main extends Application {
     @Override
-    public void start(Stage primaryStage) throws Exception{
+    public void start(Stage primaryStage) throws Exception {
         javafx.geometry.Rectangle2D visualBounds = Screen.getPrimary().getVisualBounds();
 
         Parent root = FXMLLoader.load(getClass().getResource("window.fxml"));

@@ -1,27 +1,51 @@
 package app;
 
+/**
+ * A cell object representing a single point on the simulation board.
+ */
 public class Cell {
+    /**
+     * The state of the cell. For Conway's rules, either 0 or 1.
+     */
     private byte state;
-    private byte neighbors = 0;
-    Cell() {
+
+    /**
+     * Empty constructor initializing the cell with state 0 (dead by Conway's rules).
+     */
+    public Cell() {
         state = 0;
     }
-    Cell(byte val) {
-        state = val;
+
+    /**
+     * Constructor accepting the initial state of the cell.
+     * @param val Initial state of the cell.
+     */
+    public Cell(int val) {
+        state = (byte) val;
     }
+
+    /**
+     * Getter for the current state of the cell.
+     * @return The current state of the cell.
+     */
     byte getState() {
         return state;
     }
+
+    /**
+     * Setter for the current state of the cell.
+     * @param newState New state of the cell.
+     */
     void setState(byte newState) {
         state = newState;
     }
-    void setNeighbors(byte neighbors) {
-        this.neighbors = neighbors;
-    }
-    byte getNeighbors() {
-        return neighbors;
-    }
-    void incrementNeighbors() {
-        neighbors++;
+
+    /**
+     * Returns the state of the cell as a String.
+     * @return A string representing the cell.
+     */
+    @Override
+    public String toString() {
+        return "State: " + state;
     }
 }

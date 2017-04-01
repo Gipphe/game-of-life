@@ -1,45 +1,31 @@
 package app;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-
-class BoundingBox {
-    int firstRow;
-    int firstCol;
-    int lastRow;
-    int lastCol;
-
-    BoundingBox(int firstRow, int firstCol, int lastRow, int lastCol) {
-        this.firstRow = firstRow;
-        this.firstCol = firstCol;
-        this.lastRow = lastRow;
-        this.lastCol = lastCol;
-    }
-
-    @Override
-    public String toString() {
-        return "\n First row: " + firstRow + "\n Last row: " + lastRow + "\n First column: " + firstCol + "\n Last column: " + lastCol;
-    }
-}
 
 public class Board {
     private ArrayList<ArrayList<Cell>> board;
 
     /**
-     * Constructor for the board object.
+     * Constructor accepting the initial sizes of the board.
      *
-     * @param sizeX (int) length of the board
-     * @param sizeY (int) height of the board
+     * @param sizeX Length of the board.
+     * @param sizeY Height of the board.
      */
     public Board(int sizeX, int sizeY){
         initBoard(sizeX, sizeY);
     }
 
+    /**
+     * Initializes the board with the passed sizes.
+     *
+     * @param sizeX Number of columns to initialize with.
+     * @param sizeY Number of rows to initialize with.
+     */
     private void initBoard(int sizeX, int sizeY) {
-        board = new ArrayList<ArrayList<Cell>>(sizeY);
+        board = new ArrayList<>(sizeY);
         for (int i = 0; i < sizeY; i++) {
-            ArrayList<Cell> row = new ArrayList<Cell>(sizeX);
+            ArrayList<Cell> row = new ArrayList<>(sizeX);
             board.add(row);
             for (int j = 0; j < sizeX; j++) {
                 Cell cell = new Cell();
@@ -48,6 +34,9 @@ public class Board {
         }
     }
 
+    /**
+     * Doubles the current number of rows.
+     */
     private void doubleRows() {
         int currRowCount = board.size();
         int targetRowCount = currRowCount * 2;
@@ -55,10 +44,14 @@ public class Board {
             try {
                 board.get(y);
             } catch (IndexOutOfBoundsException e) {
-                board.add(new ArrayList<Cell>());
+                board.add(new ArrayList<>());
             }
         }
     }
+
+    /**
+     * Doubles the current number of columns.
+     */
     private void doubleCols() {
         int currColCount = board.get(0).size();
         int targetColCount = currColCount * 2;
@@ -73,11 +66,19 @@ public class Board {
         }
     }
 
+    /**
+     * Doubles the size of the board along both axis.
+     */
     private void doubleBoard() {
         doubleRows();
         doubleCols();
     }
 
+    /**
+     * Inserts a pattern, starting from the top-left corner of the board (0,0).
+     *
+     * @param pattern Pattern to insert into the board.
+     */
     public void insertPattern(byte[][] pattern) {
         while (pattern.length > board.size() ||
                 pattern[0].length > board.get(0).size()) {
@@ -93,6 +94,11 @@ public class Board {
         }
     }
 
+    /**
+     * Sets all cells in the board to passed state.
+     *
+     * @param state State to set all cells to.
+     */
     public void fill(byte state) {
         for (ArrayList<Cell> row : board) {
             for (Cell cell : row) {
@@ -101,14 +107,34 @@ public class Board {
         }
     }
 
-    public byte getValue(int x, int y){
+    /**
+     * Returns the state of a cell at the given coordinates.
+     *
+     * @param x The column of the cell.
+     * @param y The row of the cell.
+     * @return The state of the cell.
+     */
+    byte getValue(int x, int y){
         return board.get(y).get(x).getState();
     }
 
-    public void setValue(int x, int y, byte state){
+    /**
+     * Sets the state of a cell at the given coordinates.
+     *
+     * @param x The column of the cell.
+     * @param y The row of the cell.
+     * @param state The new state for the cell.
+     */
+    void setValue(int x, int y, byte state){
         board.get(y).get(x).setState(state);
     }
 
+    /**
+     * Returns a clone of the current board, where no changes to the cloned board will affect the original board.
+     *
+     * @param oldBoard Board to copy.
+     * @return A clone of the passed board.
+     */
     private static ArrayList<ArrayList<Cell>> cloneBoard(ArrayList<ArrayList<Cell>> oldBoard) {
         int oldSizeY = oldBoard.size();
         int oldSizeX = oldBoard.get(0).size();
@@ -124,7 +150,7 @@ public class Board {
     }
 
     /**
-     * Creates and stores the next generation of the current board, then sets the stored board as the board
+     * Iterates through all cells in the board, counting their alive neighbors and applying the rule set to them.
      */
     public void nextGeneration() {
         ArrayList<ArrayList<Cell>> oldBoard = cloneBoard(board);
@@ -141,11 +167,11 @@ public class Board {
     }
 
     /**
-     * Decides if a cell has to be dead or alive for the nextGeneration method
+     * Decides if a cell will be dead or alive for the nextGeneration method.
      *
-     * @param cell (int) tells if cell is dead (0) or alive (1)
-     * @param num (int) amount of neighbours the target cell has (0 to 8)
-     * @return either 1 or 0 in a single byte, signifying if the cell is dead or alive
+     * @param cell Tells if cell is dead (0) or alive (1).
+     * @param num Amount of neighbours the target cell has (0 to 8).
+     * @return Either 0 or 1, signifying if the cell is dead or alive.
      */
     private byte rules(int cell, int num) {
         if (cell == 0) {
@@ -161,15 +187,14 @@ public class Board {
     }
 
     /**
-     * Method for checking a cells neighbour count
+     * Method for checking a specific cell's neighbour count.
      *
-     * @param cellX (int) x-position of cell
-     * @param cellY (int) y-position of cell
-     * @return number of neighbours
+     * @param board Board to check cell neighbor count on.
+     * @param cellX X-position of the cell.
+     * @param cellY Y-position of the cell.
+     * @return Number of neighbours.
      */
     private int neighbours(ArrayList<ArrayList<Cell>> board, int cellX, int cellY) {
-        board.get(cellY).get(cellX).setNeighbors((byte) 0);
-
         int lenX = board.get(0).size();
         int lenY = board.size();
         int num = 0;
@@ -186,7 +211,6 @@ public class Board {
                 neighborX = wrap(lenX, neighborX);
 
                 if (board.get(neighborY).get(neighborX).getState() == 1) {
-                    board.get(cellY).get(cellX).incrementNeighbors();
                     num++;
                 }
             }
@@ -196,8 +220,9 @@ public class Board {
 
     /**
      * Returns a corresponding value within [0, lim] for val, wrapping it around the boundaries of the set.
-     * @param lim (int) Upper limit for val.
-     * @param val (int) Value to limit.
+     *
+     * @param lim Upper limit for val.
+     * @param val Value to limit.
      * @return Value within [0, lim].
      */
     private static int wrap(int lim, int val) {
@@ -210,9 +235,9 @@ public class Board {
     }
 
     /**
-     * Overrides toString. Transforms the board to a single String of 0/1
+     * Transforms the board into a single String of 0s and 1s.
      *
-     * @return String of 1 and 0 representing the byte[][] array
+     * @return String of 1 and 0 representing the byte[][] array.
      */
     @Override
     public String toString() {
@@ -237,62 +262,54 @@ public class Board {
     }
 
     /**
-     * Returns a 1/0 String of only the pattern between the bounding box.
+     * Returns a 1/0 String of only the pattern within the bounding box.
      *
-     * @return String of 1 and 0 representing the byte[][] pattern
+     * @return 1s and 0s representing the contained pattern.
      */
-    public String patternToString(){
+    String patternToString(){
         BoundingBox bb = getBoundingBox();
         System.out.println(bb.toString());
         StringBuilder sb = new StringBuilder();
 
-        for(int row = bb.firstRow; row <= bb.lastRow; row++) {
-            for(int col = bb.firstCol; col <= bb.lastCol; col++) {
+        for(int row = bb.getFirstRow(); row <= bb.getLastRow(); row++) {
+            for(int col = bb.getFirstCol(); col <= bb.getLastCol(); col++) {
                 sb.append(board.get(row).get(col).getState());
             }
         }
-
-
         return sb.toString();
     }
 
     /**
-     * getBoard method for the board
+     * Getter for the board.
      *
-     * @return the current board
+     * @return The current board.
      */
     ArrayList<ArrayList<Cell>> getBoard() {
         return board;
     }
 
     /**
-     * setBoard method for the board
+     * Creates a bounding box within which the current state of the board is of interest (boundary of alive cells).
      *
-     * @param newBoard (byte[][]) "2D" byte array which will be set as the new board array
-     *
-     * @return the new board
+     * @return The BoundingBox representing the area of interest.
      */
-    public void setBoard(ArrayList<ArrayList<Cell>> newBoard) {
-        board = newBoard;
-    }
-
-    public BoundingBox getBoundingBox() {
+    private BoundingBox getBoundingBox() {
         BoundingBox bb = new BoundingBox(board.size(), board.get(0).size(), 0, 0);
         for(int i = 0; i < board.size(); i++) {
             for(int j = 0; j < board.get(i).size(); j++) {
                 if (board.get(i).get(j).getState() == 0) continue;
 
-                if (i < bb.firstRow) {
-                    bb.firstRow = i;
+                if (i < bb.getFirstRow()) {
+                    bb.setFirstRow(i);
                 }
-                if (i > bb.lastRow) {
-                    bb.lastRow = i;
+                if (j < bb.getFirstCol()) {
+                    bb.setFirstCol(j);
                 }
-                if (j < bb.firstCol) {
-                    bb.firstCol = j;
+                if (i > bb.getLastRow()) {
+                    bb.setLastRow(i);
                 }
-                if (j > bb.lastCol) {
-                    bb.lastCol = j;
+                if (j > bb.getLastCol()) {
+                    bb.setLastCol(j);
                 }
             }
         }
@@ -300,20 +317,19 @@ public class Board {
     }
 
     /**
-     * Returns the boundingbox parameters
+     * Returns the number of columns in the board.
      *
-     * @param (bb) (BoundingBox)
-     *
-     * @return the new board
+     * @return The number of columns.
      */
-    public String boundingBoxToString(BoundingBox bb) {
-        return "\n First row: " + bb.firstRow + "\n Last row: " + bb.lastRow + "\n First column: " + bb.firstCol + "\n Last column: " + bb.lastCol;
-    }
-
     public int getSizeX() {
         return board.get(0).size();
     }
 
+    /**
+     * Returns the number of rows in the board.
+     *
+     * @return The number of rows.
+     */
     public int getSizeY() {
         return board.size();
     }

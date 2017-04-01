@@ -10,7 +10,7 @@ class ReadableBoard {
     private int y;
     private int x;
 
-    private Stack<String> rows = new Stack<String>();
+    private Stack<String> rows = new Stack<>();
 
     /**
      * Parses the passed board into a Stack of string lines.
@@ -189,7 +189,7 @@ class RLEContents {
     private static Stack<String> splitToCommands(String source) {
         Pattern pattern = Pattern.compile("\\d*\\w|\\$|!");
         Matcher matcher = pattern.matcher(source);
-        Stack<String> result = new Stack<String>();
+        Stack<String> result = new Stack<>();
         while (matcher.find()) {
             result.add(matcher.group());
         }
@@ -237,7 +237,7 @@ public class RLE {
         int count = 1;
 
         for (String command : contents.getCommands()) {
-            Stack<String> commandBits = new Stack<String>();
+            Stack<String> commandBits = new Stack<>();
             commandBits.addAll(Arrays.asList(command.split("")));
 
             String state = commandBits.pop();

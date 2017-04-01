@@ -1,5 +1,8 @@
 package app;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Container class for Patterns
  *
@@ -17,16 +20,6 @@ class Pattern {
     private final byte[][] pattern;
 
     /**
-     * Horizontal size of the pattern.
-     */
-    private final int sizeX;
-
-    /**
-     * Vertical size of the pattern.
-     */
-    private final int sizeY;
-
-    /**
      * Constructor
      * @param name Name of the pattern in question.
      * @param pattern Two-dimensional array representing the pattern.
@@ -34,19 +27,13 @@ class Pattern {
     Pattern(String name, byte[][] pattern) {
         this.name = name;
         this.pattern = pattern;
-        this.sizeY = pattern.length;
-        if (pattern.length == 0) {
-            this.sizeX = 0;
-        } else {
-            this.sizeX = pattern[0].length;
-        }
     }
 
     /**
      * Getter for the name.
      * @return Name of the pattern.
      */
-    public String getName() {
+    String getName() {
         return name;
     }
 
@@ -54,31 +41,15 @@ class Pattern {
      * Getter for the pattern information.
      * @return The pattern array.
      */
-    public byte[][] getPattern() {
+    byte[][] getPattern() {
         return pattern;
-    }
-
-    /**
-     * Getter for the horizontal size.
-     * @return The horizontal size.
-     */
-    public int getSizeX() {
-        return sizeX;
-    }
-
-    /**
-     * Getter for the vertical size.
-     * @return The vertical size.
-     */
-    public int getSizeY() {
-        return sizeY;
     }
 }
 
 /**
  * Container class for all Patterns.
  */
-public class PatternCollection {
+class PatternCollection {
     private static final Pattern Clear = new Pattern("Clear", new byte[][] {});
     private static final Pattern Glider = new Pattern("Glider", new byte[][] {
             {0,1,0},
@@ -124,7 +95,7 @@ public class PatternCollection {
             {1,0,0,0,1},
             {1,1,1,1,0}
     });
-    private static final Pattern[] Collection = new Pattern[] {
+    private static final Pattern[] collection = new Pattern[] {
             Clear,
             Glider,
             Blinker,
@@ -134,12 +105,26 @@ public class PatternCollection {
             Pentadecathlon,
             LightweightSpaceship
     };
+    private static final List<String> names = new ArrayList<>();
+    static {
+        for (Pattern pattern : collection) {
+            names.add(pattern.getName());
+        }
+    }
 
     /**
      * Getter for the entire pattern collection.
      * @return An array with the collection.
      */
-    public static Pattern[] getCollection() {
-        return Collection;
+    static Pattern[] getCollection() {
+        return collection;
+    }
+
+    /**
+     * Getter for the list of names.
+     * @return An array with the names.
+     */
+    static List<String> getNames() {
+        return names;
     }
 }

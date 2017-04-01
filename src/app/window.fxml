@@ -19,120 +19,99 @@
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onKeyPressed="#onKeyPressed" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.Controller">
     <top>
         <MenuBar BorderPane.alignment="CENTER">
-            <menus>
-                <Menu mnemonicParsing="false" text="File">
-                    <items>
-                        <Menu mnemonicParsing="false" text="Import from...">
-                            <items>
-                                <MenuItem mnemonicParsing="false" onAction="#importFile" text="*.RLE" />
-                                <MenuItem mnemonicParsing="false" onAction="#importURL" text="URL" />
-                            </items>
-                        </Menu>
-                        <Menu mnemonicParsing="false" text="Export as...">
-                            <items>
-                                <MenuItem mnemonicParsing="false" text="*.RLE" />
-                            </items>
-                        </Menu>
-                        <MenuItem mnemonicParsing="false" onAction="#exit" text="Exit" />
-                    </items>
+            <Menu mnemonicParsing="false" text="File">
+                <Menu mnemonicParsing="false" text="Import from...">
+                    <MenuItem mnemonicParsing="false" onAction="#importFile" text="*.RLE"/>
+                    <MenuItem mnemonicParsing="false" onAction="#importURL" text="URL"/>
                 </Menu>
-                <Menu mnemonicParsing="false" text="Edit">
-                    <items>
-                        <Menu mnemonicParsing="false" text="Color">
-                            <items>
-                                <MenuItem mnemonicParsing="false" text="Alive color">
-                                    <graphic>
-                                        <ColorPicker fx:id="aliveColorPicker" onAction="#setAliveColor">
-                                            <opaqueInsets>
-                                                <Insets />
-                                            </opaqueInsets></ColorPicker>
-                                    </graphic>
-                                </MenuItem>
-                                <MenuItem mnemonicParsing="false" text="Dead color">
-                                    <graphic>
-                                        <ColorPicker fx:id="deadColorPicker" onAction="#setDeadColor" />
-                                    </graphic>
-                                </MenuItem>
-                            </items>
-                        </Menu>
-                    </items>
+                <Menu mnemonicParsing="false" text="Export as...">
+                    <MenuItem mnemonicParsing="false" text="*.RLE"/>
                 </Menu>
-                <Menu mnemonicParsing="false" text="About">
-                    <items>
-                        <MenuItem mnemonicParsing="false" text="About" />
-                    </items>
+                <MenuItem mnemonicParsing="false" onAction="#exit" text="Exit"/>
+            </Menu>
+            <Menu mnemonicParsing="false" text="Edit">
+                <Menu mnemonicParsing="false" text="Color">
+                    <MenuItem mnemonicParsing="false" text="Alive color">
+                        <graphic>
+                            <ColorPicker fx:id="aliveColorPicker" onAction="#setAliveColor">
+                                <opaqueInsets>
+                                    <Insets/>
+                                </opaqueInsets>
+                            </ColorPicker>
+                        </graphic>
+                    </MenuItem>
+                    <MenuItem mnemonicParsing="false" text="Dead color">
+                        <graphic>
+                            <ColorPicker fx:id="deadColorPicker" onAction="#setDeadColor"/>
+                        </graphic>
+                    </MenuItem>
                 </Menu>
-            </menus>
+            </Menu>
+            <Menu mnemonicParsing="false" text="About">
+                <MenuItem mnemonicParsing="false" text="About"/>
+            </Menu>
         </MenuBar>
     </top>
     <bottom>
-        <HBox fx:id="BottomHBox" alignment="CENTER" BorderPane.alignment="CENTER">
-            <children>
-                <VBox alignment="CENTER">
-                    <children>
-                        <HBox alignment="CENTER" maxWidth="1.7976931348623157E308">
-                            <children>
-                                <Button mnemonicParsing="false" onAction="#nextFrame" text="NextFrame">
-                                    <cursor>
-                                        <Cursor fx:constant="HAND" />
-                                    </cursor>
-                                    <HBox.margin>
-                                        <Insets right="10.0" />
-                                    </HBox.margin>
-                                </Button>
-                                <ToggleButton fx:id="startStopButton" mnemonicParsing="false" onAction="#toggleStartStop" text="Start">
-                                    <HBox.margin>
-                                        <Insets right="10.0" />
-                                    </HBox.margin>
-                                    <cursor>
-                                        <Cursor fx:constant="HAND" />
-                                    </cursor>
-                                </ToggleButton>
-                                <Button fx:id="resetButton" mnemonicParsing="false" onAction="#resetGame" text="Reset">
-                                    <cursor>
-                                        <Cursor fx:constant="HAND" />
-                                    </cursor>
-                                </Button>
-                            </children>
-                        </HBox>
-                        <HBox alignment="CENTER">
-                            <children>
-                                <ComboBox fx:id="comboBox" promptText="Pattern">
-                                    <HBox.margin>
-                                        <Insets right="10.0" />
-                                    </HBox.margin>
-                                </ComboBox>
-                                <Button fx:id="testButton" mnemonicParsing="false" onAction="#testButton" text="Test" />
-                            </children>
-                            <VBox.margin>
-                                <Insets top="10.0" />
-                            </VBox.margin>
-                        </HBox>
-                    </children>
-                    <HBox.margin>
-                        <Insets right="10.0" />
-                    </HBox.margin>
-                </VBox>
-                <VBox alignment="CENTER">
-                    <children>
-                        <Slider fx:id="tickSlider" blockIncrement="1" max="10" min="0" prefWidth="225.0" value="5" snapToTicks="true" showTickMarks="true" majorTickUnit="1" minorTickCount="0">
-                            <cursor>
-                                <Cursor fx:constant="HAND" />
-                            </cursor>
-                        </Slider>
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Speed" />
-                    </children>
-                </VBox>
-            </children>
+        <HBox alignment="CENTER" BorderPane.alignment="CENTER">
             <padding>
-                <Insets bottom="20.0" top="20.0" />
+                <Insets bottom="20.0" top="20.0"/>
             </padding>
+            <VBox alignment="CENTER">
+                <HBox.margin>
+                    <Insets right="10.0"/>
+                </HBox.margin>
+                <HBox alignment="CENTER" maxWidth="1.7976931348623157E308">
+                    <Button mnemonicParsing="false" onAction="#nextFrame" text="NextFrame">
+                        <cursor>
+                            <Cursor fx:constant="HAND"/>
+                        </cursor>
+                        <HBox.margin>
+                            <Insets right="10.0"/>
+                        </HBox.margin>
+                    </Button>
+                    <ToggleButton fx:id="startStopButton" mnemonicParsing="false" onAction="#toggleStartStop" text="Start">
+                        <HBox.margin>
+                            <Insets right="10.0"/>
+                        </HBox.margin>
+                        <cursor>
+                            <Cursor fx:constant="HAND"/>
+                        </cursor>
+                    </ToggleButton>
+                    <Button mnemonicParsing="false" onAction="#clearBoard" text="Clear">
+                        <cursor>
+                            <Cursor fx:constant="HAND"/>
+                        </cursor>
+                    </Button>
+                </HBox>
+                <HBox alignment="CENTER">
+                    <VBox.margin>
+                        <Insets top="10.0"/>
+                    </VBox.margin>
+                    <ComboBox fx:id="comboBox" promptText="Pattern">
+                        <HBox.margin>
+                            <Insets right="10.0"/>
+                        </HBox.margin>
+                    </ComboBox>
+                    <Button fx:id="testButton" mnemonicParsing="false" onAction="#testButton" text="Test"/>
+                </HBox>
+            </VBox>
+            <VBox alignment="CENTER">
+                <Slider fx:id="tickSlider" blockIncrement="1" max="10" prefWidth="225.0" value="5"
+                        snapToTicks="true" showTickMarks="true" majorTickUnit="1" minorTickCount="0">
+                    <cursor>
+                        <Cursor fx:constant="HAND"/>
+                    </cursor>
+                </Slider>
+                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Speed"/>
+            </VBox>
         </HBox>
     </bottom>
     <center>
         <Canvas fx:id="canvas" height="250.0" onMouseDragged="#onDrag" onMousePressed="#onClick" onScroll="#scrollEvent" width="600.0" BorderPane.alignment="CENTER">
             <cursor>
                 <Cursor fx:constant="CROSSHAIR" />
-            </cursor></Canvas>
+            </cursor>
+        </Canvas>
     </center>
 </BorderPane>
