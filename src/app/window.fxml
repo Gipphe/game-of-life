@@ -47,6 +47,8 @@
                     </MenuItem>
                 </Menu>
             </Menu>
+            <Menu mnemonicParsing="false" text="Rules" fx:id="rulesMenu">
+            </Menu>
             <Menu mnemonicParsing="false" text="About">
                 <MenuItem mnemonicParsing="false" text="About"/>
             </Menu>

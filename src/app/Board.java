@@ -2,9 +2,12 @@ package app;
 
 import java.util.ArrayList;
 import java.util.List;
+import rules.RuleSet;
+import rules.RulesCollection;
 
 public class Board {
     private ArrayList<ArrayList<Cell>> board;
+    private RuleSet ruleSet;
 
     /**
      * Constructor accepting the initial sizes of the board.
@@ -23,6 +26,8 @@ public class Board {
      * @param sizeY Number of rows to initialize with.
      */
     private void initBoard(int sizeX, int sizeY) {
+        ruleSet = rules.RulesCollection.getByName("Conway");
+
         board = new ArrayList<>(sizeY);
         for (int i = 0; i < sizeY; i++) {
             ArrayList<Cell> row = new ArrayList<>(sizeX);
@@ -160,30 +165,10 @@ public class Board {
                 Cell cell = row.get(x);
 
                 int numNeighbours = neighbours(oldBoard, x, y);
-                byte newState = rules(cell.getState(), numNeighbours);
+                byte newState = ruleSet.getNewState(cell.getState(), numNeighbours);
                 board.get(y).get(x).setState(newState);
             }
         }
-    }
-
-    /**
-     * Decides if a cell will be dead or alive for the nextGeneration method.
-     *
-     * @param cell Tells if cell is dead (0) or alive (1).
-     * @param num Amount of neighbours the target cell has (0 to 8).
-     * @return Either 0 or 1, signifying if the cell is dead or alive.
-     */
-    private byte rules(int cell, int num) {
-        if (cell == 0) {
-            if (num == 3) {
-                return 1;
-            }
-        } else {
-            if (num > 1 && num < 4) {
-                return 1;
-            }
-        }
-        return 0;
     }
 
     /**
@@ -314,6 +299,10 @@ public class Board {
             }
         }
         return bb;
+    }
+
+    public void setRuleSet(String ruleSetName) {
+        this.ruleSet = RulesCollection.getByName(ruleSetName);
     }
 
     /**

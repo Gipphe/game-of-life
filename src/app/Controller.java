@@ -3,6 +3,8 @@ package app;
 import javafx.animation.AnimationTimer;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.event.EventTarget;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Bounds;
@@ -13,9 +15,13 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.paint.Color;
+import rules.RuleSet;
+import rules.RulesCollection;
+
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import static javafx.scene.input.KeyCode.SHIFT;
@@ -36,6 +42,8 @@ public class Controller implements Initializable {
     private byte onDragValue;
     private byte moveSpeed = 10;
 
+    @FXML
+    private Menu rulesMenu;
     @FXML
     private ColorPicker aliveColorPicker;
     @FXML
@@ -365,6 +373,11 @@ public class Controller implements Initializable {
         draw();
     }
 
+    public void setRule(String name) {
+        System.out.println(name);
+        board.setRuleSet(name);
+    }
+
     /**
      * Creates, tests and draws the board onto the GraphicsContext. Contains Listeners for various sliders.
      */
@@ -393,6 +406,17 @@ public class Controller implements Initializable {
 
         // Init main animation timer for the simulation.
         timer = getAnimationTimer();
+
+        List<RuleSet> ruleSets = RulesCollection.getCollection();
+        for (RuleSet ruleSet : ruleSets) {
+            String name = ruleSet.getName();
+            MenuItem menuEntry = new MenuItem();
+            menuEntry.setText(name);
+            menuEntry.setOnAction((event) -> {
+                setRule(name);
+            });
+            rulesMenu.getItems().add(menuEntry);
+        }
 
         draw();
     }
