@@ -1,4 +1,4 @@
-package test;
+package test.app;
 
 import app.RLE;
 import org.junit.jupiter.api.Test;
