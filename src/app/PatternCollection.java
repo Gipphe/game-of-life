@@ -50,7 +50,6 @@ class Pattern {
  * Container class for all Patterns.
  */
 class PatternCollection {
-    private static final Pattern Clear = new Pattern("Clear", new byte[][] {});
     private static final Pattern Glider = new Pattern("Glider", new byte[][] {
             {0,1,0},
             {1,0,0},
@@ -96,7 +95,6 @@ class PatternCollection {
             {1,1,1,1,0}
     });
     private static final Pattern[] collection = new Pattern[] {
-            Clear,
             Glider,
             Blinker,
             Toad,
