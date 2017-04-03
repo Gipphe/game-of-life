@@ -47,10 +47,10 @@ class FileContents {
     }
 
     /**
-     * Finds the passed RLE string's size along the axis.
-     * @param source RLE string to find size of.
+     * Finds the passed Parser string's size along the axis.
+     * @param source Parser string to find size of.
      * @param axis Axis to get size of.
-     * @return The size of the RLE pattern along the passed axis. Returns 0 if no such size was found.
+     * @return The size of the Parser pattern along the passed axis. Returns 0 if no such size was found.
      */
     private static int getAxisSize(String source, String axis) {
         String result = getFirstMatch(source, axis + " = (\\d+),");
@@ -143,7 +143,7 @@ class FileContents {
 
     /**
      * Constructor
-     * @param contents full string contents of a potential RLE file.
+     * @param contents full string contents of a potential Parser file.
      */
     FileContents(String contents) {
         String bareData = stripMeta(contents);
