@@ -1,10 +1,9 @@
 package app;
 
+import RLE.Parser;
 import javafx.animation.AnimationTimer;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.event.EventTarget;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Bounds;
@@ -72,7 +71,7 @@ public class Controller implements Initializable {
     }
 
     /**
-     * Import RLE file.
+     * Import Parser file.
      *
      * Displays a file browser for the user to select a file to be imported into the board.
      */
@@ -80,7 +79,7 @@ public class Controller implements Initializable {
         FileHandler fileHandler = new FileHandler();
         try {
             String data = fileHandler.readGameBoardFromDisk();
-            byte[][] newBoard = RLE.toBoard(data);
+            byte[][] newBoard = Parser.toBoard(data);
             board.insertPattern(newBoard);
             draw();
         } catch (IOException e) {
@@ -98,14 +97,14 @@ public class Controller implements Initializable {
     /**
      * Import URL.
      *
-     * Displays a field for the user to input a URI pointing to an RLE file on the network, which is subsequently
+     * Displays a field for the user to input a URI pointing to an Parser file on the network, which is subsequently
      * downloaded and inserted into the board.
      */
     public void importURL() {
         FileHandler fileHandler = new FileHandler();
         try {
             String data = fileHandler.readGameBoardFromURL();
-            byte[][] newBoard = RLE.toBoard(data);
+            byte[][] newBoard = Parser.toBoard(data);
             board.insertPattern(newBoard);
             draw();
         } catch (IOException e) {

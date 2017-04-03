@@ -32,16 +32,16 @@ class FileHandler {
     }
 
     /**
-     * Opens a file chooser where it is possible to enter a RLE file.
+     * Opens a file chooser where it is possible to enter a Parser file.
      *
-     * @return RLE String representing the fetched file's contents, if it exists.
+     * @return Parser String representing the fetched file's contents, if it exists.
      * @throws IOException Throws an exception if the IO operation fails.
      */
     String readGameBoardFromDisk() throws IOException {
         FileChooser fs = new FileChooser();
         fs.setTitle("Open");
         fs.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("Text Files", "*.RLE"));
+                new FileChooser.ExtensionFilter("Text Files", "*.Parser"));
         File f = fs.showOpenDialog(new Stage());
         BufferedReader br = new BufferedReader(new FileReader(f));
 
@@ -51,7 +51,7 @@ class FileHandler {
     /**
      * Opens a text input dialog where it is possible to enter a URL.
      *
-     * @return RLE String representing the fetched file's contents, if it exists.
+     * @return Parser String representing the fetched file's contents, if it exists.
      * @throws IOException Throws an exception if the IO operation fails.
      */
     String readGameBoardFromURL() throws IOException {
