@@ -16,96 +16,95 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onKeyPressed="#onKeyPressed" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.Controller">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onKeyPressed="#onKeyPressed" onKeyReleased="#onKeyReleased" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.Controller">
     <top>
         <MenuBar BorderPane.alignment="CENTER">
             <Menu mnemonicParsing="false" text="File">
                 <Menu mnemonicParsing="false" text="Import from...">
-                    <MenuItem mnemonicParsing="false" onAction="#importFile" text="*.RLE"/>
-                    <MenuItem mnemonicParsing="false" onAction="#importURL" text="URL"/>
+                    <MenuItem mnemonicParsing="false" onAction="#importFile" text="*.RLE" />
+                    <MenuItem mnemonicParsing="false" onAction="#importURL" text="URL" />
                 </Menu>
                 <Menu mnemonicParsing="false" text="Export as...">
-                    <MenuItem mnemonicParsing="false" text="*.RLE"/>
+                    <MenuItem mnemonicParsing="false" text="*.RLE" />
                 </Menu>
-                <MenuItem mnemonicParsing="false" onAction="#exit" text="Exit"/>
+                <MenuItem mnemonicParsing="false" onAction="#exit" text="Exit" />
             </Menu>
             <Menu mnemonicParsing="false" text="Edit">
                 <Menu mnemonicParsing="false" text="Color">
                     <MenuItem mnemonicParsing="false" text="Alive color">
                         <graphic>
-                            <ColorPicker fx:id="aliveColorPicker" onAction="#setAliveColor">
+                            <ColorPicker fx:id="aliveColorPicker" onAction="#setAliveColor" promptText="Alive Color">
                                 <opaqueInsets>
-                                    <Insets/>
+                                    <Insets />
                                 </opaqueInsets>
                             </ColorPicker>
                         </graphic>
                     </MenuItem>
                     <MenuItem mnemonicParsing="false" text="Dead color">
                         <graphic>
-                            <ColorPicker fx:id="deadColorPicker" onAction="#setDeadColor"/>
+                            <ColorPicker fx:id="deadColorPicker" onAction="#setDeadColor" />
                         </graphic>
                     </MenuItem>
                 </Menu>
             </Menu>
-            <Menu mnemonicParsing="false" text="Rules" fx:id="rulesMenu">
+            <Menu fx:id="rulesMenu" mnemonicParsing="false" text="Rules">
             </Menu>
             <Menu mnemonicParsing="false" text="About">
-                <MenuItem mnemonicParsing="false" text="About"/>
+                <MenuItem mnemonicParsing="false" text="About" />
             </Menu>
         </MenuBar>
     </top>
     <bottom>
         <HBox alignment="CENTER" BorderPane.alignment="CENTER">
             <padding>
-                <Insets bottom="20.0" top="20.0"/>
+                <Insets bottom="20.0" top="20.0" />
             </padding>
             <VBox alignment="CENTER">
                 <HBox.margin>
-                    <Insets right="10.0"/>
+                    <Insets right="10.0" />
                 </HBox.margin>
                 <HBox alignment="CENTER" maxWidth="1.7976931348623157E308">
                     <Button mnemonicParsing="false" onAction="#nextFrame" text="NextFrame">
                         <cursor>
-                            <Cursor fx:constant="HAND"/>
+                            <Cursor fx:constant="HAND" />
                         </cursor>
                         <HBox.margin>
-                            <Insets right="10.0"/>
+                            <Insets right="10.0" />
                         </HBox.margin>
                     </Button>
                     <ToggleButton fx:id="startStopButton" mnemonicParsing="false" onAction="#toggleStartStop" text="Start">
                         <HBox.margin>
-                            <Insets right="10.0"/>
+                            <Insets right="10.0" />
                         </HBox.margin>
                         <cursor>
-                            <Cursor fx:constant="HAND"/>
+                            <Cursor fx:constant="HAND" />
                         </cursor>
                     </ToggleButton>
                     <Button mnemonicParsing="false" onAction="#clearBoard" text="Clear">
                         <cursor>
-                            <Cursor fx:constant="HAND"/>
+                            <Cursor fx:constant="HAND" />
                         </cursor>
                     </Button>
                 </HBox>
                 <HBox alignment="CENTER">
                     <VBox.margin>
-                        <Insets top="10.0"/>
+                        <Insets top="10.0" />
                     </VBox.margin>
                     <ComboBox fx:id="comboBox" promptText="Pattern">
                         <HBox.margin>
-                            <Insets right="10.0"/>
+                            <Insets right="10.0" />
                         </HBox.margin>
                     </ComboBox>
-                    <Button fx:id="testButton" mnemonicParsing="false" onAction="#testButton" text="Test"/>
+                    <Button fx:id="testButton" mnemonicParsing="false" onAction="#testButton" text="Test" />
                 </HBox>
             </VBox>
             <VBox alignment="CENTER">
-                <Slider fx:id="tickSlider" blockIncrement="1" max="10" prefWidth="225.0" value="5"
-                        snapToTicks="true" showTickMarks="true" majorTickUnit="1" minorTickCount="0">
+                <Slider fx:id="tickSlider" blockIncrement="1" majorTickUnit="1" max="10" minorTickCount="0" prefWidth="225.0" showTickMarks="true" snapToTicks="true" value="5">
                     <cursor>
-                        <Cursor fx:constant="HAND"/>
+                        <Cursor fx:constant="HAND" />
                     </cursor>
                 </Slider>
-                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Speed"/>
+                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Speed" />
             </VBox>
         </HBox>
     </bottom>

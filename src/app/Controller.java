@@ -182,8 +182,9 @@ public class Controller implements Initializable {
      */
     public void onKeyPressed(KeyEvent event){
         if(event.getCode() == SHIFT){
-            moveSpeed *= 10;
+            moveSpeed = 50;
         }
+
         double currYPos = canvas.getTranslateY();
         double currXPos = canvas.getTranslateX();
         switch (event.getCode()) {
@@ -200,6 +201,15 @@ public class Controller implements Initializable {
                 canvas.setTranslateX(currXPos + moveSpeed);
                 break;
         }
+        System.out.println(event.getCode());
+    }
+
+    public void onKeyReleased(KeyEvent event){
+        switch (event.getCode()){
+            case SHIFT:
+                moveSpeed = 10;
+        }
+        System.out.println(event.getCode());
     }
 
     /**
