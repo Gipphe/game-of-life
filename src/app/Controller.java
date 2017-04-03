@@ -385,6 +385,8 @@ public class Controller implements Initializable {
         int sizeX = 30;
         int sizeY = 12;
         board = new Board(sizeX, sizeY);
+        aliveColorPicker.setValue(Color.BLACK);
+        deadColorPicker.setValue(Color.WHITE);
 
         ObservableList<String> patternNames = FXCollections.observableArrayList(PatternCollection.getNames());
         comboBox.setItems(patternNames);
