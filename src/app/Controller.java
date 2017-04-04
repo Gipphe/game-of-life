@@ -136,6 +136,10 @@ public class Controller implements Initializable {
      */
     public void clearBoard(){
         this.board = new Board(board.getSizeX(), board.getSizeY());
+        canvas.setTranslateX(0);
+        canvas.setTranslateY(0);
+        canvas.setScaleX(1.0);
+        canvas.setScaleY(1.0);
         aliveColor = Color.BLACK;
         deadColor = Color.WHITE;
         draw();
