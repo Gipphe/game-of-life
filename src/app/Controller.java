@@ -200,8 +200,11 @@ public class Controller implements Initializable {
             case D:
                 canvas.setTranslateX(currXPos + moveSpeed);
                 break;
+            case Q:
+                startStopButton.selectedProperty().setValue(!startStopButton.selectedProperty().getValue());
+                toggleStartStop();
+                break;
         }
-        System.out.println(event.getCode());
     }
 
     public void onKeyReleased(KeyEvent event){
@@ -209,7 +212,6 @@ public class Controller implements Initializable {
             case SHIFT:
                 moveSpeed = 10;
         }
-        System.out.println(event.getCode());
     }
 
     /**
