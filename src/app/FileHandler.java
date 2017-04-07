@@ -39,10 +39,13 @@ class FileHandler {
      */
     String readGameBoardFromDisk() throws IOException {
         FileChooser fs = new FileChooser();
-        fs.setTitle("Open");
+        fs.setTitle("Open file");
         fs.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("Text Files", "*.Parser"));
+                new FileChooser.ExtensionFilter("Text Files", "*.RLE", "*.rle"));
         File f = fs.showOpenDialog(new Stage());
+
+        if (f == null) return "";
+
         BufferedReader br = new BufferedReader(new FileReader(f));
 
         return bufferToString(br);
@@ -56,20 +59,40 @@ class FileHandler {
      */
     String readGameBoardFromURL() throws IOException {
         TextInputDialog dialog = new TextInputDialog();
-        dialog.setTitle("Open");
+        dialog.setTitle("Open URL");
         dialog.setHeaderText(null);
         dialog.setContentText("Enter a URL:");
 
         Optional<String> result = dialog.showAndWait();
 
-        if (!result.isPresent()) {
-            return "!";
-        }
+        if (!result.isPresent()) return "";
 
         URL destination = new URL(result.get());
         URLConnection conn = destination.openConnection();
         BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 
         return bufferToString(br);
+    }
+
+    /**
+     * Opens a file chooser where it is possible to save the board.
+     *
+     * @param RLEString File contents to write to file.
+     * @throws IOException Throws an exception if the IO operation fails.
+     */
+    void writeToFile(String RLEString) throws IOException {
+        FileChooser fs = new FileChooser();
+        fs.setTitle("Save file");
+        fs.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("Text Files", "*.RLE", "*.rle"));
+        File f = fs.showSaveDialog(new Stage());
+
+        if (f == null) {
+            return;
+        }
+
+        BufferedWriter bw = new BufferedWriter(new FileWriter(f));
+        bw.write(RLEString);
+        bw.close();
     }
 }

@@ -79,16 +79,12 @@ public class Controller implements Initializable {
         FileHandler fileHandler = new FileHandler();
         try {
             String data = fileHandler.readGameBoardFromDisk();
+            if (data.length() == 0) return;
             byte[][] newBoard = Parser.toBoard(data);
             board.insertPattern(newBoard);
             draw();
         } catch (IOException e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error Dialog");
-            alert.setHeaderText("Look, an Error Dialog");
-            alert.setContentText(e.getMessage());
-
-            alert.showAndWait();
+            showIOWarningAlert(e);
 
             e.printStackTrace();
         }
@@ -104,18 +100,49 @@ public class Controller implements Initializable {
         FileHandler fileHandler = new FileHandler();
         try {
             String data = fileHandler.readGameBoardFromURL();
+            if (data.length() == 0) return;
             byte[][] newBoard = Parser.toBoard(data);
             board.insertPattern(newBoard);
             draw();
         } catch (IOException e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error Dialog");
-            alert.setHeaderText("Look, an Error Dialog");
-            alert.setContentText(e.getMessage());
+            showIOWarningAlert(e);
 
-            alert.showAndWait();
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Export a file.
+     *
+     * Displays a file browser for the user to export a file from board.
+     */
+    public void exportFile() {
+        FileHandler fileHandler = new FileHandler();
+        try {
+            ArrayList<ArrayList<Cell>> currentBoard = board.getBoard();
+            byte[][] newArray = new byte[currentBoard.size()][currentBoard.get(0).size()];
+            for (int y = 0; y < currentBoard.size(); y++) {
+                ArrayList<Cell> row = currentBoard.get(y);
+                for (int x = 0; x < row.size(); x++) {
+                    Cell cell = row.get(x);
+                    newArray[y][x] = cell.getState();
+                }
+            }
+            String RLEString = Parser.fromBoard(newArray);
+            fileHandler.writeToFile(RLEString);
+
+        } catch (IOException e) {
+            showIOWarningAlert(e);
+
+            e.printStackTrace();
+        }
+    }
+
+    private void showIOWarningAlert(IOException e) {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle("404 Not found");
+        alert.setContentText("File not found.");
+        alert.show();
     }
 
     /**
