@@ -25,7 +25,7 @@
                     <MenuItem mnemonicParsing="false" onAction="#importURL" text="URL" />
                 </Menu>
                 <Menu mnemonicParsing="false" text="Export as...">
-                    <MenuItem mnemonicParsing="false" text="*.RLE" />
+                    <MenuItem mnemonicParsing="false" onAction="#exportFile" text="*.RLE" />
                 </Menu>
                 <MenuItem mnemonicParsing="false" onAction="#exit" text="Exit" />
             </Menu>
