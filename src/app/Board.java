@@ -49,7 +49,12 @@ public class Board {
             try {
                 board.get(y);
             } catch (IndexOutOfBoundsException e) {
-                board.add(new ArrayList<>());
+                int cols = board.get(0).size();
+                ArrayList<Cell> row = new ArrayList<>(cols);
+                for (int i = 0; i < cols; i++) {
+                    row.add(new Cell(0));
+                }
+                board.add(row);
             }
         }
     }
@@ -92,7 +97,9 @@ public class Board {
 
                 int relY = originRow + y;
                 int relX = originCol + x;
-                board.get(relY).get(relX).setState(cell);
+                ArrayList<Cell> activeRow = board.get(relY);
+                Cell activeCell = activeRow.get(relX);
+                activeCell.setState(cell);
             }
         }
     }
