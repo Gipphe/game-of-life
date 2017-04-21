@@ -256,6 +256,8 @@ public class Controller implements Initializable {
         int cellWidth = 20;
         int borderWidth = 1;
         int cellWithBorder = cellWidth - borderWidth;
+        gcd.getCanvas().setHeight(cellWidth * gameBoard.size());
+        gcd.getCanvas().setWidth(cellWidth * gameBoard.get(0).size());
 
         for (int y = 0; y < gameBoard.size(); y++) {
             ArrayList<Cell> row = gameBoard.get(y);
@@ -268,6 +270,7 @@ public class Controller implements Initializable {
                 } else {
                     gcd.setFill(deadColor);
                 }
+
                 gcd.fillRect(x * cellWidth, y * cellWidth, cellWithBorder, cellWithBorder);
             }
         }
