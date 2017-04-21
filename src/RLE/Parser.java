@@ -16,7 +16,7 @@ public class Parser {
         int sizeX = contents.getX();
         int sizeY = contents.getY();
         String rule = contents.getRule();
-        if (!rule.equals("B3/S23")) {
+        if (!rule.matches("B3/S23") && !rule.matches("b3/s23")) {
             throw new RuntimeException("Incorrect rule");
         }
 
