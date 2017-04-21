@@ -89,12 +89,16 @@ public class Board {
                 pattern[0].length > board.get(0).size()) {
             doubleBoard();
         }
+        int originRow = (board.size() / 2) - (pattern.length / 2);
+        int originCol = (board.get(0).size() / 2) - (pattern[0].length / 2);
         for (int y = 0; y < pattern.length; y++) {
             byte[] row = pattern[y];
             for (int x = 0; x < row.length; x++) {
                 byte cell = row[x];
 
-                board.get(y).get(x).setState(cell);
+                int relY = originRow + y;
+                int relX = originCol + x;
+                board.get(relY).get(relX).setState(cell);
             }
         }
     }
