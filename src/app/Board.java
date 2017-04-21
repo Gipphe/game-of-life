@@ -72,22 +72,16 @@ public class Board {
     }
 
     /**
-     * Doubles the size of the board along both axis.
-     */
-    private void doubleBoard() {
-        doubleRows();
-        doubleCols();
-    }
-
-    /**
      * Inserts a pattern, starting from the top-left corner of the board (0,0).
      *
      * @param pattern Pattern to insert into the board.
      */
     public void insertPattern(byte[][] pattern) {
-        while (pattern.length > board.size() ||
-                pattern[0].length > board.get(0).size()) {
-            doubleBoard();
+        while (pattern.length > board.size()) {
+            doubleRows();
+        }
+        while (pattern[0].length > board.get(0).size()) {
+            doubleCols();
         }
         int originRow = (board.size() / 2) - (pattern.length / 2);
         int originCol = (board.get(0).size() / 2) - (pattern[0].length / 2);
