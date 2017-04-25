@@ -17,6 +17,13 @@
 <?import javafx.scene.text.Text?>
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onKeyPressed="#onKeyPressed" onKeyReleased="#onKeyReleased" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.Controller">
+    <center>
+        <Canvas fx:id="canvas" height="0.0" width="0.0" onMouseDragged="#onDrag" onMousePressed="#onClick" onScroll="#scrollEvent" BorderPane.alignment="CENTER">
+            <cursor>
+                <Cursor fx:constant="CROSSHAIR" />
+            </cursor>
+        </Canvas>
+    </center>
     <top>
         <MenuBar BorderPane.alignment="CENTER">
             <Menu mnemonicParsing="false" text="File">
@@ -108,11 +115,4 @@
             </VBox>
         </HBox>
     </bottom>
-    <center>
-        <Canvas fx:id="canvas" height="250.0" onMouseDragged="#onDrag" onMousePressed="#onClick" onScroll="#scrollEvent" width="600.0" BorderPane.alignment="CENTER">
-            <cursor>
-                <Cursor fx:constant="CROSSHAIR" />
-            </cursor>
-        </Canvas>
-    </center>
 </BorderPane>

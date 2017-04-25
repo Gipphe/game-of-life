@@ -14,6 +14,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.paint.Color;
+import javafx.stage.Screen;
 import rules.RuleSet;
 import rules.RulesCollection;
 
@@ -34,6 +35,8 @@ public class Controller implements Initializable {
     private GraphicsContext gc;
     private Pattern[] patterns = PatternCollection.getCollection();
     private double pressedX, pressedY;
+    int cellWidth = 20;
+    
     /**
      * Value to paste onto the cells dragged over by the user when clicking and dragging the mouse over the canvas.
      * Is set to the inverse of the value of the first cell clicked.
@@ -216,6 +219,7 @@ public class Controller implements Initializable {
             moveSpeed = 50;
         }
 
+
         double currYPos = canvas.getTranslateY();
         double currXPos = canvas.getTranslateX();
         switch (event.getCode()) {
@@ -253,11 +257,12 @@ public class Controller implements Initializable {
         GraphicsContext gcd = gc;
 
         ArrayList<ArrayList<Cell>> gameBoard = board.getBoard();
-        int cellWidth = 20;
         int borderWidth = 1;
         int cellWithBorder = cellWidth - borderWidth;
         gcd.getCanvas().setHeight(cellWidth * gameBoard.size());
         gcd.getCanvas().setWidth(cellWidth * gameBoard.get(0).size());
+
+
 
         for (int y = 0; y < gameBoard.size(); y++) {
             ArrayList<Cell> row = gameBoard.get(y);
@@ -424,15 +429,25 @@ public class Controller implements Initializable {
     }
 
     /**
+     * Sets the canvas width and height relative to no. of cells and size.
+     * Used when starting the program and for dynamic board.
+     */
+    public void resetCanvasSize(){
+        canvas.setHeight(board.getSizeY()*cellWidth);
+        canvas.setWidth(board.getSizeX()*cellWidth);
+    }
+
+    /**
      * Creates, tests and draws the board onto the GraphicsContext. Contains Listeners for various sliders.
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         int sizeX = 30;
-        int sizeY = 12;
+        int sizeY = 30;
         board = new Board(sizeX, sizeY);
         aliveColorPicker.setValue(Color.BLACK);
         deadColorPicker.setValue(Color.WHITE);
+        resetCanvasSize();
 
         ObservableList<String> patternNames = FXCollections.observableArrayList(PatternCollection.getNames());
         comboBox.setItems(patternNames);
@@ -440,6 +455,7 @@ public class Controller implements Initializable {
         tickSlider.valueProperty().addListener((observable, oldValue, newValue) -> setFrameInterval(newValue.intValue()));
 
         comboBox.valueProperty().addListener((observable, oldValue, newValue) -> {
+            clearBoard();
             setPremadePattern(newValue);
             gc.clearRect(0,0,20 * board.getSizeX(), 20 * board.getSizeY());
             draw();
