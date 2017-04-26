@@ -1,4 +1,4 @@
-package app;
+package model;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,17 +10,17 @@ public class Board {
     private RuleSet ruleSet;
 
     /**
-     * Constructor accepting the initial sizes of the board.
+     * Constructor accepting the initial sizes of the model.
      *
-     * @param sizeX Length of the board.
-     * @param sizeY Height of the board.
+     * @param sizeX Length of the model.
+     * @param sizeY Height of the model.
      */
     public Board(int sizeX, int sizeY){
         initBoard(sizeX, sizeY);
     }
 
     /**
-     * Initializes the board with the passed sizes.
+     * Initializes the model with the passed sizes.
      *
      * @param sizeX Number of columns to initialize with.
      * @param sizeY Number of rows to initialize with.
@@ -77,9 +77,9 @@ public class Board {
     }
 
     /**
-     * Inserts a pattern, starting from the top-left corner of the board (0,0).
+     * Inserts a pattern, starting from the top-left corner of the model (0,0).
      *
-     * @param pattern Pattern to insert into the board.
+     * @param pattern Pattern to insert into the model.
      */
     public void insertPattern(byte[][] pattern) {
         while (pattern.length > board.size()) {
@@ -105,7 +105,7 @@ public class Board {
     }
 
     /**
-     * Sets all cells in the board to passed state.
+     * Sets all cells in the model to passed state.
      *
      * @param state State to set all cells to.
      */
@@ -124,7 +124,7 @@ public class Board {
      * @param y The row of the cell.
      * @return The state of the cell.
      */
-    byte getValue(int x, int y){
+    public byte getValue(int x, int y){
         return board.get(y).get(x).getState();
     }
 
@@ -135,15 +135,15 @@ public class Board {
      * @param y The row of the cell.
      * @param state The new state for the cell.
      */
-    void setValue(int x, int y, byte state){
+    public void setValue(int x, int y, byte state){
         board.get(y).get(x).setState(state);
     }
 
     /**
-     * Returns a clone of the current board, where no changes to the cloned board will affect the original board.
+     * Returns a clone of the current model, where no changes to the cloned model will affect the original model.
      *
      * @param oldBoard Board to copy.
-     * @return A clone of the passed board.
+     * @return A clone of the passed model.
      */
     private static ArrayList<ArrayList<Cell>> cloneBoard(ArrayList<ArrayList<Cell>> oldBoard) {
         int oldSizeY = oldBoard.size();
@@ -160,7 +160,7 @@ public class Board {
     }
 
     /**
-     * Iterates through all cells in the board, counting their alive neighbors and applying the rule set to them.
+     * Iterates through all cells in the model, counting their alive neighbors and applying the rule set to them.
      */
     public void nextGeneration() {
         ArrayList<ArrayList<Cell>> oldBoard = cloneBoard(board);
@@ -225,7 +225,7 @@ public class Board {
     }
 
     /**
-     * Transforms the board into a single String of 0s and 1s.
+     * Transforms the model into a single String of 0s and 1s.
      *
      * @return String of 1 and 0 representing the byte[][] array.
      */
@@ -256,7 +256,7 @@ public class Board {
      *
      * @return 1s and 0s representing the contained pattern.
      */
-    String patternToString(){
+    public String patternToString(){
         BoundingBox bb = getBoundingBox();
         System.out.println(bb.toString());
         StringBuilder sb = new StringBuilder();
@@ -270,16 +270,16 @@ public class Board {
     }
 
     /**
-     * Getter for the board.
+     * Getter for the model.
      *
-     * @return The current board.
+     * @return The current model.
      */
-    ArrayList<ArrayList<Cell>> getBoard() {
+    public ArrayList<ArrayList<Cell>> getBoard() {
         return board;
     }
 
     /**
-     * Creates a bounding box within which the current state of the board is of interest (boundary of alive cells).
+     * Creates a bounding box within which the current state of the model is of interest (boundary of alive cells).
      *
      * @return The BoundingBox representing the area of interest.
      */
@@ -311,7 +311,7 @@ public class Board {
     }
 
     /**
-     * Returns the number of columns in the board.
+     * Returns the number of columns in the model.
      *
      * @return The number of columns.
      */
@@ -320,7 +320,7 @@ public class Board {
     }
 
     /**
-     * Returns the number of rows in the board.
+     * Returns the number of rows in the model.
      *
      * @return The number of rows.
      */

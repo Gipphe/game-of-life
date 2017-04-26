@@ -1,8 +1,8 @@
-package app;
+package model;
 
 
 /**
- * A bounding box indicating an area of interest on a board.
+ * A bounding box indicating an area of interest on a model.
  */
 public class BoundingBox {
     /**

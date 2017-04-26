@@ -75,7 +75,7 @@ class FileHandler {
     }
 
     /**
-     * Opens a file chooser where it is possible to save the board.
+     * Opens a file chooser where it is possible to save the model.
      *
      * @param RLEString File contents to write to file.
      * @throws IOException Throws an exception if the IO operation fails.

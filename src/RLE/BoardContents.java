@@ -9,7 +9,7 @@ class BoardContents {
     private Stack<String> rows = new Stack<>();
 
     /**
-     * Parses the passed board into a Stack of string lines.
+     * Parses the passed model into a Stack of string lines.
      * @param board Board to parse into stack.
      */
     private void setBoard(byte[][] board) {
@@ -28,7 +28,7 @@ class BoardContents {
 
     /**
      * Constructor
-     * @param board board to be parsed as a BoardContents.
+     * @param board model to be parsed as a BoardContents.
      */
     BoardContents(byte[][] board) {
         setBoard(board);
