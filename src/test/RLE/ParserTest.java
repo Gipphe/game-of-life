@@ -1,6 +1,5 @@
-package test.RLE;
+package RLE;
 
-import RLE.Parser;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
