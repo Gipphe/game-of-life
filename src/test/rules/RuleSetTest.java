@@ -1,8 +1,6 @@
-package test.rules;
+package rules;
 
 import org.junit.jupiter.api.Test;
-import rules.Range;
-import rules.RuleSet;
 
 import static org.junit.jupiter.api.Assertions.*;
 

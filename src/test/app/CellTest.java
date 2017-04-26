@@ -1,6 +1,5 @@
-package test.app;
+package app;
 
-import app.Cell;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
