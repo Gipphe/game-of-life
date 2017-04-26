@@ -1,6 +1,7 @@
 package app;
 
 import RLE.Parser;
+import model.*;
 import javafx.animation.AnimationTimer;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -14,7 +15,6 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.paint.Color;
-import javafx.stage.Screen;
 import rules.RuleSet;
 import rules.RulesCollection;
 
@@ -76,7 +76,7 @@ public class Controller implements Initializable {
     /**
      * Import Parser file.
      *
-     * Displays a file browser for the user to select a file to be imported into the board.
+     * Displays a file browser for the user to select a file to be imported into the model.
      */
     public void importFile() {
         FileHandler fileHandler = new FileHandler();
@@ -97,7 +97,7 @@ public class Controller implements Initializable {
      * Import URL.
      *
      * Displays a field for the user to input a URI pointing to an Parser file on the network, which is subsequently
-     * downloaded and inserted into the board.
+     * downloaded and inserted into the model.
      */
     public void importURL() {
         FileHandler fileHandler = new FileHandler();
@@ -117,17 +117,17 @@ public class Controller implements Initializable {
     /**
      * Export a file.
      *
-     * Displays a file browser for the user to export a file from board.
+     * Displays a file browser for the user to export a file from model.
      */
     public void exportFile() {
         FileHandler fileHandler = new FileHandler();
         try {
-            ArrayList<ArrayList<Cell>> currentBoard = board.getBoard();
+            ArrayList<ArrayList<model.Cell>> currentBoard = board.getBoard();
             byte[][] newArray = new byte[currentBoard.size()][currentBoard.get(0).size()];
             for (int y = 0; y < currentBoard.size(); y++) {
-                ArrayList<Cell> row = currentBoard.get(y);
+                ArrayList<model.Cell> row = currentBoard.get(y);
                 for (int x = 0; x < row.size(); x++) {
-                    Cell cell = row.get(x);
+                    model.Cell cell = row.get(x);
                     newArray[y][x] = cell.getState();
                 }
             }
@@ -162,7 +162,7 @@ public class Controller implements Initializable {
     }
 
     /**
-     * Clears the board entirely.
+     * Clears the model entirely.
      */
     public void clearBoard(){
         this.board = new Board(board.getSizeX(), board.getSizeY());
@@ -250,13 +250,13 @@ public class Controller implements Initializable {
     }
 
     /**
-     * Draws the current board onto the GraphicsContext, using the aliveColor method for the value 1,
+     * Draws the current model onto the GraphicsContext, using the aliveColor method for the value 1,
      * and deadColor method for the value 0.
      */
     private void draw() {
         GraphicsContext gcd = gc;
 
-        ArrayList<ArrayList<Cell>> gameBoard = board.getBoard();
+        ArrayList<ArrayList<model.Cell>> gameBoard = board.getBoard();
         int borderWidth = 1;
         int cellWithBorder = cellWidth - borderWidth;
         gcd.getCanvas().setHeight(cellWidth * gameBoard.size());
@@ -265,10 +265,10 @@ public class Controller implements Initializable {
 
 
         for (int y = 0; y < gameBoard.size(); y++) {
-            ArrayList<Cell> row = gameBoard.get(y);
+            ArrayList<model.Cell> row = gameBoard.get(y);
 
             for (int x = 0; x < board.getBoard().get(0).size(); x++) {
-                Cell cell = row.get(x);
+                model.Cell cell = row.get(x);
 
                 if (cell.getState() == 1) {
                     gcd.setFill(aliveColor);
@@ -430,7 +430,7 @@ public class Controller implements Initializable {
 
     /**
      * Sets the canvas width and height relative to no. of cells and size.
-     * Used when starting the program and for dynamic board.
+     * Used when starting the program and for dynamic model.
      */
     public void resetCanvasSize() {
         canvas.setHeight(board.getSizeY() * cellWidth);
@@ -438,7 +438,7 @@ public class Controller implements Initializable {
     }
 
     /**
-     * Creates, tests and draws the board onto the GraphicsContext. Contains Listeners for various sliders.
+     * Creates, tests and draws the model onto the GraphicsContext. Contains Listeners for various sliders.
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {

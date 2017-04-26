@@ -1,7 +1,7 @@
-package app;
+package model;
 
 /**
- * A cell object representing a single point on the simulation board.
+ * A cell object representing a single point on the simulation model.
  */
 public class Cell {
     /**
@@ -28,7 +28,7 @@ public class Cell {
      * Getter for the current state of the cell.
      * @return The current state of the cell.
      */
-    byte getState() {
+    public byte getState() {
         return state;
     }
 
@@ -36,7 +36,7 @@ public class Cell {
      * Setter for the current state of the cell.
      * @param newState New state of the cell.
      */
-    void setState(byte newState) {
+    public void setState(byte newState) {
         state = newState;
     }
 

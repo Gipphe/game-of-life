@@ -6,8 +6,8 @@ import java.util.regex.Pattern;
 
 public class Parser {
     /**
-     * Converts a passed Parser string to a byte[][] board for consumption by the Board class.
-     * @param RLEString Source Parser string to convert to board.
+     * Converts a passed Parser string to a byte[][] model for consumption by the Board class.
+     * @param RLEString Source Parser string to convert to model.
      * @return Board representing the pattern described in the passed Parser string.
      */
     public static byte[][] toBoard(String RLEString) {
@@ -95,9 +95,9 @@ public class Parser {
     }
 
     /**
-     * Parses passed board into Parser for consumption by a file writer.
+     * Parses passed model into Parser for consumption by a file writer.
      * @param board Board to convert to an Parser string.
-     * @return Parser string representing the board.
+     * @return Parser string representing the model.
      */
     public static String fromBoard(byte[][] board) {
         BoardContents rBoard = new BoardContents(board);
