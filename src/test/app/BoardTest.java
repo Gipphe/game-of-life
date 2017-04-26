@@ -78,9 +78,9 @@ class BoardTest {
         };
         Board board = new Board(5, 5);
         board.insertPattern(glider);
-        assertEquals("0100000100111000000000000", board.toString());
+        assertEquals("0000000100000100111000000", board.toString());
         board.nextGeneration();
-        assertEquals("0000010100011000100000000", board.toString());
+        assertEquals("0000000000010100011000100", board.toString());
     }
 
 }
