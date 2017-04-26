@@ -432,9 +432,9 @@ public class Controller implements Initializable {
      * Sets the canvas width and height relative to no. of cells and size.
      * Used when starting the program and for dynamic board.
      */
-    public void resetCanvasSize(){
-        canvas.setHeight(board.getSizeY()*cellWidth);
-        canvas.setWidth(board.getSizeX()*cellWidth);
+    public void resetCanvasSize() {
+        canvas.setHeight(board.getSizeY() * cellWidth);
+        canvas.setWidth(board.getSizeX() * cellWidth);
     }
 
     /**
