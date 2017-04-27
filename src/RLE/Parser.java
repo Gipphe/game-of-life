@@ -10,60 +10,62 @@ public class Parser {
      * @param RLEString Source Parser string to convert to model.
      * @return Board representing the pattern described in the passed Parser string.
      */
-    public static byte[][] toBoard(String RLEString) {
+    public static ParsedPattern toPattern(String RLEString) {
         FileContents contents = new FileContents(RLEString);
 
         int sizeX = contents.getX();
         int sizeY = contents.getY();
         String rule = contents.getRule();
-        if (!rule.matches("B3/S23") && !rule.matches("b3/s23")) {
-            throw new RuntimeException("Incorrect rule");
-        }
 
-        byte[][] board = new byte[sizeY][sizeX];
+        byte[][] pattern = new byte[sizeY][sizeX];
 
         int pX = 0;
         int pY = 0;
 
-        int count = 1;
-
-        for (String command : contents.getCommands()) {
-            Stack<String> commandBits = new Stack<>();
-            commandBits.addAll(Arrays.asList(command.split("")));
-
-            String state = commandBits.pop();
-
-            if (state.equals("!")) {
-                break;
-            }
-            if (state.equals("$")) {
-                pY++;
-                pX = 0;
-                continue;
-            }
-
-            if (commandBits.size() > 0) {
-                StringBuilder sb = new StringBuilder();
-                for (String number : commandBits) {
-                    sb.append(number);
-                }
-                count = Integer.parseInt(sb.toString());
-            }
-
-            for (int i = 0; i < count; i++) {
-                try {
-                    byte newState = state.equals("o") ? (byte) 1 : (byte) 0;
-                    board[pY][pX] = newState;
-                    pX++;
-                } catch (ArrayIndexOutOfBoundsException e) {
-                    pX = 0;
-                    pY++;
+        StringBuilder digitAccumulator = new StringBuilder();
+        for (String line : contents.getLines()) {
+            for (char ch : line.toCharArray()) {
+                if (ch == '!') {
                     break;
                 }
+
+                if (Character.isDigit(ch)) {
+                    digitAccumulator.append(ch);
+                    continue;
+                }
+
+                if (ch == '$') {
+                    int count;
+                    try {
+                        count = Integer.parseInt(digitAccumulator.toString());
+                    } catch (NumberFormatException e) {
+                        count = 1;
+                    }
+                    digitAccumulator.setLength(0);
+
+                    pY += count;
+                    pX = 0;
+                    continue;
+                }
+
+                int count;
+                try {
+                    count = Integer.parseInt(digitAccumulator.toString());
+                } catch (NumberFormatException e) {
+                    count = 1;
+                }
+                digitAccumulator.setLength(0);
+
+                byte newState = ch == 'o' ? (byte) 1 : (byte) 0;
+
+                for (int i = 0; i < count; i++) {
+                    pattern[pY][pX] = newState;
+                    pX++;
+                }
             }
-            count = 1;
         }
-        return board;
+
+        return new ParsedPattern(rule, pattern);
     }
 
     /**
@@ -99,30 +101,38 @@ public class Parser {
      * @param board Board to convert to an Parser string.
      * @return Parser string representing the model.
      */
-    public static String fromBoard(byte[][] board) {
-        BoardContents rBoard = new BoardContents(board);
+    public static String fromPattern(byte[][] board) {
+        PatternContents rBoard = new PatternContents(board);
 
         StringBuilder result = new StringBuilder();
-        result
+        StringBuilder line = new StringBuilder();
+        line
                 .append("x = ")
                 .append(rBoard.getX())
                 .append(", y = ")
                 .append(rBoard.getY())
-                .append(", rule = B3/S23")
+                .append(", rule = B3/S23");
+        result
+                .append(line.toString())
                 .append("\n");
+        line.setLength(0);
 
+        // Accumulator for counting newline characters.
         StringBuilder newlineCharacters = new StringBuilder();
+
         Stack<String> rows = rBoard.getRows();
         int lastRowIndex = rows.size() - 1;
         for (int rowIndex = 0; rowIndex < rows.size(); rowIndex++) {
             String row = rows.get(rowIndex);
+            // If the row is empty, increment newline character count
             if (isEmptyRow(row)) {
                 newlineCharacters.append("$");
                 continue;
             }
+            // If this is not the first row, append newline characters
             if (rowIndex != 0) {
                 newlineCharacters.append("$");
-                result.append(concentrate(newlineCharacters.toString()));
+                line.append(concentrate(newlineCharacters.toString()));
                 newlineCharacters.setLength(0);
             }
             String[] statesInRow = row.split("");
@@ -131,11 +141,13 @@ public class Parser {
             int indexOfLastState = statesInRow.length - 1;
 
             int colsToRun = statesInRow.length;
+            // If this is the last row, only include up to and including the last alive cell, omitting the last dead cells
             if (rowIndex == lastRowIndex) {
                 int lastAlive = row.lastIndexOf('1');
                 colsToRun = (lastAlive == -1) ? statesInRow.length : lastAlive + 1;
             }
 
+            // Iterate through cells in the row
             for (int i = 0; i < colsToRun; i++) {
                 String state = statesInRow[i];
                 String value = (state.equals("1") ? "o" : "b");
@@ -150,10 +162,17 @@ public class Parser {
                     continue;
                 }
                 stateCharacters.append(value);
-                result.append(concentrate(stateCharacters.toString()));
+                String element = concentrate(stateCharacters.toString());
+                if (line.length() + element.length() > 70) {
+                    result.append(line.toString())
+                            .append("\n");
+                    line.setLength(0);
+                }
+                line.append(element);
                 stateCharacters.setLength(0);
             }
         }
+        result.append(line.toString());
         result.append("!");
 
         return result.toString();

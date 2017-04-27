@@ -3,31 +3,36 @@ package RLE;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 class FileContents {
-    private int x;
-    private int y;
+    /**
+     * Number of columns in the pattern.
+     */
+    private int numCols;
+    /**
+     * Number of rows in the pattern.
+     */
+    private int numRows;
     private String rule;
-    private Stack<String> commands;
+    private Stack<String> lines;
 
     /**
-     * Getter for x.
-     * @return The value of x.
+     * Getter for numCols.
+     * @return The value of numCols.
      */
-    int getX() {
-        return x;
+    int getNumCols() {
+        return numCols;
     }
 
     /**
-     * Getter for y.
-     * @return The value of y.
+     * Getter for numRows.
+     * @return The value of numRows.
      */
-    int getY() {
-        return y;
+    int getNumRows() {
+        return numRows;
     }
 
     /**
@@ -39,11 +44,11 @@ class FileContents {
     }
 
     /**
-     * Getter for commands.
-     * @return The stack of commands, with their corresponding run count.
+     * Getter for lines.
+     * @return The stack of lines, with their corresponding run count.
      */
-    Stack<String> getCommands() {
-        return commands;
+    Stack<String> getLines() {
+        return lines;
     }
 
     /**
@@ -82,8 +87,11 @@ class FileContents {
      * @return Source string, now split by newline characters into an iterable List.
      */
     @NotNull
-    private static List<String> splitByNewline(String source) {
-        return Arrays.asList(source.split("\\r?\\n"));
+    private static Stack<String> splitByNewline(String source) {
+        String[] arr = source.split("\\r?\\n");
+        Stack<String> result = new Stack<>();
+        result.addAll(Arrays.asList(arr));
+        return result;
     }
 
     /**
@@ -117,44 +125,18 @@ class FileContents {
     }
 
     /**
-     * Removes the first line of the supplied string.
-     * @param source String to remove first line of.
-     * @return Source string, sans first line.
-     */
-    private static String removeFirstLine(String source) {
-        int indexOfFirstNewLine = source.indexOf("\n");
-        return source.substring(indexOfFirstNewLine);
-    }
-
-    /**
-     * Split supplied string into a stack of commands, keeping the preceding number with the command itself.
-     * @param source Source string to split into commands.
-     * @return List of commands.
-     */
-    private static Stack<String> splitToCommands(String source) {
-        Pattern pattern = Pattern.compile("\\d*\\w|\\$|!");
-        Matcher matcher = pattern.matcher(source);
-        Stack<String> result = new Stack<>();
-        while (matcher.find()) {
-            result.add(matcher.group());
-        }
-        return result;
-    }
-
-    /**
      * Constructor
      * @param contents full string contents of a potential Parser file.
      */
     FileContents(String contents) {
         String bareData = stripMeta(contents);
 
-        String header = splitByNewline(bareData).get(0);
-        this.x = getAxisSize(header, "x");
-        this.y = getAxisSize(header, "y");
+        Stack<String> lines = splitByNewline(bareData);
+        String header = lines.get(0);
+        this.numCols = getAxisSize(header, "x");
+        this.numRows = getAxisSize(header, "y");
         this.rule = getRule(header);
-
-        String justCommands = removeFirstLine(bareData);
-
-        this.commands = splitToCommands(justCommands);
+        lines.remove(0);
+        this.lines = lines;
     }
 }

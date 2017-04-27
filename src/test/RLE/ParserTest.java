@@ -24,7 +24,7 @@ class ParserTest {
                         "#C www.conwaylife.com/wiki/index.php?title=Glider\n" +
                         "x = 3, y = 3, rule = B3/S23\n"+
                         "bob$2bo$3o!";
-        byte[][] result = Parser.toBoard(base);
+        byte[][] result = Parser.toPattern(base).getPattern();
 
         byte[][] expected = {
             {0,1,0},
@@ -39,7 +39,7 @@ class ParserTest {
     void converts_block_from_RLE_to_board() {
         String base = "x = 2, y = 2, rule = B3/S23\n2o$2o!";
 
-        byte[][] result = Parser.toBoard(base);
+        byte[][] result = Parser.toPattern(base).getPattern();
 
         byte[][] expected = {
                 {1,1},
@@ -48,10 +48,29 @@ class ParserTest {
 
         assertEquals(boardToString(expected), boardToString(result));
     }
+
+    @Test
+    void handles_lower_case_and_upper_case_rules() {
+        String base = "x = 1, y = 1, rule = b3/s23\no!";
+        byte[][] result = Parser.toPattern(base).getPattern();
+        byte[][] expected = {{1}};
+        assertEquals(boardToString(expected), boardToString(result));
+
+        base = "x = 1, y = 1, rule = B3/s23\no!";
+        result = Parser.toPattern(base).getPattern();
+        expected = new byte[][]{{1}};
+        assertEquals(boardToString(expected), boardToString(result));
+
+        base = "x = 1, y = 1, rule = B3/S23\no!";
+        result = Parser.toPattern(base).getPattern();
+        expected = new byte[][]{{1}};
+        assertEquals(boardToString(expected), boardToString(result));
+    }
+
     @Test
     void converts_from_RLE_even_with_double_digit_length_encoding() {
         String base = "x = 18, y = 1, rule = B3/S23\n18o!";
-        byte[][] result = Parser.toBoard(base);
+        byte[][] result = Parser.toPattern(base).getPattern();
 
         byte[][] expected = {
                 {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
@@ -65,7 +84,7 @@ class ParserTest {
         String base = "x = 13, y = 13, rule = B3/S23\n" +
                 "2b3o3b3o2b2$o4bobo4bo$o4bobo4bo$o4bobo4bo$2b3o3b3o2b2$2b3o3b3o2b$o4bobo4bo$o4bobo4bo$o4bobo4bo2$2b3o3b3o!";
 
-        byte[][] result = Parser.toBoard(base);
+        byte[][] result = Parser.toPattern(base).getPattern();
 
         byte[][] expected = {
                 {0,0,1,1,1,0,0,0,1,1,1,0,0},
@@ -94,7 +113,7 @@ class ParserTest {
         };
         String expected = "x = 2, y = 2, rule = B3/S23\n2o$2o!";
 
-        String result = Parser.fromBoard(base);
+        String result = Parser.fromPattern(base);
 
         assertEquals(expected, result);
     }
@@ -108,7 +127,7 @@ class ParserTest {
         };
         String expected = "x = 3, y = 3, rule = B3/S23\nbob$o2b$3o!";
 
-        String result = Parser.fromBoard(base);
+        String result = Parser.fromPattern(base);
 
         assertEquals(expected, result);
     }
@@ -132,9 +151,9 @@ class ParserTest {
         };
 
         String expected = "x = 13, y = 13, rule = B3/S23\n" +
-                "2b3o3b3o2b2$o4bobo4bo$o4bobo4bo$o4bobo4bo$2b3o3b3o2b2$2b3o3b3o2b$o4bobo4bo$o4bobo4bo$o4bobo4bo2$2b3o3b3o!";
+                "2b3o3b3o2b2$o4bobo4bo$o4bobo4bo$o4bobo4bo$2b3o3b3o2b2$2b3o3b3o2b$o4bob\no4bo$o4bobo4bo$o4bobo4bo2$2b3o3b3o!";
 
-        String result = Parser.fromBoard(base);
+        String result = Parser.fromPattern(base);
 
         assertEquals(expected, result);
     }
@@ -147,7 +166,7 @@ class ParserTest {
 
         String expected = "x = 18, y = 1, rule = B3/S23\n" +
                 "18o!";
-        String result = Parser.fromBoard(base);
+        String result = Parser.fromPattern(base);
 
         assertEquals(expected, result);
     }

@@ -7,13 +7,13 @@ import static org.junit.jupiter.api.Assertions.*;
 class RuleSetTest {
     @Test
     void should_evaluate_as_expected_with_conway_rules() {
-        Range[] surviveRanges = new Range[] {
-                new Range(2, 3)
+        StateRange[] surviveStateRanges = new StateRange[] {
+                new StateRange(2, 3)
         };
-        Range[] birthRanges = new Range[] {
-                new Range(3, 3)
+        StateRange[] birthStateRanges = new StateRange[] {
+                new StateRange(3, 3)
         };
-        RuleSet conway = new RuleSet("Conway", surviveRanges, birthRanges);
+        RuleSet conway = new RuleSet("Conway", surviveStateRanges, birthStateRanges);
         assertEquals(0, conway.getNewState((byte) 1, 1), "Alive cell dies of loneliness");
         assertEquals(0, conway.getNewState((byte) 1, 4), "Alive cell dies of overpopulation");
         assertEquals(0, conway.getNewState((byte) 0, 2), "Dead cell remains dead with too few neighbors");
@@ -25,14 +25,14 @@ class RuleSetTest {
 
     @Test
     void should_evaluate_as_expected_with_highlife_rules() {
-        Range[] surviveRangs = new Range[] {
-                new Range(2, 3)
+        StateRange[] surviveRangs = new StateRange[] {
+                new StateRange(2, 3)
         };
-        Range[] birthRanges = new Range[] {
-                new Range(3),
-                new Range(6)
+        StateRange[] birthStateRanges = new StateRange[] {
+                new StateRange(3),
+                new StateRange(6)
         };
-        RuleSet highlife = new RuleSet("Highlife", surviveRangs, birthRanges);
+        RuleSet highlife = new RuleSet("Highlife", surviveRangs, birthStateRanges);
         assertEquals(0, highlife.getNewState((byte) 1, 1), "Alive cell dies of loneliness");
         assertEquals(0, highlife.getNewState((byte) 1, 4), "Alive cell dies of overpopulation");
         assertEquals(0, highlife.getNewState((byte) 0, 2), "Dead cell remains dead with too few neighbors");

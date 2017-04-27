@@ -4,10 +4,10 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class RangeTest {
+class StateRangeTest {
     @Test
     void min_and_max_is_as_expected() {
-        Range result = new Range(0, 1);
+        StateRange result = new StateRange(0, 1);
         assertEquals(0, result.getMin());
         assertEquals(1, result.getMax());
     }
