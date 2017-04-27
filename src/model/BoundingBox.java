@@ -29,7 +29,7 @@ public class BoundingBox {
      *
      * @return The first row.
      */
-    int getFirstRow() {
+    public int getFirstRow() {
         return firstRow;
     }
 
@@ -38,7 +38,7 @@ public class BoundingBox {
      *
      * @return The first column.
      */
-    int getFirstCol() {
+    public int getFirstCol() {
         return firstCol;
     }
 
@@ -47,7 +47,7 @@ public class BoundingBox {
      *
      * @return The last row.
      */
-    int getLastRow() {
+    public int getLastRow() {
         return lastRow;
     }
 
@@ -56,7 +56,7 @@ public class BoundingBox {
      *
      * @return The last column.
      */
-    int getLastCol() {
+    public int getLastCol() {
         return lastCol;
     }
 
@@ -65,7 +65,7 @@ public class BoundingBox {
      *
      * @param firstRow The new first row.
      */
-    void setFirstRow(int firstRow) {
+    public void setFirstRow(int firstRow) {
         this.firstRow = firstRow;
     }
 
@@ -74,7 +74,7 @@ public class BoundingBox {
      *
      * @param firstCol The new first column.
      */
-    void setFirstCol(int firstCol) {
+    public void setFirstCol(int firstCol) {
         this.firstCol = firstCol;
     }
 
@@ -83,7 +83,7 @@ public class BoundingBox {
      *
      * @param lastRow The new last row.
      */
-    void setLastRow(int lastRow) {
+    public void setLastRow(int lastRow) {
         this.lastRow = lastRow;
     }
 
@@ -92,7 +92,7 @@ public class BoundingBox {
      *
      * @param lastCol The new last column.
      */
-    void setLastCol(int lastCol) {
+    public void setLastCol(int lastCol) {
         this.lastCol = lastCol;
     }
 
