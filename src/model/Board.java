@@ -105,19 +105,6 @@ public class Board {
     }
 
     /**
-     * Sets all cells in the model to passed state.
-     *
-     * @param state State to set all cells to.
-     */
-    public void fill(byte state) {
-        for (ArrayList<Cell> row : board) {
-            for (Cell cell : row) {
-                cell.setState(state);
-            }
-        }
-    }
-
-    /**
      * Returns the state of a cell at the given coordinates.
      *
      * @param x The column of the cell.
