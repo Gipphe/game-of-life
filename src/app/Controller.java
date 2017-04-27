@@ -1,5 +1,6 @@
 package app;
 
+import RLE.ParsedPattern;
 import RLE.Parser;
 import model.*;
 import model.Cell;
@@ -16,6 +17,8 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.paint.Color;
+import javafx.stage.Screen;
+import rules.RuleException;
 import rules.RuleSet;
 import rules.RulesCollection;
 
@@ -84,7 +87,12 @@ public class Controller implements Initializable {
         try {
             String data = fileHandler.readGameBoardFromDisk();
             if (data.length() == 0) return;
-            byte[][] newBoard = Parser.toBoard(data);
+            ParsedPattern pattern = Parser.toPattern(data);
+            String rule = pattern.getRule();
+            if (!board.getRuleSet().isEqual(rule)) {
+                throw new RuleException(board.getRuleSet().getRuleString(), rule);
+            }
+            byte[][] newBoard = pattern.getPattern();
             board.insertPattern(newBoard);
             draw();
         } catch (IOException e) {
@@ -105,7 +113,12 @@ public class Controller implements Initializable {
         try {
             String data = fileHandler.readGameBoardFromURL();
             if (data.length() == 0) return;
-            byte[][] newBoard = Parser.toBoard(data);
+            ParsedPattern pattern = Parser.toPattern(data);
+            String rule = pattern.getRule();
+            if (!board.getRuleSet().isEqual(rule)) {
+                throw new RuleException(board.getRuleSet().getRuleString(), rule);
+            }
+            byte[][] newBoard = pattern.getPattern();
             board.insertPattern(newBoard);
             draw();
         } catch (IOException e) {
@@ -132,7 +145,7 @@ public class Controller implements Initializable {
                     newArray[y][x] = cell.getState();
                 }
             }
-            String RLEString = Parser.fromBoard(newArray);
+            String RLEString = Parser.fromPattern(newArray);
             fileHandler.writeToFile(RLEString);
 
         } catch (IOException e) {

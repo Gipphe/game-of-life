@@ -3,15 +3,26 @@ package rules;
 /**
  * Represents a range between two number, inclusive.
  */
-public class Range {
+public class StateRange {
     /**
      * Minimum inclusive number in the range.
      */
-    private final int min;
+    private int min;
     /**
      * Maximum inclusive number in the range.
      */
-    private final int max;
+    private int max;
+
+    private void initStateRange(int min, int max) {
+        if (min < 0) {
+            throw new StateRangeException("Minimum value is less than 0: " + min);
+        }
+        if (max > 8) {
+            throw new StateRangeException("Maximum value is more than 8: " + max);
+        }
+        this.min = min;
+        this.max = max;
+    }
 
     /**
      * Constructor accepting the minimum and maximum numbers in the range.
@@ -19,13 +30,11 @@ public class Range {
      * @param min Minimum number in the range.
      * @param max Maximum number in the range.
      */
-    public Range(int min, int max) {
-        this.min = min;
-        this.max = max;
+    public StateRange(int min, int max) {
+        initStateRange(min, max);
     }
-    public Range(int minMax) {
-        this.min = minMax;
-        this.max = minMax;
+    public StateRange(int minMax) {
+        initStateRange(minMax, minMax);
     }
 
     /**

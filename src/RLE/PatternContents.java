@@ -2,7 +2,7 @@ package RLE;
 
 import java.util.Stack;
 
-class BoardContents {
+class PatternContents {
     private int y;
     private int x;
 
@@ -12,7 +12,7 @@ class BoardContents {
      * Parses the passed model into a Stack of string lines.
      * @param board Board to parse into stack.
      */
-    private void setBoard(byte[][] board) {
+    private void setPattern(byte[][] board) {
         this.y = board.length;
         this.x = board[0].length;
 
@@ -28,10 +28,10 @@ class BoardContents {
 
     /**
      * Constructor
-     * @param board model to be parsed as a BoardContents.
+     * @param pattern pattern to be parsed as a PatternContents.
      */
-    BoardContents(byte[][] board) {
-        setBoard(board);
+    PatternContents(byte[][] pattern) {
+        setPattern(pattern);
     }
 
     /**
