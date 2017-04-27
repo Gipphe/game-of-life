@@ -151,7 +151,8 @@ class ParserTest {
         };
 
         String expected = "x = 13, y = 13, rule = B3/S23\n" +
-                "2b3o3b3o2b2$o4bobo4bo$o4bobo4bo$o4bobo4bo$2b3o3b3o2b2$2b3o3b3o2b$o4bob\no4bo$o4bobo4bo$o4bobo4bo2$2b3o3b3o!";
+                "2b3o3b3o2b2$o4bobo4bo$o4bobo4bo$o4bobo4bo$2b3o3b3o2b2$2b3o3b3o2b$o4bob\n" +
+                "o4bo$o4bobo4bo$o4bobo4bo2$2b3o3b3o!";
 
         String result = Parser.fromPattern(base);
 
