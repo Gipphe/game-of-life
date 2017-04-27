@@ -64,14 +64,14 @@ public class Controller implements Initializable {
     private ComboBox<String> comboBox;
 
     public void testButton() {
-//        nextGenerationConcurrentPrintPerformance();
+        nextGenerationConcurrentPrintPerformance();
         nextGenerationPrintPerformance();
         draw();
     }
 
     public void nextGenerationPrintPerformance() {
         long x1 = System.currentTimeMillis();
-        for (int i = 0; i<30; i++){
+        for (int i = 0; i<3000; i++){
             board.nextGeneration();
         }
         long deltaX = System.currentTimeMillis() - x1;
@@ -80,7 +80,7 @@ public class Controller implements Initializable {
 
     public void nextGenerationConcurrentPrintPerformance() {
         long x1 = System.currentTimeMillis();
-        for (int i = 0; i<30; i++){
+        for (int i = 0; i<3000; i++){
             board.nextGenerationConcurrent();
         }
         long deltaX = System.currentTimeMillis() - x1;
