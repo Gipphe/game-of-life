@@ -2,6 +2,7 @@ package app;
 
 import RLE.Parser;
 import model.*;
+import model.Cell;
 import javafx.animation.AnimationTimer;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -122,12 +123,12 @@ public class Controller implements Initializable {
     public void exportFile() {
         FileHandler fileHandler = new FileHandler();
         try {
-            ArrayList<ArrayList<model.Cell>> currentBoard = board.getBoard();
+            ArrayList<ArrayList<Cell>> currentBoard = board.getBoard();
             byte[][] newArray = new byte[currentBoard.size()][currentBoard.get(0).size()];
             for (int y = 0; y < currentBoard.size(); y++) {
-                ArrayList<model.Cell> row = currentBoard.get(y);
+                ArrayList<Cell> row = currentBoard.get(y);
                 for (int x = 0; x < row.size(); x++) {
-                    model.Cell cell = row.get(x);
+                    Cell cell = row.get(x);
                     newArray[y][x] = cell.getState();
                 }
             }
@@ -256,7 +257,7 @@ public class Controller implements Initializable {
     private void draw() {
         GraphicsContext gcd = gc;
 
-        ArrayList<ArrayList<model.Cell>> gameBoard = board.getBoard();
+        ArrayList<ArrayList<Cell>> gameBoard = board.getBoard();
         int borderWidth = 1;
         int cellWithBorder = cellWidth - borderWidth;
         gcd.getCanvas().setHeight(cellWidth * gameBoard.size());
@@ -265,10 +266,10 @@ public class Controller implements Initializable {
 
 
         for (int y = 0; y < gameBoard.size(); y++) {
-            ArrayList<model.Cell> row = gameBoard.get(y);
+            ArrayList<Cell> row = gameBoard.get(y);
 
             for (int x = 0; x < board.getBoard().get(0).size(); x++) {
-                model.Cell cell = row.get(x);
+                Cell cell = row.get(x);
 
                 if (cell.getState() == 1) {
                     gcd.setFill(aliveColor);
