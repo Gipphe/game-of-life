@@ -64,7 +64,27 @@ public class Controller implements Initializable {
     private ComboBox<String> comboBox;
 
     public void testButton() {
-        System.out.println(board.patternToString());
+//        nextGenerationConcurrentPrintPerformance();
+        nextGenerationPrintPerformance();
+        draw();
+    }
+
+    public void nextGenerationPrintPerformance() {
+        long x1 = System.currentTimeMillis();
+        for (int i = 0; i<30; i++){
+            board.nextGeneration();
+        }
+        long deltaX = System.currentTimeMillis() - x1;
+        System.out.println("Counting time (ms): " + deltaX);
+    }
+
+    public void nextGenerationConcurrentPrintPerformance() {
+        long x1 = System.currentTimeMillis();
+        for (int i = 0; i<30; i++){
+            board.nextGenerationConcurrent();
+        }
+        long deltaX = System.currentTimeMillis() - x1;
+        System.out.println("Counting time (ms): " + deltaX);
     }
 
     private void setPremadePattern(String premadePattern) {
@@ -456,8 +476,8 @@ public class Controller implements Initializable {
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        int sizeX = 30;
-        int sizeY = 30;
+        int sizeX = 20;
+        int sizeY = 20;
         board = new Board(sizeX, sizeY);
         aliveColorPicker.setValue(Color.BLACK);
         deadColorPicker.setValue(Color.WHITE);
