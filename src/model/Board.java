@@ -235,7 +235,6 @@ public class Board {
                 int threadIndex = getThreadIndex();
                 f(threadIndex, oldBoard);
             }));
-
         }
     }
 
