@@ -16,56 +16,60 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onKeyPressed="#onKeyPressed" onKeyReleased="#onKeyReleased" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.Controller">
+<?import javafx.scene.layout.Pane?>
+<BorderPane onKeyPressed="#onKeyPressed" onKeyReleased="#onKeyReleased" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.Controller">
     <center>
-        <Canvas fx:id="canvas" height="0.0" onMouseDragged="#onDrag" onMousePressed="#onClick" onScroll="#scrollEvent" width="0.0" BorderPane.alignment="CENTER">
-            <cursor>
-                <Cursor fx:constant="CROSSHAIR" />
-            </cursor>
-        </Canvas>
+        <Pane fx:id="canvasWrapper">
+            <Canvas fx:id="canvas" onMouseDragged="#onDrag" onMousePressed="#onClick" onScroll="#scrollEvent" BorderPane.alignment="CENTER">
+                <cursor>
+                    <Cursor fx:constant="CROSSHAIR" />
+                </cursor>
+            </Canvas>
+        </Pane>
     </center>
     <top>
         <MenuBar BorderPane.alignment="CENTER">
-            <Menu mnemonicParsing="false" text="File">
-                <Menu mnemonicParsing="false" text="Import from...">
-                    <MenuItem mnemonicParsing="false" onAction="#importFile" text="*.RLE" />
-                    <MenuItem mnemonicParsing="false" onAction="#importURL" text="URL" />
+            <Menu text="_File">
+                <Menu text="_Import from...">
+                    <MenuItem onAction="#importFile" text="*._RLE" />
+                    <MenuItem onAction="#importURL" text="_URL" />
                 </Menu>
-                <Menu mnemonicParsing="false" text="Export as...">
-                    <MenuItem mnemonicParsing="false" onAction="#exportFile" text="*.RLE" />
+                <Menu text="_Export as...">
+                    <MenuItem onAction="#exportFile" text="*._RLE" />
                 </Menu>
-                <MenuItem mnemonicParsing="false" onAction="#exit" text="Exit" />
+                <MenuItem onAction="#exit" text="E_xit" />
             </Menu>
-            <Menu mnemonicParsing="false" text="Edit">
-            <MenuItem mnemonicParsing="false" text="Dynamic board">
-               <graphic>
-                  <ToggleButton fx:id="dynamicBoardButton" alignment="TOP_CENTER" mnemonicParsing="false" onAction="#toggleDynamicBoard" text="Turn on" textAlignment="CENTER" />
-               </graphic>
-            </MenuItem>
-                 <MenuItem mnemonicParsing="false" text="Dead color">
-                     <graphic>
-                         <ColorPicker fx:id="deadColorPicker" onAction="#setDeadColor" />
-                     </graphic>
-                 </MenuItem>
-                 <MenuItem mnemonicParsing="false" text="Alive color">
-                     <graphic>
-                         <ColorPicker fx:id="aliveColorPicker" onAction="#setAliveColor" promptText="Alive Color">
-                             <opaqueInsets>
-                                 <Insets />
-                             </opaqueInsets>
-                         </ColorPicker>
-                     </graphic>
-                 </MenuItem>
+            <Menu text="_Edit">
+                <Menu text="_Color">
+                    <MenuItem text="_Alive color">
+                        <graphic>
+                            <ColorPicker fx:id="aliveColorPicker" onAction="#setAliveColor" promptText="Alive Color">
+                                <opaqueInsets>
+                                    <Insets />
+                                </opaqueInsets>
+                            </ColorPicker>
+                        </graphic>
+                    </MenuItem>
+                    <MenuItem text="_Dead color">
+                        <graphic>
+                            <ColorPicker fx:id="deadColorPicker" onAction="#setDeadColor" />
+                        </graphic>
+                    </MenuItem>
+                </Menu>
+                <MenuItem mnemonicParsing="false" text="Dynamic board">
+                    <graphic>
+                        <ToggleButton fx:id="dynamicBoardButton" alignment="TOP_CENTER" mnemonicParsing="false" onAction="#toggleDynamicBoard" text="Turn on" textAlignment="CENTER" />
+                    </graphic>
+                </MenuItem>
             </Menu>
-            <Menu fx:id="rulesMenu" mnemonicParsing="false" text="Rules">
+            <Menu fx:id="rulesMenu" text="_Rules">
             </Menu>
-            <Menu mnemonicParsing="false" text="About">
-                <MenuItem mnemonicParsing="false" text="About" />
+            <Menu text="About">
             </Menu>
         </MenuBar>
     </top>
     <bottom>
-        <HBox alignment="CENTER" BorderPane.alignment="CENTER">
+        <HBox alignment="CENTER" styleClass="bottomHBox" BorderPane.alignment="CENTER">
             <padding>
                 <Insets bottom="20.0" top="20.0" />
             </padding>

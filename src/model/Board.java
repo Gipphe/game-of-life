@@ -8,10 +8,10 @@ package model;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import model.cell.Cell;
 import model.cell.ByteCell;
 import model.state.State;
+import java.util.function.Consumer;
 import rules.RuleSet;
 import rules.RulesCollection;
 
@@ -296,21 +296,25 @@ public class Board {
             if (cellX == 0) {
                 if (state.isAlive()) {
                     addColLeft();
+                    callResizeListeners();
                 }
             }
             if (cellX == lenX - 1) {
                 if (state.isAlive()) {
                     addColRight();
+                    callResizeListeners();
                 }
             }
             if (cellY == 0) {
                 if (state.isAlive()) {
                     addRowTop();
+                    callResizeListeners();
                 }
             }
             if (cellY == lenY - 1) {
                 if (state.isAlive()) {
                     addRowBottom();
+                    callResizeListeners();
                 }
             }
         }
@@ -418,6 +422,17 @@ public class Board {
             }
         }
         return bb;
+    }
+
+    private List<Consumer<Size>> listeners = new ArrayList<>();
+    public void addResizeListener(Consumer<Size> runner) {
+        listeners.add(runner);
+    }
+
+    private void callResizeListeners() {
+        for (Consumer<Size> runner : listeners) {
+            runner.accept(new Size(getSizeY(), getSizeX()));
+        }
     }
 
     /**
