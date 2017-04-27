@@ -10,17 +10,17 @@ public class Board {
     private RuleSet ruleSet;
 
     /**
-     * Constructor accepting the initial sizes of the model.
+     * Constructor accepting the initial sizes of the board.
      *
-     * @param sizeX Length of the model.
-     * @param sizeY Height of the model.
+     * @param sizeX Length of the board.
+     * @param sizeY Height of the board.
      */
     public Board(int sizeX, int sizeY){
         initBoard(sizeX, sizeY);
     }
 
     /**
-     * Initializes the model with the passed sizes.
+     * Initializes the board with the passed sizes.
      *
      * @param sizeX Number of columns to initialize with.
      * @param sizeY Number of rows to initialize with.
@@ -77,9 +77,9 @@ public class Board {
     }
 
     /**
-     * Inserts a pattern, starting from the top-left corner of the model (0,0).
+     * Inserts a pattern, starting from the top-left corner of the board (0,0).
      *
-     * @param pattern Pattern to insert into the model.
+     * @param pattern Pattern to insert into the board.
      */
     public void insertPattern(byte[][] pattern) {
         while (pattern.length > board.size()) {
@@ -140,10 +140,10 @@ public class Board {
     }
 
     /**
-     * Returns a clone of the current model, where no changes to the cloned model will affect the original model.
+     * Returns a clone of the current board, where no changes to the cloned board will affect the original board.
      *
      * @param oldBoard Board to copy.
-     * @return A clone of the passed model.
+     * @return A clone of the passed board.
      */
     private static ArrayList<ArrayList<Cell>> cloneBoard(ArrayList<ArrayList<Cell>> oldBoard) {
         int oldSizeY = oldBoard.size();
@@ -160,7 +160,7 @@ public class Board {
     }
 
     /**
-     * Iterates through all cells in the model, counting their alive neighbors and applying the rule set to them.
+     * Iterates through all cells in the board, counting their alive neighbors and applying the rule set to them.
      */
     public void nextGeneration() {
         ArrayList<ArrayList<Cell>> oldBoard = cloneBoard(board);
@@ -225,7 +225,7 @@ public class Board {
     }
 
     /**
-     * Transforms the model into a single String of 0s and 1s.
+     * Transforms the board into a single String of 0s and 1s.
      *
      * @return String of 1 and 0 representing the byte[][] array.
      */
@@ -270,16 +270,16 @@ public class Board {
     }
 
     /**
-     * Getter for the model.
+     * Getter for the board.
      *
-     * @return The current model.
+     * @return The current board.
      */
     public ArrayList<ArrayList<Cell>> getBoard() {
         return board;
     }
 
     /**
-     * Creates a bounding box within which the current state of the model is of interest (boundary of alive cells).
+     * Creates a bounding box within which the current state of the board is of interest (boundary of alive cells).
      *
      * @return The BoundingBox representing the area of interest.
      */
@@ -311,7 +311,7 @@ public class Board {
     }
 
     /**
-     * Returns the number of columns in the model.
+     * Returns the number of columns in the board.
      *
      * @return The number of columns.
      */
@@ -320,7 +320,7 @@ public class Board {
     }
 
     /**
-     * Returns the number of rows in the model.
+     * Returns the number of rows in the board.
      *
      * @return The number of rows.
      */
