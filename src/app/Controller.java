@@ -62,6 +62,8 @@ public class Controller implements Initializable {
     private Slider tickSlider;
     @FXML
     private ComboBox<String> comboBox;
+    @FXML
+    private MenuItem editor;
 
     public void testButton() {
         System.out.println(board.patternToString());
@@ -153,6 +155,11 @@ public class Controller implements Initializable {
 
             e.printStackTrace();
         }
+    }
+
+    public void editor() {
+        ControllerEditor editor = new ControllerEditor();
+        editor.showAndWait();
     }
 
     private void showIOWarningAlert(IOException e) {
