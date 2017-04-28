@@ -39,6 +39,7 @@ public class Board {
         }catch (InterruptedException ie){
             ie.printStackTrace();
             //TODO ADD TO AlertLibrary
+
         }
         workers.clear();
         threadIndex = 0;
@@ -248,6 +249,14 @@ public class Board {
         System.out.println("board.get(0).size = " + board.get(0).size());
     }
 
+    public void addRow(){
+
+    }
+
+    public void addCol(){
+
+    }
+
     /**
      * Method for checking a specific cell's neighbour count.
      *
@@ -266,17 +275,45 @@ public class Board {
                     continue;
                 }
 
+                if (cellX == 0) {
+                    return 0;
+                }
+
+                if (cellX == lenX) {
+                    return 0;
+                }
+
+                if (cellY == 0) {
+                    return 0;
+                }
+
+                if (cellY == lenY) {
+                    return 0;
+                }
+
+
+//                
+//
+//                if (lenY== cellY) {
+//                    ArrayList<Cell> row = new ArrayList<>(lenX);
+//                    for (int i = 0; i < lenX; i++) {
+//                        row.add(new Cell(0));
+//                    }
+//                    board.get(board.size()).add(row);
+//                }
+
                 int neighborX = cellX + relativeX;
                 int neighborY = cellY + relativeY;
 
-                neighborY = wrap(lenY, neighborY);
-                neighborX = wrap(lenX, neighborX);
+//                neighborY = wrap(lenY, neighborY);
+//                neighborX = wrap(lenX, neighborX);
 
                 if (board.get(neighborY).get(neighborX).getState() == 1) {
                     num++;
                 }
-            }
-        }
+            }//END RELATIVE X
+        }//END RELATIVE Y
+        System.out.println("Cell(x,y): " + cellX + ", " + cellY + " HAS " + num + " neighbours.");
         return num;
     }
 

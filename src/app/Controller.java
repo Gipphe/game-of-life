@@ -65,6 +65,8 @@ public class Controller implements Initializable {
 
     public void testButton() {
         nextGenerationConcurrentPrintPerformance();
+        draw();
+
         nextGenerationPrintPerformance();
         draw();
     }
@@ -420,7 +422,7 @@ public class Controller implements Initializable {
             pressedY = event.getY();
             return;
         }
-        int x = (int) event.getX() / 20;
+        int x = (int) event.getX() / cellWidth;
         int y = (int) event.getY() / 20;
 
         if (board.getValue(x, y) == 0) {
@@ -447,8 +449,8 @@ public class Controller implements Initializable {
             canvas.setTranslateY(canvas.getTranslateY() + event.getY() - pressedY);
             return;
         }
-        int x = (int)event.getX()/20;
-        int y = (int)event.getY()/20;
+        int x = (int)event.getX() /cellWidth;
+        int y = (int)event.getY()/  cellWidth;
 
         try {
             board.setValue(x, y, onDragValue);
@@ -476,8 +478,8 @@ public class Controller implements Initializable {
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        int sizeX = 20;
-        int sizeY = 20;
+        int sizeX = 10;
+        int sizeY = 10;
         board = new Board(sizeX, sizeY);
         aliveColorPicker.setValue(Color.BLACK);
         deadColorPicker.setValue(Color.WHITE);
