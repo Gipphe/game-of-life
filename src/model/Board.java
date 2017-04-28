@@ -1,12 +1,11 @@
-/** Game of Life
+/**
+ * Game of Life
  * @author Jonas I.
  * @author Victor B.
  * @author Yanislav Z.
  */
-
 package model;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import rules.RuleSet;
@@ -14,10 +13,10 @@ import rules.RulesCollection;
 
 public class Board {
     private ArrayList<ArrayList<Cell>> board;
-    static List<Thread> workers = new ArrayList<Thread>();
-    public int parallelLevel = Runtime.getRuntime().availableProcessors();
+    private static List<Thread> workers = new ArrayList<>();
+    private int parallelLevel = Runtime.getRuntime().availableProcessors();
     private RuleSet ruleSet;
-    public int threadIndex = 0;
+    private int threadIndex = 0;
 
     /**
      * Constructor accepting the initial sizes of the board.
@@ -25,8 +24,79 @@ public class Board {
      * @param sizeX Length of the board.
      * @param sizeY Height of the board.
      */
-    public Board(int sizeX, int sizeY){
+    public Board(int sizeX, int sizeY) {
         initBoard(sizeX, sizeY);
+    }
+
+    /**
+     * nextGeneration with multi-threading enabled. Reads no. of processors and distributes workload accordingly.
+     * Provides a performance increase of TODO Add multi-threading performance increase percentage
+     */
+    public void nextGenerationConcurrent() {
+        createWorkers();
+        try {
+            runWorkers();
+        }catch (InterruptedException ie){
+            ie.printStackTrace();
+            //TODO ADD TO AlertLibrary
+        }
+        workers.clear();
+        threadIndex = 0;
+    }
+
+    /**
+     * Calculates how big of a chunk each thread should take care of, calculates nextGen.() and sets the updated cells to the board
+     *
+     * @param threadIndex The index of the instantiated thread.
+     * @param oldBoard A clone of the old board.
+     */
+    private void evaluateChunkSize(int threadIndex, ArrayList<ArrayList<Cell>> oldBoard) {
+        int blockSize = oldBoard.size() / parallelLevel;
+        int toX = blockSize * threadIndex;
+        if (threadIndex == parallelLevel) {         //this if-sentence makes the last thread take care of all remaining rows of the current board, ensuring that the board y-value does NOT need to be a factorial of parallelLevel.
+            toX = oldBoard.size();
+        }
+        int fromX = blockSize * (threadIndex - 1);
+//        System.out.println("!!!!" + threadIndex + "!!!!" + "\n" + "blockSize: " + blockSize + "\n" + "fromX: " + fromY + "\n" + "toX: " + toY);
+
+        for (int y = 0; y < oldBoard.size(); y++) {
+            List<Cell> row = oldBoard.get(y);
+            for(int x = fromX; x < toX; x++){
+                Cell cell = row.get(x);
+
+                int numNeighbours = neighbours(oldBoard, x, y);
+                byte newState = ruleSet.getNewState(cell.getState(), numNeighbours);
+                board.get(y).get(x).setState(newState);
+            }
+        }
+    }
+
+    private int getThreadIndex() {
+        threadIndex++;
+        return threadIndex;
+    }
+
+    private void createWorkers() {
+        ArrayList<ArrayList<Cell>> oldBoard = cloneBoard(board); //TODO_DTL currently clones entire board to every thread, can be further optimized to only take lenght of thread + 1 (so as to be able to calculate numNeighbours on its edges) dtl.
+        for(int i = 1; i <= parallelLevel; i++) {
+            workers.add(new Thread(() -> {
+                int threadIndex = getThreadIndex();
+                evaluateChunkSize(threadIndex, oldBoard);
+            }));
+        }
+    }
+
+
+    // kjør trådobjektene
+    private static void runWorkers() throws InterruptedException {
+        for(Thread t : workers) {
+            t.start();
+        }
+
+        // vent på at alle trådene har kjørt ferdig før vi returnerer
+        for(Thread t : workers) {
+            t.join();
+        }
     }
 
     /**
@@ -173,90 +243,10 @@ public class Board {
         }
     }
 
-
-
-
-
-
-
-    /**
-     * nextGeneration with multi-threading enabled. Reads no. of processors and distributes workload accordingly.
-     * Provides a performance increase of TODO Add multi-threading performance increase percentage
-     */
-    public void nextGenerationConcurrent() {
-        ArrayList<ArrayList<Cell>> newBoard = cloneBoard(board);
-        createWorkers();
-        try {
-            runWorkers();
-        }catch (InterruptedException ie){
-            System.out.println("IE" + ie);
-            //TODO ADD TO AlertLibrary
-        }
-        workers.clear();
-        threadIndex = 0;
-    }
-
-    /**
-     * Calculates how big of a chunk each thread should take care of, calculates nextGen.() and sets the updated cells to the board
-     *
-     * @param threadIndex The index of the instantiated thread.
-     * @param oldBoard A clone of the old board.
-     */
-    public void f(int threadIndex, ArrayList<ArrayList<Cell>> oldBoard){
-        int blockSize = oldBoard.size() / parallelLevel;
-        int toX = blockSize * threadIndex;
-        if (threadIndex == parallelLevel) {         //this if-sentence makes the last thread take care of all remaining rows of the current board, ensuring that the board y-value does NOT need to be a factorial of parallelLevel.
-            toX=oldBoard.size();
-        }
-        int fromX = blockSize * (threadIndex-1);
-//        System.out.println("!!!!" + threadIndex + "!!!!" + "\n" + "blockSize: " + blockSize + "\n" + "fromX: " + fromY + "\n" + "toX: " + toY);
-
-        for (int y = 0; y < oldBoard.size(); y++) {
-            List<Cell> row = oldBoard.get(y);
-            for(int x = fromX; x < toX; x++){
-                Cell cell = row.get(x);
-
-                int numNeighbours = neighbours(oldBoard, x, y);
-                byte newState = ruleSet.getNewState(cell.getState(), numNeighbours);
-                board.get(y).get(x).setState(newState);
-            }
-        }
-    }
-
-    public int getThreadIndex() {
-        threadIndex++;
-        return threadIndex;
-    }
-
-    public void createWorkers() {
-        ArrayList<ArrayList<Cell>> oldBoard = cloneBoard(board); //TODO_DTL currently clones entire board to every thread, can be further optimized to only take lenght of thread + 1 (so as to be able to calculate numNeighbours on its edges) dtl.
-        for(int i = 1; i <= parallelLevel; i++) {
-            workers.add(new Thread(() -> {
-                int threadIndex = getThreadIndex();
-                f(threadIndex, oldBoard);
-            }));
-        }
-    }
-
-
-    // kjør trådobjektene
-    public static void runWorkers() throws InterruptedException {
-        for(Thread t : workers) {
-            t.start();
-        }
-
-    // vent på at alle trådene har kjørt ferdig før vi returnerer
-        for(Thread t : workers) {
-            t.join();
-        }
-    }
-
-    public void tester(){
+    public void tester() {
         System.out.println("board.size() = " + board.size());
         System.out.println("board.get(0).size = " + board.get(0).size());
     }
-
-
 
     /**
      * Method for checking a specific cell's neighbour count.
@@ -328,24 +318,6 @@ public class Board {
                 } else {
                     sb.append("0");
                 }
-            }
-        }
-        return sb.toString();
-    }
-
-    /**
-     * Returns a 1/0 String of only the pattern within the bounding box.
-     *
-     * @return 1s and 0s representing the contained pattern.
-     */
-    public String patternToString(){
-        BoundingBox bb = getBoundingBox();
-        System.out.println(bb.toString());
-        StringBuilder sb = new StringBuilder();
-
-        for(int row = bb.getFirstRow(); row <= bb.getLastRow(); row++) {
-            for(int col = bb.getFirstCol(); col <= bb.getLastCol(); col++) {
-                sb.append(board.get(row).get(col).getState());
             }
         }
         return sb.toString();
