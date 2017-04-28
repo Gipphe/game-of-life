@@ -293,8 +293,20 @@ public class Board {
         return bb;
     }
 
+    /**
+     *
+     * @param ruleSetName Sets the current rule set, without requiring emptying the board.
+     */
     public void setRuleSet(String ruleSetName) {
         this.ruleSet = RulesCollection.getByName(ruleSetName);
+    }
+
+    /**
+     *
+     * @return The current rule set.
+     */
+    public RuleSet getRuleSet() {
+        return ruleSet;
     }
 
     /**
