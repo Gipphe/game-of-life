@@ -1,5 +1,9 @@
 package RLE;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class Parser {
     /**
      * Converts a passed Parser string to a byte[][] model for consumption by the Board class.
@@ -91,18 +95,51 @@ public class Parser {
 
     /**
      * Parses passed model into RLE for consumption by a file writer.
-     * @param pattern Pattern to convert to an RLE string.
+     * @param parsedPattern parsedPattern to convert to an RLE string.
      * @return Parser string representing the model.
      */
-    public static String fromPattern(byte[][] pattern) {
+    public static String fromPattern(ParsedPattern parsedPattern) {
+        byte[][] pattern = parsedPattern.getPattern();
         StringBuilder result = new StringBuilder();
         StringBuilder line = new StringBuilder();
+        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm");
+        Date date = new Date();
+        if (parsedPattern.getName().length() > 0) {
+            line
+                    .append("#N ")
+                    .append(parsedPattern.getName())
+                    .append("\n");
+        }
+
+        if (parsedPattern.getAuthor().length() > 0) {
+            line
+                    .append("#O ")
+                    .append(parsedPattern.getAuthor())
+                    .append(", ")
+                    .append(dateFormat.format(date))
+                    .append("\n");
+        } else {
+            line
+                    .append("#O ")
+                    .append(dateFormat.format(date))
+                    .append("\n");
+        }
+
+        if (parsedPattern.getDescription().length() > 0) {
+            line
+                    .append("#C ")
+                    .append(parsedPattern.getDescription())
+                    .append("\n");
+        }
+
         line
                 .append("x = ")
                 .append(pattern[0].length)
                 .append(", y = ")
                 .append(pattern.length)
-                .append(", rule = B3/S23");
+                .append(", rule = ")
+                .append(parsedPattern.getRule());
+
         result
                 .append(line.toString())
                 .append("\n");
