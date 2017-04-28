@@ -2,6 +2,8 @@ package app;
 
 import RLE.ParsedPattern;
 import RLE.Parser;
+import javafx.scene.layout.BorderPane;
+import javafx.stage.Modality;
 import javafx.geometry.Point2D;
 import javafx.scene.control.*;
 import javafx.scene.layout.Pane;
@@ -24,10 +26,12 @@ import view.CanvasController;
 import view.BoardCoordinate;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import static app.AlertLibrary.iowa;
 import static javafx.scene.input.KeyCode.SHIFT;
 
 public class Controller implements Initializable {
@@ -61,12 +65,17 @@ public class Controller implements Initializable {
     @FXML
     private ComboBox<String> comboBox;
     @FXML
+    private BorderPane borderPane;
+    @FXML
     private Pane canvasWrapper;
 
     public void testButton() {
-        board.dynamicBoard = !board.dynamicBoard;
-        nextGenerationConcurrentPrintPerformance();
+        //nextGenerationConcurrentPrintPerformance();
         nextGenerationPrintPerformance();
+//        board.addRowBottom();
+//        board.addColRight();
+//        board.addRowTop();
+        board.addColLeft();
         canvasController.draw(board);
     }
 
@@ -119,7 +128,7 @@ public class Controller implements Initializable {
             canvasController.recalculateTableBounds(board);
             canvasController.draw(board);
         } catch (IOException e) {
-            showIOWarningAlert(e);
+            iowa(e);
 
             e.printStackTrace();
         }
@@ -147,7 +156,7 @@ public class Controller implements Initializable {
             canvasController.recalculateTableBounds(board);
             canvasController.draw(board);
         } catch (IOException e) {
-            showIOWarningAlert(e);
+            iowa(e);
 
             e.printStackTrace();
         }
@@ -170,22 +179,33 @@ public class Controller implements Initializable {
                     newArray[y][x] = cell.getState().isAlive() ? (byte) 1 : 0;
                 }
             }
-            String RLEString = Parser.fromPattern(newArray);
+            ParsedPattern pp = new ParsedPattern("", "", "", board.getRuleSet().getRuleString(), newArray);
+            String RLEString = Parser.fromPattern(pp);
             fileHandler.writeToFile(RLEString);
 
         } catch (IOException e) {
-            showIOWarningAlert(e);
+            iowa(e);
 
             e.printStackTrace();
         }
     }
 
-    private void showIOWarningAlert(IOException e) {
-        Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setTitle("404 Not found");
-        alert.setContentText("File not found.");
-        alert.show();
+    /**
+     * Creates and opens the pattern editor pane.
+     */
+    public void editor(){
+        EditorController editor;
+        try {
+            editor = new EditorController(board.getRuleSet(), board.patternToBoard());
+        } catch (IllegalArgumentException iae){
+            editor = new EditorController(board.getRuleSet(), new Board(10, 10));
+        }
+
+        editor.initModality(Modality.WINDOW_MODAL);
+        editor.initOwner(borderPane.getScene().getWindow());
+        editor.showAndWait();
     }
+
 
     /**
      * Calls the start or stop method depending on the state of the Start/Stop ToggleButton.
@@ -336,7 +356,7 @@ public class Controller implements Initializable {
     /**
      * Sets the time between each next generation.
      *
-     * @param interval int The value, from 1 to 10, indicating the requested speed of the simulation.
+     * @param interval (int) The value, from 1 to 10, indicating the requested speed of the simulation.
      */
     private void setFrameInterval(double interval) {
         interval += 1;
