@@ -64,11 +64,7 @@ public class Controller implements Initializable {
     private ComboBox<String> comboBox;
 
     public void testButton() {
-//        board.addRowBottom();
-//        board.addColRight();
-//        board.addRowTop();
-        board.addColLeft();
-        draw();
+        board.dynamicBoard = !board.dynamicBoard;
     }
 
     public void nextGenerationPrintPerformance() {
