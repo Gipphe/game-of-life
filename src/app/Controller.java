@@ -59,6 +59,8 @@ public class Controller implements Initializable {
     @FXML
     private ToggleButton startStopButton;
     @FXML
+    private ToggleButton dynamicBoardButton;
+    @FXML
     private Slider tickSlider;
     @FXML
     private ComboBox<String> comboBox;
@@ -192,6 +194,19 @@ public class Controller implements Initializable {
             stop();
         }
     }
+
+    /**
+     * Toggles the dynamic state boolean of board depending on dy ToggleButton.
+     */
+    public void toggleDynamicBoard() {
+        board.dynamicBoard = !board.dynamicBoard;
+        if (dynamicBoardButton.selectedProperty().getValue()) {
+            dynamicBoardButton.setText("Turn off");
+        } else {
+            dynamicBoardButton.setText("Turn on");
+        }
+    }
+
 
     /**
      * Clears the model entirely.
