@@ -17,7 +17,7 @@ public class Board {
     private int parallelLevel = Runtime.getRuntime().availableProcessors();
     private RuleSet ruleSet;
     private int threadIndex = 0;
-    private boolean dynamicBoard = true;
+    public boolean dynamicBoard = false;
 
     /**
      * Constructor accepting the initial sizes of the board.
@@ -350,6 +350,30 @@ public class Board {
         int num = 0;
         boolean borderCell = false;
 
+        if(dynamicBoard){
+            byte state = board.get(cellY).get(cellX).getState();
+            if (cellX == 0) {
+                if (state == 1) {
+                    addColLeft();
+                }
+            }
+            if (cellX == lenX-1) {
+                if (state == 1) {
+                    addColRight();
+                }
+            }
+            if (cellY == 0) {
+                if (state == 1) {
+                    addRowTop();
+                }
+            }
+            if (cellY == lenY-1) {
+                if (state == 1) {
+                    addRowBottom();
+                }
+            }
+        }
+
         for (int relativeY = -1; relativeY < 2; relativeY++) {
             for (int relativeX = -1; relativeX < 2; relativeX++) {
                 if (relativeX == 0 && relativeY == 0) {
@@ -359,18 +383,19 @@ public class Board {
                 int neighborX = cellX + relativeX;
                 int neighborY = cellY + relativeY;
 
-//                if (!dynamicBoard) {
+                if (!dynamicBoard) {
                     neighborY = wrap(lenY, neighborY);
                     neighborX = wrap(lenX, neighborX);
-//                }
-
-                if (board.get(neighborY).get(neighborX).getState() == 1) {
-                    num++;
                 }
-            }//END RELATIVE X
-        }//END RELATIVE Y
-        System.out.println("Cell(x,y): " + cellX + ", " + cellY + " HAS " + num + " neighbours.");
-        System.out.println("LenY: " + lenY + "LenX: " + lenX);
+
+                try {
+                    if (board.get(neighborY).get(neighborX).getState() == 1) {
+                        num++;
+                    }
+                } catch (IndexOutOfBoundsException | NullPointerException ignored){
+                }
+            }
+        }
         return num;
     }
 
