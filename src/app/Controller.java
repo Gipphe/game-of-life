@@ -64,10 +64,10 @@ public class Controller implements Initializable {
     private ComboBox<String> comboBox;
 
     public void testButton() {
-        nextGenerationConcurrentPrintPerformance();
-        draw();
-
-        nextGenerationPrintPerformance();
+//        board.addRowBottom();
+//        board.addColRight();
+//        board.addRowTop();
+        board.addColLeft();
         draw();
     }
 

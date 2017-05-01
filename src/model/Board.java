@@ -17,6 +17,7 @@ public class Board {
     private int parallelLevel = Runtime.getRuntime().availableProcessors();
     private RuleSet ruleSet;
     private int threadIndex = 0;
+    private boolean dynamicBoard = true;
 
     /**
      * Constructor accepting the initial sizes of the board.
@@ -249,13 +250,91 @@ public class Board {
         System.out.println("board.get(0).size = " + board.get(0).size());
     }
 
-    public void addRow(){
 
+
+
+
+
+
+
+
+
+    public void addRowBottom(){
+        ArrayList<model.Cell> row = new ArrayList<>(board.get(0).size());
+        for (int i = 0; i < board.get(0).size(); i++) {
+            row.add(new Cell(0));
+        }
+        board.add(row);
     }
 
-    public void addCol(){
-
+    public void addRowTop(){
+        ArrayList<model.Cell> row = new ArrayList<>(board.get(0).size());
+        for (int i = 0; i < board.get(0).size(); i++) {
+            row.add(new Cell(0));
+        }
+        board.add(0, row);
     }
+
+    public void addColRight(){
+        ArrayList<model.Cell> col = new ArrayList<>(board.size());
+        for (int i = 0; i < board.size(); i++) {
+            col.add(new Cell(0));
+            board.get(i).add(col.get(i));
+        }
+    }
+
+    public void addColLeft(){
+        ArrayList<model.Cell> col = new ArrayList<>(board.size());
+        for (int i = 0; i < board.size(); i++) {
+            col.add(new Cell(0));
+            board.get(i).add(0, col.get(i));
+        }
+    }
+
+
+
+
+//
+//    /**
+//     * Doubles the current number of rows.
+//     */
+//    private void doubleRows() {
+//        int currRowCount = board.size();
+//        int targetRowCount = currRowCount * 2;
+//        for (int y = 0; y < targetRowCount; y++) {
+//            try {
+//                board.get(y);
+//            } catch (IndexOutOfBoundsException e) {
+//                int cols = board.get(0).size();
+//                ArrayList<Cell> row = new ArrayList<>(cols);
+//                for (int i = 0; i < cols; i++) {
+//                    row.add(new Cell(0));
+//                }
+//                board.add(row);
+//            }
+//        }
+//    }
+//
+//    /**
+//     * Doubles the current number of columns.
+//     */
+//    private void doubleCols() {
+//        int currColCount = board.get(0).size();
+//        int targetColCount = currColCount * 2;
+//        for (ArrayList<Cell> row : board) {
+//            for (int x = 0; x < targetColCount; x++) {
+//                try {
+//                    row.get(x);
+//                } catch (IndexOutOfBoundsException e) {
+//                    row.add(new Cell());
+//                }
+//            }
+//        }
+//    }
+
+
+
+
 
     /**
      * Method for checking a specific cell's neighbour count.
@@ -269,44 +348,21 @@ public class Board {
         int lenX = board.get(0).size();
         int lenY = board.size();
         int num = 0;
+        boolean borderCell = false;
+
         for (int relativeY = -1; relativeY < 2; relativeY++) {
             for (int relativeX = -1; relativeX < 2; relativeX++) {
                 if (relativeX == 0 && relativeY == 0) {
                     continue;
                 }
 
-                if (cellX == 0) {
-                    return 0;
-                }
-
-                if (cellX == lenX) {
-                    return 0;
-                }
-
-                if (cellY == 0) {
-                    return 0;
-                }
-
-                if (cellY == lenY) {
-                    return 0;
-                }
-
-
-//                
-//
-//                if (lenY== cellY) {
-//                    ArrayList<Cell> row = new ArrayList<>(lenX);
-//                    for (int i = 0; i < lenX; i++) {
-//                        row.add(new Cell(0));
-//                    }
-//                    board.get(board.size()).add(row);
-//                }
-
                 int neighborX = cellX + relativeX;
                 int neighborY = cellY + relativeY;
 
-//                neighborY = wrap(lenY, neighborY);
-//                neighborX = wrap(lenX, neighborX);
+//                if (!dynamicBoard) {
+                    neighborY = wrap(lenY, neighborY);
+                    neighborX = wrap(lenX, neighborX);
+//                }
 
                 if (board.get(neighborY).get(neighborX).getState() == 1) {
                     num++;
@@ -314,6 +370,7 @@ public class Board {
             }//END RELATIVE X
         }//END RELATIVE Y
         System.out.println("Cell(x,y): " + cellX + ", " + cellY + " HAS " + num + " neighbours.");
+        System.out.println("LenY: " + lenY + "LenX: " + lenX);
         return num;
     }
 
