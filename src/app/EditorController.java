@@ -12,6 +12,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -37,6 +38,7 @@ public class EditorController extends Stage implements Initializable {
     private double pressedX, pressedY;
     int cellWidth = 20;
     private RuleSet ruleSet;
+    private byte onDragValue;
 
     @FXML
     private TextField name;
@@ -127,6 +129,47 @@ public class EditorController extends Stage implements Initializable {
         }
     }
 
+    /**
+     * Handles clicks on the canvas.
+     * Toggles alive/dead cells on click.
+     *
+     * @param event (MouseEvent)
+     */
+    @FXML
+    public void onClick(MouseEvent event) {
+
+        int x = (int) event.getX() / cellWidth;
+        int y = (int) event.getY() / 20;
+
+        if (editorBoard.getValue(x, y) == 0) {
+            editorBoard.setValue(x, y, (byte) 1);
+            onDragValue = 1;
+            draw();
+        } else {
+            editorBoard.setValue(x, y, (byte) 0);
+            onDragValue = 0;
+            draw();
+        }
+    }
+
+    /**
+     * Handles "prolonged clicks" - drags.
+     * Toggles alive/dead cells on drag.
+     *
+     * @param event (MouseEvent)
+     */
+    @FXML
+    public void onDrag(MouseEvent event) {
+        int x = (int)event.getX() /cellWidth;
+        int y = (int)event.getY()/  cellWidth;
+
+        try {
+            editorBoard.setValue(x, y, onDragValue);
+        } catch (IndexOutOfBoundsException ignored) {}
+
+        draw();
+    }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         editorBoard.addRowTop();
@@ -136,7 +179,7 @@ public class EditorController extends Stage implements Initializable {
         gc = canvas.getGraphicsContext2D();
         Platform.runLater(() -> saveButton.requestFocus());
         List<RuleSet> ruleSets = RulesCollection.getCollection();
-        
+
         draw();
     }
 }

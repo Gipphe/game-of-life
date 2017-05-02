@@ -179,6 +179,7 @@ public class Controller implements Initializable {
     }
 
     public void editor() {
+        stop();
         EditorController editor = new EditorController(board.getRuleSet(), board.patternToBoard());
         editor.initModality(Modality.WINDOW_MODAL);
         editor.initOwner(borderPane.getScene().getWindow());
