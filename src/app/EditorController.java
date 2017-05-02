@@ -137,12 +137,23 @@ public class EditorController extends Stage implements Initializable {
      */
     @FXML
     public void onClick(MouseEvent event) {
-
         int x = (int) event.getX() / cellWidth;
-        int y = (int) event.getY() / 20;
+        int y = (int) event.getY() / cellWidth;
 
         if (editorBoard.getValue(x, y) == 0) {
             editorBoard.setValue(x, y, (byte) 1);
+            if (x == 0) {
+                editorBoard.addColLeft();
+            }
+            if (x == editorBoard.getSizeX()-1) {
+                editorBoard.addColRight();
+            }
+            if (y == 0) {
+                editorBoard.addRowTop();
+            }
+            if (y == editorBoard.getSizeY()-1) {
+                editorBoard.addRowBottom();
+            }
             onDragValue = 1;
             draw();
         } else {
@@ -165,6 +176,26 @@ public class EditorController extends Stage implements Initializable {
 
         try {
             editorBoard.setValue(x, y, onDragValue);
+            if (x == 0) {
+                if (onDragValue == 1){
+                    editorBoard.addColLeft();
+                }
+            }
+            if (x == editorBoard.getSizeX()-1) {
+                if (onDragValue == 1) {
+                    editorBoard.addColRight();
+                }
+            }
+            if (y == 0) {
+                if (onDragValue == 1) {
+                    editorBoard.addRowTop();
+                }
+            }
+            if (y == editorBoard.getSizeY()-1) {
+                if (onDragValue == 1) {
+                    editorBoard.addRowBottom();
+                }
+            }
         } catch (IndexOutOfBoundsException ignored) {}
 
         draw();

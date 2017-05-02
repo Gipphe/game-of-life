@@ -445,7 +445,7 @@ public class Controller implements Initializable {
             return;
         }
         int x = (int) event.getX() / cellWidth;
-        int y = (int) event.getY() / 20;
+        int y = (int) event.getY() / cellWidth;
 
         if (board.getValue(x, y) == 0) {
             board.setValue(x, y, (byte) 1);
@@ -515,7 +515,7 @@ public class Controller implements Initializable {
         comboBox.valueProperty().addListener((observable, oldValue, newValue) -> {
             clearBoard();
             setPremadePattern(newValue);
-            gc.clearRect(0,0,20 * board.getSizeX(), 20 * board.getSizeY());
+            gc.clearRect(0,0,cellWidth * board.getSizeX(), cellWidth * board.getSizeY());
             draw();
         });
 
