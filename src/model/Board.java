@@ -293,51 +293,6 @@ public class Board {
         }
     }
 
-
-
-
-//
-//    /**
-//     * Doubles the current number of rows.
-//     */
-//    private void doubleRows() {
-//        int currRowCount = board.size();
-//        int targetRowCount = currRowCount * 2;
-//        for (int y = 0; y < targetRowCount; y++) {
-//            try {
-//                board.get(y);
-//            } catch (IndexOutOfBoundsException e) {
-//                int cols = board.get(0).size();
-//                ArrayList<Cell> row = new ArrayList<>(cols);
-//                for (int i = 0; i < cols; i++) {
-//                    row.add(new Cell(0));
-//                }
-//                board.add(row);
-//            }
-//        }
-//    }
-//
-//    /**
-//     * Doubles the current number of columns.
-//     */
-//    private void doubleCols() {
-//        int currColCount = board.get(0).size();
-//        int targetColCount = currColCount * 2;
-//        for (ArrayList<Cell> row : board) {
-//            for (int x = 0; x < targetColCount; x++) {
-//                try {
-//                    row.get(x);
-//                } catch (IndexOutOfBoundsException e) {
-//                    row.add(new Cell());
-//                }
-//            }
-//        }
-//    }
-
-
-
-
-
     /**
      * Method for checking a specific cell's neighbour count.
      *

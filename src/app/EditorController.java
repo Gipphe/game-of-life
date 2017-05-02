@@ -29,16 +29,13 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 public class EditorController extends Stage implements Initializable {
-    private Board board;
-    private AnimationTimer timer;
+    private Board editorBoard;
     private Color aliveColor = Color.BLACK;
     private Color deadColor = Color.WHITE;
-    private double frameInterval;
     private GraphicsContext gc;
     private Pattern[] patterns = PatternCollection.getCollection();
     private double pressedX, pressedY;
     int cellWidth = 20;
-    private Board recievedBoard;
     private RuleSet ruleSet;
 
     @FXML
@@ -56,11 +53,10 @@ public class EditorController extends Stage implements Initializable {
     @FXML
     private Canvas canvas;
 
-    public EditorController(RuleSet ruleSet, Board recievedBoard) {
-        BoundingBox recievedBoardBB = recievedBoard.getBoundingBox();
+    public EditorController(RuleSet ruleSet, Board receivedBoard) {
         setTitle("Pattern Editor");
         this.ruleSet = ruleSet;
-        this.recievedBoard = recievedBoard;
+        editorBoard = receivedBoard;
         FXMLLoader loader = new FXMLLoader(getClass().getResource("Editor.fxml"));
         loader.setController(this);
 
@@ -96,7 +92,7 @@ public class EditorController extends Stage implements Initializable {
 
     public void setRule(String name) {
         System.out.println(name);
-        board.setRuleSet(name);
+        editorBoard.setRuleSet(name);
     }
 
     /**
@@ -106,7 +102,7 @@ public class EditorController extends Stage implements Initializable {
     private void draw() {
         GraphicsContext gcd = gc;
 
-        ArrayList<ArrayList<Cell>> gameBoard = recievedBoard.getBoard();
+        ArrayList<ArrayList<Cell>> gameBoard = editorBoard.getBoard();
         int borderWidth = 1;
         int cellWithBorder = cellWidth - borderWidth;
         gcd.getCanvas().setHeight(cellWidth * gameBoard.size());
@@ -117,7 +113,7 @@ public class EditorController extends Stage implements Initializable {
         for (int y = 0; y < gameBoard.size(); y++) {
             ArrayList<Cell> row = gameBoard.get(y);
 
-            for (int x = 0; x < board.getBoard().get(0).size(); x++) {
+            for (int x = 0; x < editorBoard.getBoard().get(0).size(); x++) {
                 Cell cell = row.get(x);
 
                 if (cell.getState() == 1) {
@@ -133,11 +129,14 @@ public class EditorController extends Stage implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        board = new Board(recievedBoard.getSizeX(),recievedBoard.getSizeY());
+        editorBoard.addRowTop();
+        editorBoard.addRowBottom();
+        editorBoard.addColLeft();
+        editorBoard.addColRight();
         gc = canvas.getGraphicsContext2D();
         Platform.runLater(() -> saveButton.requestFocus());
         List<RuleSet> ruleSets = RulesCollection.getCollection();
-
+        
         draw();
     }
 }
