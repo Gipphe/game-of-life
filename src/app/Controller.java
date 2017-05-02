@@ -60,6 +60,8 @@ public class Controller implements Initializable {
     @FXML
     private ToggleButton startStopButton;
     @FXML
+    private ToggleButton dynamicBoardButton;
+    @FXML
     private Slider tickSlider;
     @FXML
     private ComboBox<String> comboBox;
@@ -67,6 +69,25 @@ public class Controller implements Initializable {
     private BorderPane borderPane;
 
     public void testButton() {
+        board.dynamicBoard = !board.dynamicBoard;
+    }
+
+    public void nextGenerationPrintPerformance() {
+        long x1 = System.currentTimeMillis();
+        for (int i = 0; i<3000; i++){
+            board.nextGeneration();
+        }
+        long deltaX = System.currentTimeMillis() - x1;
+        System.out.println("Counting time (ms): " + deltaX);
+    }
+
+    public void nextGenerationConcurrentPrintPerformance() {
+        long x1 = System.currentTimeMillis();
+        for (int i = 0; i<3000; i++){
+            board.nextGenerationConcurrent();
+        }
+        long deltaX = System.currentTimeMillis() - x1;
+        System.out.println("Counting time (ms): " + deltaX);
     }
 
     private void setPremadePattern(String premadePattern) {
@@ -183,6 +204,19 @@ public class Controller implements Initializable {
             stop();
         }
     }
+
+    /**
+     * Toggles the dynamic state boolean of board depending on dy ToggleButton.
+     */
+    public void toggleDynamicBoard() {
+        board.dynamicBoard = !board.dynamicBoard;
+        if (dynamicBoardButton.selectedProperty().getValue()) {
+            dynamicBoardButton.setText("Turn off");
+        } else {
+            dynamicBoardButton.setText("Turn on");
+        }
+    }
+
 
     /**
      * Clears the model entirely.
@@ -409,7 +443,7 @@ public class Controller implements Initializable {
             pressedY = event.getY();
             return;
         }
-        int x = (int) event.getX() / 20;
+        int x = (int) event.getX() / cellWidth;
         int y = (int) event.getY() / 20;
 
         if (board.getValue(x, y) == 0) {
@@ -436,8 +470,8 @@ public class Controller implements Initializable {
             canvas.setTranslateY(canvas.getTranslateY() + event.getY() - pressedY);
             return;
         }
-        int x = (int)event.getX()/20;
-        int y = (int)event.getY()/20;
+        int x = (int)event.getX() /cellWidth;
+        int y = (int)event.getY()/  cellWidth;
 
         try {
             board.setValue(x, y, onDragValue);
@@ -465,8 +499,8 @@ public class Controller implements Initializable {
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        int sizeX = 30;
-        int sizeY = 30;
+        int sizeX = 10;
+        int sizeY = 10;
         board = new Board(sizeX, sizeY);
         aliveColorPicker.setValue(Color.BLACK);
         deadColorPicker.setValue(Color.WHITE);

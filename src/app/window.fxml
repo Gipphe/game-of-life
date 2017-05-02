@@ -38,22 +38,25 @@
                 <MenuItem mnemonicParsing="false" onAction="#exit" text="Exit" />
             </Menu>
             <Menu mnemonicParsing="false" text="Edit">
-                <Menu mnemonicParsing="false" text="Color">
-                    <MenuItem mnemonicParsing="false" text="Alive color">
-                        <graphic>
-                            <ColorPicker fx:id="aliveColorPicker" onAction="#setAliveColor" promptText="Alive Color">
-                                <opaqueInsets>
-                                    <Insets />
-                                </opaqueInsets>
-                            </ColorPicker>
-                        </graphic>
-                    </MenuItem>
-                    <MenuItem mnemonicParsing="false" text="Dead color">
-                        <graphic>
-                            <ColorPicker fx:id="deadColorPicker" onAction="#setDeadColor" />
-                        </graphic>
-                    </MenuItem>
-                </Menu>
+            <MenuItem mnemonicParsing="false" text="Dynamic board">
+               <graphic>
+                  <ToggleButton fx:id="dynamicBoardButton" alignment="TOP_CENTER" mnemonicParsing="false" onAction="#toggleDynamicBoard" text="Turn on" textAlignment="CENTER" />
+               </graphic>
+            </MenuItem>
+                 <MenuItem mnemonicParsing="false" text="Dead color">
+                     <graphic>
+                         <ColorPicker fx:id="deadColorPicker" onAction="#setDeadColor" />
+                     </graphic>
+                 </MenuItem>
+                 <MenuItem mnemonicParsing="false" text="Alive color">
+                     <graphic>
+                         <ColorPicker fx:id="aliveColorPicker" onAction="#setAliveColor" promptText="Alive Color">
+                             <opaqueInsets>
+                                 <Insets />
+                             </opaqueInsets>
+                         </ColorPicker>
+                     </graphic>
+                 </MenuItem>
             </Menu>
             <Menu fx:id="rulesMenu" mnemonicParsing="false" text="Rules">
             </Menu>

@@ -1,3 +1,9 @@
+/**
+ * Game of Life
+ * @author Jonas I.
+ * @author Victor B.
+ * @author Yanislav Z.
+ */
 package model;
 
 import java.util.ArrayList;
@@ -9,7 +15,11 @@ import rules.RulesCollection;
 
 public class Board {
     private ArrayList<ArrayList<Cell>> board;
+    private static List<Thread> workers = new ArrayList<>();
+    private int parallelLevel = Runtime.getRuntime().availableProcessors();
     private RuleSet ruleSet;
+    private int threadIndex = 0;
+    public boolean dynamicBoard = false;
 
     /**
      * Constructor accepting the initial sizes of the board.
@@ -17,8 +27,80 @@ public class Board {
      * @param sizeX Length of the board.
      * @param sizeY Height of the board.
      */
-    public Board(int sizeX, int sizeY){
+    public Board(int sizeX, int sizeY) {
         initBoard(sizeX, sizeY);
+    }
+
+    /**
+     * nextGeneration with multi-threading enabled. Reads no. of processors and distributes workload accordingly.
+     * Provides a performance increase of TODO Add multi-threading performance increase percentage
+     */
+    public void nextGenerationConcurrent() {
+        createWorkers();
+        try {
+            runWorkers();
+        }catch (InterruptedException ie){
+            ie.printStackTrace();
+            //TODO ADD TO AlertLibrary
+
+        }
+        workers.clear();
+        threadIndex = 0;
+    }
+
+    /**
+     * Calculates how big of a chunk each thread should take care of, calculates nextGen.() and sets the updated cells to the board
+     *
+     * @param threadIndex The index of the instantiated thread.
+     * @param oldBoard A clone of the old board.
+     */
+    private void evaluateChunkSize(int threadIndex, ArrayList<ArrayList<Cell>> oldBoard) {
+        int blockSize = oldBoard.size() / parallelLevel;
+        int toX = blockSize * threadIndex;
+        if (threadIndex == parallelLevel) {         //this if-sentence makes the last thread take care of all remaining rows of the current board, ensuring that the board y-value does NOT need to be a factorial of parallelLevel.
+            toX = oldBoard.size();
+        }
+        int fromX = blockSize * (threadIndex - 1);
+//        System.out.println("!!!!" + threadIndex + "!!!!" + "\n" + "blockSize: " + blockSize + "\n" + "fromX: " + fromY + "\n" + "toX: " + toY);
+
+        for (int y = 0; y < oldBoard.size(); y++) {
+            List<Cell> row = oldBoard.get(y);
+            for(int x = fromX; x < toX; x++){
+                Cell cell = row.get(x);
+
+                int numNeighbours = neighbours(oldBoard, x, y);
+                byte newState = ruleSet.getNewState(cell.getState(), numNeighbours);
+                board.get(y).get(x).setState(newState);
+            }
+        }
+    }
+
+    private int getThreadIndex() {
+        threadIndex++;
+        return threadIndex;
+    }
+
+    private void createWorkers() {
+        ArrayList<ArrayList<Cell>> oldBoard = cloneBoard(board); //TODO_DTL currently clones entire board to every thread, can be further optimized to only take lenght of thread + 1 (so as to be able to calculate numNeighbours on its edges) dtl.
+        for(int i = 1; i <= parallelLevel; i++) {
+            workers.add(new Thread(() -> {
+                int threadIndex = getThreadIndex();
+                evaluateChunkSize(threadIndex, oldBoard);
+            }));
+        }
+    }
+
+
+    // kjør trådobjektene
+    private static void runWorkers() throws InterruptedException {
+        for(Thread t : workers) {
+            t.start();
+        }
+
+        // vent på at alle trådene har kjørt ferdig før vi returnerer
+        for(Thread t : workers) {
+            t.join();
+        }
     }
 
     /**
@@ -165,6 +247,97 @@ public class Board {
         }
     }
 
+    public void tester() {
+        System.out.println("board.size() = " + board.size());
+        System.out.println("board.get(0).size = " + board.get(0).size());
+    }
+
+
+
+
+
+
+
+
+
+
+    public void addRowBottom(){
+        ArrayList<model.Cell> row = new ArrayList<>(board.get(0).size());
+        for (int i = 0; i < board.get(0).size(); i++) {
+            row.add(new Cell(0));
+        }
+        board.add(row);
+    }
+
+    public void addRowTop(){
+        ArrayList<model.Cell> row = new ArrayList<>(board.get(0).size());
+        for (int i = 0; i < board.get(0).size(); i++) {
+            row.add(new Cell(0));
+        }
+        board.add(0, row);
+    }
+
+    public void addColRight(){
+        ArrayList<model.Cell> col = new ArrayList<>(board.size());
+        for (int i = 0; i < board.size(); i++) {
+            col.add(new Cell(0));
+            board.get(i).add(col.get(i));
+        }
+    }
+
+    public void addColLeft(){
+        ArrayList<model.Cell> col = new ArrayList<>(board.size());
+        for (int i = 0; i < board.size(); i++) {
+            col.add(new Cell(0));
+            board.get(i).add(0, col.get(i));
+        }
+    }
+
+
+
+
+//
+//    /**
+//     * Doubles the current number of rows.
+//     */
+//    private void doubleRows() {
+//        int currRowCount = board.size();
+//        int targetRowCount = currRowCount * 2;
+//        for (int y = 0; y < targetRowCount; y++) {
+//            try {
+//                board.get(y);
+//            } catch (IndexOutOfBoundsException e) {
+//                int cols = board.get(0).size();
+//                ArrayList<Cell> row = new ArrayList<>(cols);
+//                for (int i = 0; i < cols; i++) {
+//                    row.add(new Cell(0));
+//                }
+//                board.add(row);
+//            }
+//        }
+//    }
+//
+//    /**
+//     * Doubles the current number of columns.
+//     */
+//    private void doubleCols() {
+//        int currColCount = board.get(0).size();
+//        int targetColCount = currColCount * 2;
+//        for (ArrayList<Cell> row : board) {
+//            for (int x = 0; x < targetColCount; x++) {
+//                try {
+//                    row.get(x);
+//                } catch (IndexOutOfBoundsException e) {
+//                    row.add(new Cell());
+//                }
+//            }
+//        }
+//    }
+
+
+
+
+
     /**
      * Method for checking a specific cell's neighbour count.
      *
@@ -177,6 +350,32 @@ public class Board {
         int lenX = board.get(0).size();
         int lenY = board.size();
         int num = 0;
+        boolean borderCell = false;
+
+        if(dynamicBoard){
+            byte state = board.get(cellY).get(cellX).getState();
+            if (cellX == 0) {
+                if (state == 1) {
+                    addColLeft();
+                }
+            }
+            if (cellX == lenX-1) {
+                if (state == 1) {
+                    addColRight();
+                }
+            }
+            if (cellY == 0) {
+                if (state == 1) {
+                    addRowTop();
+                }
+            }
+            if (cellY == lenY-1) {
+                if (state == 1) {
+                    addRowBottom();
+                }
+            }
+        }
+
         for (int relativeY = -1; relativeY < 2; relativeY++) {
             for (int relativeX = -1; relativeX < 2; relativeX++) {
                 if (relativeX == 0 && relativeY == 0) {
@@ -186,11 +385,16 @@ public class Board {
                 int neighborX = cellX + relativeX;
                 int neighborY = cellY + relativeY;
 
-                neighborY = wrap(lenY, neighborY);
-                neighborX = wrap(lenX, neighborX);
+                if (!dynamicBoard) {
+                    neighborY = wrap(lenY, neighborY);
+                    neighborX = wrap(lenX, neighborX);
+                }
 
-                if (board.get(neighborY).get(neighborX).getState() == 1) {
-                    num++;
+                try {
+                    if (board.get(neighborY).get(neighborX).getState() == 1) {
+                        num++;
+                    }
+                } catch (IndexOutOfBoundsException | NullPointerException ignored){
                 }
             }
         }
