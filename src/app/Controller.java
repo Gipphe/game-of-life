@@ -67,7 +67,6 @@ public class Controller implements Initializable {
     private BorderPane borderPane;
 
     public void testButton() {
-        System.out.println(board.patternToString());
     }
 
     private void setPremadePattern(String premadePattern) {
@@ -159,8 +158,7 @@ public class Controller implements Initializable {
     }
 
     public void editor() {
-        Board patternToEditor = board;
-        EditorController editor = new EditorController(board.getRuleSet(), patternToEditor);
+        EditorController editor = new EditorController(board.getRuleSet(), board.patternToBoard());
         editor.initModality(Modality.WINDOW_MODAL);
         editor.initOwner(borderPane.getScene().getWindow());
         editor.showAndWait();

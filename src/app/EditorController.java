@@ -1,24 +1,46 @@
 package app;
 
+import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
+import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import model.Board;
+import model.BoundingBox;
+import model.Cell;
 import rules.RuleSet;
+import rules.RulesCollection;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class EditorController extends Stage implements Initializable {
+    private Board board;
+    private AnimationTimer timer;
+    private Color aliveColor = Color.BLACK;
+    private Color deadColor = Color.WHITE;
+    private double frameInterval;
+    private GraphicsContext gc;
+    private Pattern[] patterns = PatternCollection.getCollection();
+    private double pressedX, pressedY;
+    int cellWidth = 20;
+    private Board recievedBoard;
+    private RuleSet ruleSet;
+
     @FXML
     private TextField name;
     @FXML
@@ -31,14 +53,14 @@ public class EditorController extends Stage implements Initializable {
     private Button closeButton;
     @FXML
     private Button updateStrip;
+    @FXML
+    private Canvas canvas;
 
-    private RuleSet ruleSet;
-
-    public EditorController(RuleSet ruleSet, Board recievedPattern) {
+    public EditorController(RuleSet ruleSet, Board recievedBoard) {
+        BoundingBox recievedBoardBB = recievedBoard.getBoundingBox();
         setTitle("Pattern Editor");
-
         this.ruleSet = ruleSet;
-
+        this.recievedBoard = recievedBoard;
         FXMLLoader loader = new FXMLLoader(getClass().getResource("Editor.fxml"));
         loader.setController(this);
 
@@ -72,8 +94,50 @@ public class EditorController extends Stage implements Initializable {
         }
     }
 
+    public void setRule(String name) {
+        System.out.println(name);
+        board.setRuleSet(name);
+    }
+
+    /**
+     * Draws the current model onto the GraphicsContext, using the aliveColor method for the value 1,
+     * and deadColor method for the value 0.
+     */
+    private void draw() {
+        GraphicsContext gcd = gc;
+
+        ArrayList<ArrayList<Cell>> gameBoard = recievedBoard.getBoard();
+        int borderWidth = 1;
+        int cellWithBorder = cellWidth - borderWidth;
+        gcd.getCanvas().setHeight(cellWidth * gameBoard.size());
+        gcd.getCanvas().setWidth(cellWidth * gameBoard.get(0).size());
+
+
+
+        for (int y = 0; y < gameBoard.size(); y++) {
+            ArrayList<Cell> row = gameBoard.get(y);
+
+            for (int x = 0; x < board.getBoard().get(0).size(); x++) {
+                Cell cell = row.get(x);
+
+                if (cell.getState() == 1) {
+                    gcd.setFill(aliveColor);
+                } else {
+                    gcd.setFill(deadColor);
+                }
+
+                gcd.fillRect(x * cellWidth, y * cellWidth, cellWithBorder, cellWithBorder);
+            }
+        }
+    }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        board = new Board(recievedBoard.getSizeX(),recievedBoard.getSizeY());
+        gc = canvas.getGraphicsContext2D();
         Platform.runLater(() -> saveButton.requestFocus());
+        List<RuleSet> ruleSets = RulesCollection.getCollection();
+
+        draw();
     }
 }

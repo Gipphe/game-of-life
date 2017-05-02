@@ -2,6 +2,8 @@ package model;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.codehaus.groovy.runtime.powerassert.SourceText;
 import rules.RuleSet;
 import rules.RulesCollection;
 
@@ -245,7 +247,6 @@ public class Board {
      */
     public String patternToString(){
         BoundingBox bb = getBoundingBox();
-        System.out.println(bb.toString());
         StringBuilder sb = new StringBuilder();
 
         for(int row = bb.getFirstRow(); row <= bb.getLastRow(); row++) {
@@ -256,30 +257,26 @@ public class Board {
         return sb.toString();
     }
 
-   /* public Board getPattern(Board boardToPattern) {
-        BoundingBox bb = getBoundingBox();
-        int x = bb.getLastCol() - bb.getFirstCol();
-        System.out.println(x);
-        int y = bb.getLastRow() - bb.getFirstRow();
-        System.out.println(y);
-        Board returnPattern = new Board(x, y);
-        System.out.println(returnPattern);
+    public Board patternToBoard() {
+        BoundingBox patternBB = getBoundingBox();
+        Board patternBoard = new Board(patternBB.getSizeX(), patternBB.getSizeY());
+        System.out.println(patternBoard.getSizeX());
+        System.out.println(patternBoard.getSizeY());
+        int patternRow = 0;
+        int patternCol = 0;
 
-        for (ArrayList<Cell> oldRow : ) {
-            ArrayList<Cell> newRow = new ArrayList<>(oldSizeX);
-            newBoard.add(newRow);
-            for (Cell cell : oldRow) {
-                newRow.add(new Cell(cell.getState()));
+
+        for(int row = patternBB.getFirstRow(); row <= patternBB.getLastRow(); row++) {
+            for(int col = patternBB.getFirstCol(); col <= patternBB.getLastCol(); col++) {
+                System.out.println("Hei fra (" + col + ", " + row + "). ");
+                patternBoard.getBoard().get(patternRow).get(patternCol).setState(board.get(row).get(col).getState());
+                patternCol++;
             }
+            patternRow++;
+            patternCol = 0;
         }
-        for(int i = bb.getFirstRow(); y < bb.getLastRow(); y++) {
-            for (int j = bb.getFirstCol(); x < bb.getLastCol(); x++) {
-                returnPattern.get(i).get(j).setState(board.get(i).get(j).getState());
-                re.add(new Cell(cell.getState()));
-            }
-        }
-        return returnPattern;
-    }*/
+        return patternBoard;
+    }
 
     /**
      * Getter for the board.
@@ -295,7 +292,7 @@ public class Board {
      *
      * @return The BoundingBox representing the area of interest.
      */
-    private BoundingBox getBoundingBox() {
+    public BoundingBox getBoundingBox() {
         BoundingBox bb = new BoundingBox(board.size(), board.get(0).size(), 0, 0);
         for(int i = 0; i < board.size(); i++) {
             for(int j = 0; j < board.get(i).size(); j++) {
