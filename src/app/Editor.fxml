@@ -12,7 +12,6 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1">
    <center>
       <Canvas fx:id="canvas" height="200.0" onMouseDragged="#onDrag" onMousePressed="#onClick" width="200.0" BorderPane.alignment="CENTER">
          <cursor>
@@ -42,9 +41,14 @@
                <VBox.margin>
                   <Insets bottom="15.0" left="20.0" right="20.0" />
                </VBox.margin></TextField>
-            <Button fx:id="saveButton" mnemonicParsing="false" onAction="#onSaveButtonAction" text="Save pattern">
+            <Button fx:id="saveGifButton" mnemonicParsing="false" onAction="#onSaveRleButtonAction" text="Save pattern as animated .GIF">
                <VBox.margin>
                   <Insets bottom="15.0" top="15.0" />
+               </VBox.margin>
+            </Button>
+            <Button fx:id="saveRleButton" mnemonicParsing="false" onAction="#onSaveRleButtonAction" text="Export to .RLE file">
+               <VBox.margin>
+                  <Insets bottom="15.0" />
                </VBox.margin>
             </Button>
             <Button fx:id="closeButton" mnemonicParsing="false" onAction="#onCloseButtonAction" text="Close">

@@ -24,6 +24,7 @@ import rules.RuleSet;
 import rules.RulesCollection;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -178,12 +179,19 @@ public class Controller implements Initializable {
         }
     }
 
-    public void editor() {
+    public void editor(){
         stop();
-        EditorController editor = new EditorController(board.getRuleSet(), board.patternToBoard());
-        editor.initModality(Modality.WINDOW_MODAL);
-        editor.initOwner(borderPane.getScene().getWindow());
-        editor.showAndWait();
+        try {
+            EditorController editor = new EditorController(board.getRuleSet(), board.patternToBoard());
+            editor.initModality(Modality.WINDOW_MODAL);
+            editor.initOwner(borderPane.getScene().getWindow());
+            editor.showAndWait();
+        } catch (Exception e){
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("No pattern found on board");
+            alert.setContentText("No pattern found. Please import a pattern or create your own.");
+            alert.show();
+        }
     }
 
     private void showIOWarningAlert(IOException e) {

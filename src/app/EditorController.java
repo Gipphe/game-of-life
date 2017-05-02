@@ -47,7 +47,9 @@ public class EditorController extends Stage implements Initializable {
     @FXML
     private TextField desciption;
     @FXML
-    private Button saveButton;
+    private Button saveGifButton;
+    @FXML
+    private Button saveRleButton;
     @FXML
     private Button closeButton;
     @FXML
@@ -78,7 +80,12 @@ public class EditorController extends Stage implements Initializable {
     }
 
     @FXML
-    void onSaveButtonAction(ActionEvent event) {
+    void onSaveGifButtonAction(ActionEvent event) {
+
+    }
+
+    @FXML
+    void onSaveRleButtonAction(ActionEvent event) {
         String ruleString = ruleSet.getRuleString();
 
         FileChooser fs = new FileChooser();
@@ -109,8 +116,6 @@ public class EditorController extends Stage implements Initializable {
         int cellWithBorder = cellWidth - borderWidth;
         gcd.getCanvas().setHeight(cellWidth * gameBoard.size());
         gcd.getCanvas().setWidth(cellWidth * gameBoard.get(0).size());
-
-
 
         for (int y = 0; y < gameBoard.size(); y++) {
             ArrayList<Cell> row = gameBoard.get(y);
@@ -208,7 +213,7 @@ public class EditorController extends Stage implements Initializable {
         editorBoard.addColLeft();
         editorBoard.addColRight();
         gc = canvas.getGraphicsContext2D();
-        Platform.runLater(() -> saveButton.requestFocus());
+        Platform.runLater(() -> saveGifButton.requestFocus());
         List<RuleSet> ruleSets = RulesCollection.getCollection();
 
         draw();
