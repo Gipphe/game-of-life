@@ -256,6 +256,31 @@ public class Board {
         return sb.toString();
     }
 
+   /* public Board getPattern(Board boardToPattern) {
+        BoundingBox bb = getBoundingBox();
+        int x = bb.getLastCol() - bb.getFirstCol();
+        System.out.println(x);
+        int y = bb.getLastRow() - bb.getFirstRow();
+        System.out.println(y);
+        Board returnPattern = new Board(x, y);
+        System.out.println(returnPattern);
+
+        for (ArrayList<Cell> oldRow : ) {
+            ArrayList<Cell> newRow = new ArrayList<>(oldSizeX);
+            newBoard.add(newRow);
+            for (Cell cell : oldRow) {
+                newRow.add(new Cell(cell.getState()));
+            }
+        }
+        for(int i = bb.getFirstRow(); y < bb.getLastRow(); y++) {
+            for (int j = bb.getFirstCol(); x < bb.getLastCol(); x++) {
+                returnPattern.get(i).get(j).setState(board.get(i).get(j).getState());
+                re.add(new Cell(cell.getState()));
+            }
+        }
+        return returnPattern;
+    }*/
+
     /**
      * Getter for the board.
      *

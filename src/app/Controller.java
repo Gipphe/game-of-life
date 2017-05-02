@@ -2,6 +2,8 @@ package app;
 
 import RLE.ParsedPattern;
 import RLE.Parser;
+import javafx.scene.layout.BorderPane;
+import javafx.stage.Modality;
 import model.*;
 import model.Cell;
 import javafx.animation.AnimationTimer;
@@ -17,7 +19,6 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.paint.Color;
-import javafx.stage.Screen;
 import rules.RuleException;
 import rules.RuleSet;
 import rules.RulesCollection;
@@ -63,7 +64,7 @@ public class Controller implements Initializable {
     @FXML
     private ComboBox<String> comboBox;
     @FXML
-    private MenuItem editor;
+    private BorderPane borderPane;
 
     public void testButton() {
         System.out.println(board.patternToString());
@@ -158,7 +159,10 @@ public class Controller implements Initializable {
     }
 
     public void editor() {
-        ControllerEditor editor = new ControllerEditor();
+        Board patternToEditor = board;
+        EditorController editor = new EditorController(board.getRuleSet(), patternToEditor);
+        editor.initModality(Modality.WINDOW_MODAL);
+        editor.initOwner(borderPane.getScene().getWindow());
         editor.showAndWait();
     }
 

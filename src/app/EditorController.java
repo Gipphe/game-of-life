@@ -10,38 +10,41 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import model.Board;
+import rules.RuleSet;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class ControllerEditor extends Stage implements Initializable {
+public class EditorController extends Stage implements Initializable {
     @FXML
-    private TextField patternName;
+    private TextField name;
     @FXML
     private TextField author;
     @FXML
     private TextField desciption;
     @FXML
-    private TextField rules;
-    @FXML
     private Button saveButton;
     @FXML
     private Button closeButton;
+    @FXML
+    private Button updateStrip;
 
-    public ControllerEditor() {
-        FileChooser fs = new FileChooser();
-        fs.setTitle("Pattern Editor");
-        fs.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("Text Files", "*.RLE", "*.rle"));
+    private RuleSet ruleSet;
 
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("PatternEditor.fxml"));
-        fxmlLoader.setController(this);
+    public EditorController(RuleSet ruleSet, Board recievedPattern) {
+        setTitle("Pattern Editor");
+
+        this.ruleSet = ruleSet;
+
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("Editor.fxml"));
+        loader.setController(this);
 
         try
         {
-            setScene(new Scene(fxmlLoader.load()));
+            setScene(new Scene(loader.load()));
         }
         catch (IOException e)
         {
@@ -56,11 +59,17 @@ public class ControllerEditor extends Stage implements Initializable {
 
     @FXML
     void onSaveButtonAction(ActionEvent event) {
+        String ruleString = ruleSet.getRuleString();
+
         FileChooser fs = new FileChooser();
         fs.setTitle("Save file");
         fs.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter("Text Files", "*.RLE", "*.rle"));
         File f = fs.showSaveDialog(new Stage());
+
+        if (f == null) {
+            return;
+        }
     }
 
     @Override

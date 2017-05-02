@@ -98,11 +98,18 @@ public class Parser {
         StringBuilder result = new StringBuilder();
         StringBuilder line = new StringBuilder();
         line
+                .append("#N ")
+                .append("\n")
+                .append("#O ")
+                .append("\n")
+                .append("#C ")
+                .append("\n")
                 .append("x = ")
                 .append(pattern[0].length)
                 .append(", y = ")
                 .append(pattern.length)
                 .append(", rule = B3/S23");
+
         result
                 .append(line.toString())
                 .append("\n");
