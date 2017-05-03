@@ -74,7 +74,7 @@
             </HBox>
             <HBox alignment="CENTER_LEFT" maxWidth="1.7976931348623157E308" prefHeight="50.0" style="-: LIGHTGREY;">
                <children>
-                  <Button fx:id="updateStripe" mnemonicParsing="false" text="Update strip">
+                  <Button fx:id="updateStrip" mnemonicParsing="false" onAction="#updateStrip" text="Update strip">
                      <HBox.margin>
                         <Insets left="10.0" />
                      </HBox.margin></Button>
