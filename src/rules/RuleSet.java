@@ -1,5 +1,8 @@
 package rules;
 
+import model.state.ByteState;
+import model.state.State;
+
 /**
  * Represents a set of rules that determines the new state of a given cell for each generation.
  */
@@ -16,12 +19,12 @@ public class RuleSet {
      * An array of states where a cell is considered "alive".
      * Conway's and HighLife only has one state, "1".
      */
-    private final byte[] aliveStates;
+    private final State aliveState = new ByteState();
     /**
      * An array of states where a cell is considered "dead".
      * Conway's and HighLife only has one state, "0".
      */
-    private final byte[] deadStates;
+    private final State deadState = new ByteState(true);
     /**
      * A string representing the conditions for each state change of a cell.
      */
@@ -94,65 +97,27 @@ public class RuleSet {
         this.name = name;
         this.surviveStateRanges = surviveStateRanges;
         this.birthStateRanges = birthStateRanges;
-        aliveStates = new byte[]{1};
-        deadStates = new byte[]{0};
         initRuleString();
-    }
-
-    /**
-     * Constructor accepting an array of ranges where an alive cell will survive on, as well as an array of ranges
-     * where a dead cell will come to life. On top of this, it accepts an array of states where a cell is considered
-     * "alive", as well as an array of states where a cell is considered "dead".
-     *
-     * @param name Name of this rule set.
-     * @param surviveStateRanges Ranges where an alive cell remains alive.
-     * @param birthStateRanges Ranges where a dead cell comes to life.
-     * @param aliveStates States where a cell is considered alive.
-     * @param deadStates States where a cell is considered dead.
-     */
-    public RuleSet(String name, StateRange[] surviveStateRanges, StateRange[] birthStateRanges, byte[] aliveStates, byte[] deadStates) {
-        this.name = name;
-        this.surviveStateRanges = surviveStateRanges;
-        this.birthStateRanges = birthStateRanges;
-        this.aliveStates = aliveStates;
-        this.deadStates = deadStates;
-        initRuleString();
-    }
-
-    /**
-     * Checks whether an array contains the passed value.
-     *
-     * @param array Array to check.
-     * @param value Value to check.
-     * @return True if the value is in the array, false otherwise.
-     */
-    private boolean contains(byte[] array, byte value) {
-        for (byte val : array) {
-            if (val == value) return true;
-        }
-        return false;
     }
 
     /**
      * Evaluates the new state of a given cell in the coming generation based on the cell's current state as well as
      * the contained ranges.
      *
-     * @param cellState Current state of the cell before the coming generation.
+     * @param currentState Current state of the cell before the coming generation.
      * @param numNeighbors Number of neighbors the cell currently has.
      * @return The new state of the cell.
      */
-    public byte getNewState(byte cellState, int numNeighbors) {
-        boolean isAlive = contains(aliveStates, cellState);
-
+    public State getNewState(State currentState, int numNeighbors) {
         // Initialize new state at first dead state, not taking into account rule sets where a cell can have more than
         // two states.
-        byte newState = deadStates[0];
-        if (isAlive) {
+        State newState = new ByteState();
+        if (currentState.isAlive()) {
             for (StateRange stateRange : surviveStateRanges) {
                 int min = stateRange.getMin();
                 int max = stateRange.getMax();
                 if (numNeighbors <= max && numNeighbors >= min) {
-                    newState = 1;
+                    newState.setAlive(true);
                 }
             }
         } else {
@@ -160,7 +125,7 @@ public class RuleSet {
                 int min = stateRange.getMin();
                 int max = stateRange.getMax();
                 if (numNeighbors <= max && numNeighbors >= min) {
-                    newState = 1;
+                    newState.setAlive(true);
                 }
             }
         }
