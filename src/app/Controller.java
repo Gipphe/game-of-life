@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import static app.AlertLibrary.iowa;
 import static javafx.scene.input.KeyCode.SHIFT;
 
 public class Controller implements Initializable {
@@ -120,7 +121,7 @@ public class Controller implements Initializable {
             board.insertPattern(newBoard);
             draw();
         } catch (IOException e) {
-            showIOWarningAlert(e);
+            iowa(e);
 
             e.printStackTrace();
         }
@@ -146,7 +147,7 @@ public class Controller implements Initializable {
             board.insertPattern(newBoard);
             draw();
         } catch (IOException e) {
-            showIOWarningAlert(e);
+            iowa(e);
 
             e.printStackTrace();
         }
@@ -173,7 +174,7 @@ public class Controller implements Initializable {
             fileHandler.writeToFile(RLEString);
 
         } catch (IOException e) {
-            showIOWarningAlert(e);
+            iowa(e);
 
             e.printStackTrace();
         }
@@ -181,25 +182,19 @@ public class Controller implements Initializable {
 
     public void editor(){
         stop();
-        try {
+//        try {
             EditorController editor = new EditorController(board.getRuleSet(), board.patternToBoard());
             editor.initModality(Modality.WINDOW_MODAL);
             editor.initOwner(borderPane.getScene().getWindow());
             editor.showAndWait();
-        } catch (Exception e){
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setTitle("No pattern found on board");
-            alert.setContentText("No pattern found. Please import a pattern or create your own.");
-            alert.show();
-        }
+//        } catch (Exception ignoredException){
+//            Alert alert = new Alert(Alert.AlertType.WARNING);
+//            alert.setTitle("No pattern found on board");
+//            alert.setContentText("No pattern found. Please import a pattern or create your own.");
+//            alert.show();
+//        }
     }
 
-    private void showIOWarningAlert(IOException e) {
-        Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setTitle("404 Not found");
-        alert.setContentText("File not found.");
-        alert.show();
-    }
 
     /**
      * Calls the start or stop method depending on the state of the Start/Stop ToggleButton.
@@ -373,7 +368,7 @@ public class Controller implements Initializable {
     /**
      * Sets the time between each next generation.
      *
-     * @param interval int The value, from 1 to 10, indicating the requested speed of the simulation.
+     * @param interval (int) The value, from 1 to 10, indicating the requested speed of the simulation.
      */
     private void setFrameInterval(double interval) {
         interval += 1;
