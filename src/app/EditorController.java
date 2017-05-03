@@ -126,6 +126,7 @@ public class EditorController extends Stage implements Initializable {
         GraphicsContext gcs = strip.getGraphicsContext2D();
         gcs.clearRect(0, 0, strip.widthProperty().doubleValue(), strip.heightProperty().doubleValue());
 
+        for (int nextGenerationCounter = 0; nextGenerationCounter < 10; nextGenerationCounter++){
             xform.setTx(tx);
             gcs.setTransform(xform);
             if (!(nextGenerationCounter == 0)) {
@@ -156,6 +157,7 @@ public class EditorController extends Stage implements Initializable {
             }
         }
         gcs.setFill(Color.ORANGERED);
+        gcs.fillRect(clonedBoard.getBoard().get(0).size()*stripCellWidth, 0, 5, 255); //Draws separator line between each drawn generation
     }
 
     public void setRule(String name) {

@@ -63,7 +63,9 @@
    <bottom>
       <VBox maxWidth="1.7976931348623157E308" prefHeight="300.0" style="-fx-background-color: LIGHTGREY;" BorderPane.alignment="CENTER">
          <children>
+            <ScrollPane maxWidth="1.7976931348623157E308" prefHeight="250.0" vbarPolicy="NEVER">
                <content>
+                  <Canvas fx:id="strip" height="250.0" width="2300.0" />
                </content>
             </ScrollPane>
             <HBox alignment="CENTER_LEFT" maxWidth="1.7976931348623157E308" prefHeight="50.0" style="-: LIGHTGREY;">
