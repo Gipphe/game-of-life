@@ -105,39 +105,55 @@ public class EditorController extends Stage implements Initializable {
 
     @FXML
     void updateStrip(ActionEvent event) {
+        Board clonedBoard = new Board(0, 0);
+        try {
+            clonedBoard = editorBoard.clone();
+        }catch (CloneNotSupportedException ignoredCNSE){
+
+        }
+
         GraphicsContext gcs = strip.getGraphicsContext2D();
         gcs.clearRect(0, 0, strip.widthProperty().doubleValue(), strip.heightProperty().doubleValue());
         Affine xform = new Affine();
         double tx = 5;
 
-        for (int nextGenerationCounter = 0; nextGenerationCounter < 20; nextGenerationCounter++){
+        for (int nextGenerationCounter = 0; nextGenerationCounter < 5; nextGenerationCounter++){
             xform.setTx(tx);
             gcs.setTransform(xform);
-            editorBoard.nextGeneration();   //We have not used multi-threading here as a user-generated pattern is probably not all that large, and thus would benefit from a single-thread nextGen-call.
-            drawToStrip(gcs);
+            clonedBoard.nextGeneration();   //We have not used multi-threading here as a user-generated pattern is probably not all that large, and thus would benefit from a single-thread nextGen-call.
+            drawToStrip(gcs, clonedBoard);
         }
+
+        xform.setTx(0.0);
+        gcs.setTransform(xform);
     }
 
-    public void drawToStrip(GraphicsContext gcs){
-        ArrayList<ArrayList<Cell>> gameBoard = editorBoard.getBoard();
-        int borderWidth = 1;
-        int cellWithBorder = cellWidth - borderWidth;
-        gcs.getCanvas().setHeight(cellWidth * gameBoard.size());
-        gcd.getCanvas().setWidth(cellWidth * gameBoard.get(0).size());
+    public void drawToStrip(GraphicsContext gcs, Board clonedBoard){
+        ArrayList<ArrayList<Cell>> gameBoard = clonedBoard.getBoard();
+        int stripCellWidth = 0;
+
+        if (gameBoard.size() > gameBoard.get(0).size()) {
+            stripCellWidth = 140 / gameBoard.size();
+        } else {
+            stripCellWidth = 140 / gameBoard.get(0).size();
+        }
+
+        gcs.getCanvas().setHeight(stripCellWidth * gameBoard.size());
+        gcs.getCanvas().setWidth(stripCellWidth * gameBoard.get(0).size());
 
         for (int y = 0; y < gameBoard.size(); y++) {
             ArrayList<Cell> row = gameBoard.get(y);
 
-            for (int x = 0; x < editorBoard.getBoard().get(0).size(); x++) {
+            for (int x = 0; x < clonedBoard.getBoard().get(0).size(); x++) {
                 Cell cell = row.get(x);
 
                 if (cell.getState() == 1) {
-                    gcd.setFill(aliveColor);
+                    gcs.setFill(aliveColor);
                 } else {
-                    gcd.setFill(deadColor);
+                    gcs.setFill(deadColor);
                 }
 
-                gcd.fillRect(x * cellWidth, y * cellWidth, cellWithBorder, cellWithBorder);
+                gcs.fillRect(x * stripCellWidth, y * stripCellWidth, stripCellWidth, stripCellWidth);
             }
         }
     }

@@ -6,6 +6,7 @@
  */
 package model;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -502,5 +503,19 @@ public class Board {
      */
     public int getSizeY() {
         return board.size();
+    }
+
+    @Override
+    public Board clone() throws CloneNotSupportedException {
+        Board returnClone = new Board(getSizeX(), getSizeY());
+
+        for (int y = 0; y < board.size(); y++) {
+            List<Cell> row = board.get(y);
+            for(int x = 0; x < board.get(0).size(); x++){
+                returnClone.getBoard().get(y).get(x).setState(board.get(y).get(x).getState());
+            }
+        }
+
+        return returnClone;
     }
 }
