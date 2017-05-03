@@ -184,8 +184,6 @@ public class Controller implements Initializable {
      * Creates and opens the pattern editor pane.
      */
     public void editor(){
-        stop();
-        startStopButton.setText("Stop");
         EditorController editor;
         try {
             editor = new EditorController(board.getRuleSet(), board.patternToBoard());

@@ -111,36 +111,35 @@ public class EditorController extends Stage implements Initializable {
         }catch (CloneNotSupportedException ignoredCNSE){
 
         }
-
+        double stripCellWidth = 0;
+        double stripCellHeight = 225;
+        Affine xform = new Affine();
+        double xpadding = 5;
+        double tx = xpadding;
+        if (clonedBoard.getBoard().size() > clonedBoard.getBoard().get(0).size()) {
+            stripCellWidth = stripCellHeight / clonedBoard.getBoard().size();
+            System.out.println("picked .size");
+        } else {
+            stripCellWidth = stripCellHeight / clonedBoard.getBoard().get(0).size();
+            System.out.println("picked .get(0).size");
+        }
         GraphicsContext gcs = strip.getGraphicsContext2D();
         gcs.clearRect(0, 0, strip.widthProperty().doubleValue(), strip.heightProperty().doubleValue());
-        Affine xform = new Affine();
-        double tx = 5;
 
-        for (int nextGenerationCounter = 0; nextGenerationCounter < 5; nextGenerationCounter++){
             xform.setTx(tx);
             gcs.setTransform(xform);
-            clonedBoard.nextGeneration();   //We have not used multi-threading here as a user-generated pattern is probably not all that large, and thus would benefit from a single-thread nextGen-call.
-            drawToStrip(gcs, clonedBoard);
+            if (!(nextGenerationCounter == 0)) {
+                clonedBoard.nextGeneration();   //We have not used multi-threading here as a user-generated pattern is probably not all that large, and thus would benefit from a single-thread nextGen-call.
+            }
+            drawToStrip(gcs, clonedBoard, clonedBoard.getBoard(), stripCellWidth);
+            tx += stripCellHeight + xpadding;
         }
 
         xform.setTx(0.0);
         gcs.setTransform(xform);
     }
 
-    public void drawToStrip(GraphicsContext gcs, Board clonedBoard){
-        ArrayList<ArrayList<Cell>> gameBoard = clonedBoard.getBoard();
-        int stripCellWidth = 0;
-
-        if (gameBoard.size() > gameBoard.get(0).size()) {
-            stripCellWidth = 140 / gameBoard.size();
-        } else {
-            stripCellWidth = 140 / gameBoard.get(0).size();
-        }
-
-        gcs.getCanvas().setHeight(stripCellWidth * gameBoard.size());
-        gcs.getCanvas().setWidth(stripCellWidth * gameBoard.get(0).size());
-
+    public void drawToStrip(GraphicsContext gcs, Board clonedBoard, ArrayList<ArrayList<Cell>> gameBoard, double stripCellWidth){
         for (int y = 0; y < gameBoard.size(); y++) {
             ArrayList<Cell> row = gameBoard.get(y);
 
@@ -156,6 +155,7 @@ public class EditorController extends Stage implements Initializable {
                 gcs.fillRect(x * stripCellWidth, y * stripCellWidth, stripCellWidth, stripCellWidth);
             }
         }
+        gcs.setFill(Color.ORANGERED);
     }
 
     public void setRule(String name) {
@@ -267,6 +267,10 @@ public class EditorController extends Stage implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        editorBoard.addRowTop();
+        editorBoard.addRowBottom();
+        editorBoard.addColLeft();
+        editorBoard.addColRight();
         editorBoard.addRowTop();
         editorBoard.addRowBottom();
         editorBoard.addColLeft();
