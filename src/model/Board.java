@@ -61,7 +61,6 @@ public class Board {
             toX = oldBoard.size();
         }
         int fromX = blockSize * (threadIndex - 1);
-//        System.out.println("!!!!" + threadIndex + "!!!!" + "\n" + "blockSize: " + blockSize + "\n" + "fromX: " + fromY + "\n" + "toX: " + toY);
 
         for (int y = 0; y < oldBoard.size(); y++) {
             List<Cell> row = oldBoard.get(y);
