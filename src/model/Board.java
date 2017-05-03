@@ -41,8 +41,7 @@ public class Board {
             runWorkers();
         }catch (InterruptedException ie){
             ie.printStackTrace();
-            //TODO ADD TO AlertLibrary
-
+            //TODO_DTL ADD TO AlertLibrary
         }
         workers.clear();
         threadIndex = 0;
@@ -419,15 +418,12 @@ public class Board {
     public Board patternToBoard() {
         BoundingBox patternBB = getBoundingBox();
         Board patternBoard = new Board(patternBB.getSizeX(), patternBB.getSizeY());
-        System.out.println(patternBoard.getSizeX());
-        System.out.println(patternBoard.getSizeY());
         int patternRow = 0;
         int patternCol = 0;
 
 
         for(int row = patternBB.getFirstRow(); row <= patternBB.getLastRow(); row++) {
             for(int col = patternBB.getFirstCol(); col <= patternBB.getLastCol(); col++) {
-                System.out.println("Hei fra (" + col + ", " + row + "). ");
                 patternBoard.getBoard().get(patternRow).get(patternCol).setState(board.get(row).get(col).getState());
                 patternCol++;
             }

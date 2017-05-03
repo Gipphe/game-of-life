@@ -180,19 +180,22 @@ public class Controller implements Initializable {
         }
     }
 
+    /**
+     * Creates and opens the pattern editor pane.
+     */
     public void editor(){
         stop();
-//        try {
-            EditorController editor = new EditorController(board.getRuleSet(), board.patternToBoard());
-            editor.initModality(Modality.WINDOW_MODAL);
-            editor.initOwner(borderPane.getScene().getWindow());
-            editor.showAndWait();
-//        } catch (Exception ignoredException){
-//            Alert alert = new Alert(Alert.AlertType.WARNING);
-//            alert.setTitle("No pattern found on board");
-//            alert.setContentText("No pattern found. Please import a pattern or create your own.");
-//            alert.show();
-//        }
+        startStopButton.setText("Stop");
+        EditorController editor;
+        try {
+            editor = new EditorController(board.getRuleSet(), board.patternToBoard());
+        } catch (IllegalArgumentException iae){
+            editor = new EditorController(board.getRuleSet(), new Board(10, 10));
+        }
+
+        editor.initModality(Modality.WINDOW_MODAL);
+        editor.initOwner(borderPane.getScene().getWindow());
+        editor.showAndWait();
     }
 
 

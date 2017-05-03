@@ -1,5 +1,6 @@
 package app;
 
+import com.sun.corba.se.impl.orbutil.graph.Graph;
 import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -14,6 +15,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
+import javafx.scene.transform.Affine;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import model.Board;
@@ -56,6 +58,8 @@ public class EditorController extends Stage implements Initializable {
     private Button updateStrip;
     @FXML
     private Canvas canvas;
+    @FXML
+    private Canvas strip;
 
     public EditorController(RuleSet ruleSet, Board receivedBoard) {
         setTitle("Pattern Editor");
@@ -98,6 +102,45 @@ public class EditorController extends Stage implements Initializable {
             return;
         }
     }
+
+//    @FXML
+//    void updateStrip(ActionEvent event) {
+//        GraphicsContext gcs = strip.getGraphicsContext2D();
+//        gcs.clearRect(0, 0, strip.widthProperty().doubleValue(), strip.heightProperty().doubleValue());
+//        Affine xform = new Affine();
+//        double tx = 5;
+//
+//        for (int nextGenerationCounter = 0; nextGenerationCounter < 20; nextGenerationCounter++){
+//            xform.setTx(tx);
+//            gcs.setTransform(xform);
+//            editorBoard.nextGeneration();   //We have not used multi-threading here as a user-generated pattern is probably not all that large, and thus would benefit from a single-thread nextGen-call.
+//            drawToStrip();
+//        }
+//    }
+//
+//    public void drawToStrip(){
+//        ArrayList<ArrayList<Cell>> gameBoard = editorBoard.getBoard();
+//        int borderWidth = 1;
+//        int cellWithBorder = cellWidth - borderWidth;
+//        gcd.getCanvas().setHeight(cellWidth * gameBoard.size());
+//        gcd.getCanvas().setWidth(cellWidth * gameBoard.get(0).size());
+//
+//        for (int y = 0; y < gameBoard.size(); y++) {
+//            ArrayList<Cell> row = gameBoard.get(y);
+//
+//            for (int x = 0; x < editorBoard.getBoard().get(0).size(); x++) {
+//                Cell cell = row.get(x);
+//
+//                if (cell.getState() == 1) {
+//                    gcd.setFill(aliveColor);
+//                } else {
+//                    gcd.setFill(deadColor);
+//                }
+//
+//                gcd.fillRect(x * cellWidth, y * cellWidth, cellWithBorder, cellWithBorder);
+//            }
+//        }
+//    }
 
     public void setRule(String name) {
         System.out.println(name);
