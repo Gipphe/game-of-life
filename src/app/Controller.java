@@ -2,8 +2,9 @@ package app;
 
 import RLE.ParsedPattern;
 import RLE.Parser;
+import javafx.scene.control.*;
 import model.*;
-import model.Cell;
+import model.cell.Cell;
 import javafx.animation.AnimationTimer;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -12,19 +13,16 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Bounds;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.*;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.paint.Color;
-import javafx.stage.Screen;
 import rules.RuleException;
 import rules.RuleSet;
 import rules.RulesCollection;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -45,7 +43,7 @@ public class Controller implements Initializable {
      * Value to paste onto the cells dragged over by the user when clicking and dragging the mouse over the canvas.
      * Is set to the inverse of the value of the first cell clicked.
      */
-    private byte onDragValue;
+    private boolean onDragValue;
     private byte moveSpeed = 10;
 
     @FXML
@@ -156,13 +154,13 @@ public class Controller implements Initializable {
     public void exportFile() {
         FileHandler fileHandler = new FileHandler();
         try {
-            ArrayList<ArrayList<Cell>> currentBoard = board.getBoard();
+            List<List<Cell>> currentBoard = board.getBoard();
             byte[][] newArray = new byte[currentBoard.size()][currentBoard.get(0).size()];
             for (int y = 0; y < currentBoard.size(); y++) {
-                ArrayList<Cell> row = currentBoard.get(y);
+                List<Cell> row = currentBoard.get(y);
                 for (int x = 0; x < row.size(); x++) {
                     Cell cell = row.get(x);
-                    newArray[y][x] = cell.getState();
+                    newArray[y][x] = cell.getState().isAlive() ? (byte) 1 : 0;
                 }
             }
             String RLEString = Parser.fromPattern(newArray);
@@ -303,21 +301,19 @@ public class Controller implements Initializable {
     private void draw() {
         GraphicsContext gcd = gc;
 
-        ArrayList<ArrayList<Cell>> gameBoard = board.getBoard();
+        List<List<Cell>> gameBoard = board.getBoard();
         int borderWidth = 1;
         int cellWithBorder = cellWidth - borderWidth;
         gcd.getCanvas().setHeight(cellWidth * gameBoard.size());
         gcd.getCanvas().setWidth(cellWidth * gameBoard.get(0).size());
 
-
-
         for (int y = 0; y < gameBoard.size(); y++) {
-            ArrayList<Cell> row = gameBoard.get(y);
+            List<Cell> row = gameBoard.get(y);
 
             for (int x = 0; x < board.getBoard().get(0).size(); x++) {
                 Cell cell = row.get(x);
 
-                if (cell.getState() == 1) {
+                if (cell.getState().isAlive()) {
                     gcd.setFill(aliveColor);
                 } else {
                     gcd.setFill(deadColor);
@@ -326,6 +322,14 @@ public class Controller implements Initializable {
                 gcd.fillRect(x * cellWidth, y * cellWidth, cellWithBorder, cellWithBorder);
             }
         }
+        logMemory();
+    }
+
+    private void logMemory() {
+        System.gc();
+        Runtime rt = Runtime.getRuntime();
+        long usedKB = (rt.totalMemory() - rt.freeMemory()) / 1024;
+        System.out.println("memory usage " + usedKB + "KB");
     }
 
     /**
@@ -436,13 +440,13 @@ public class Controller implements Initializable {
         int x = (int) event.getX() / cellWidth;
         int y = (int) event.getY() / 20;
 
-        if (board.getValue(x, y) == 0) {
-            board.setValue(x, y, (byte) 1);
-            onDragValue = 1;
+        if (!board.getCell(x, y).getState().isAlive()) {
+            board.getCell(x, y).getState().setAlive(true);
+            onDragValue = true;
             draw();
         } else {
-            board.setValue(x, y, (byte) 0);
-            onDragValue = 0;
+            board.getCell(x, y).getState().setAlive(false);
+            onDragValue = false;
             draw();
         }
     }
@@ -464,7 +468,7 @@ public class Controller implements Initializable {
         int y = (int)event.getY()/  cellWidth;
 
         try {
-            board.setValue(x, y, onDragValue);
+            board.getCell(x, y).getState().setAlive(onDragValue);
         } catch (IndexOutOfBoundsException ignored) {}
 
         draw();

@@ -8,11 +8,15 @@ package model;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import model.cell.Cell;
+import model.cell.ByteCell;
+import model.state.State;
 import rules.RuleSet;
 import rules.RulesCollection;
 
 public class Board {
-    private ArrayList<ArrayList<Cell>> board;
+    private List<List<Cell>> board;
     private static List<Thread> workers = new ArrayList<>();
     private int parallelLevel = Runtime.getRuntime().availableProcessors();
     private RuleSet ruleSet;
@@ -52,7 +56,7 @@ public class Board {
      * @param threadIndex The index of the instantiated thread.
      * @param oldBoard A clone of the old board.
      */
-    private void evaluateChunkSize(int threadIndex, ArrayList<ArrayList<Cell>> oldBoard) {
+    private void evaluateChunkSize(int threadIndex, List<List<Cell>> oldBoard) {
         int blockSize = oldBoard.size() / parallelLevel;
         int toX = blockSize * threadIndex;
         if (threadIndex == parallelLevel) {         //this if-sentence makes the last thread take care of all remaining rows of the current board, ensuring that the board y-value does NOT need to be a factorial of parallelLevel.
@@ -67,8 +71,8 @@ public class Board {
                 Cell cell = row.get(x);
 
                 int numNeighbours = neighbours(oldBoard, x, y);
-                byte newState = ruleSet.getNewState(cell.getState(), numNeighbours);
-                board.get(y).get(x).setState(newState);
+                State newState = ruleSet.getNewState(cell.getState(), numNeighbours);
+                board.get(y).get(x).getState().setAlive(newState.isAlive());
             }
         }
     }
@@ -79,7 +83,7 @@ public class Board {
     }
 
     private void createWorkers() {
-        ArrayList<ArrayList<Cell>> oldBoard = cloneBoard(board); //TODO_DTL currently clones entire board to every thread, can be further optimized to only take lenght of thread + 1 (so as to be able to calculate numNeighbours on its edges) dtl.
+        List<List<Cell>> oldBoard = cloneBoard(board); //TODO_DTL currently clones entire board to every thread, can be further optimized to only take lenght of thread + 1 (so as to be able to calculate numNeighbours on its edges) dtl.
         for(int i = 1; i <= parallelLevel; i++) {
             workers.add(new Thread(() -> {
                 int threadIndex = getThreadIndex();
@@ -112,10 +116,10 @@ public class Board {
 
         board = new ArrayList<>(sizeY);
         for (int i = 0; i < sizeY; i++) {
-            ArrayList<Cell> row = new ArrayList<>(sizeX);
+            List<Cell> row = new ArrayList<>(sizeX);
             board.add(row);
             for (int j = 0; j < sizeX; j++) {
-                Cell cell = new Cell();
+                Cell cell = new ByteCell();
                 row.add(cell);
             }
         }
@@ -132,9 +136,9 @@ public class Board {
                 board.get(y);
             } catch (IndexOutOfBoundsException e) {
                 int cols = board.get(0).size();
-                ArrayList<Cell> row = new ArrayList<>(cols);
+                List<Cell> row = new ArrayList<>(cols);
                 for (int i = 0; i < cols; i++) {
-                    row.add(new Cell(0));
+                    row.add(new ByteCell());
                 }
                 board.add(row);
             }
@@ -147,12 +151,12 @@ public class Board {
     private void doubleCols() {
         int currColCount = board.get(0).size();
         int targetColCount = currColCount * 2;
-        for (ArrayList<Cell> row : board) {
+        for (List<Cell> row : board) {
             for (int x = 0; x < targetColCount; x++) {
                 try {
                     row.get(x);
                 } catch (IndexOutOfBoundsException e) {
-                    row.add(new Cell());
+                    row.add(new ByteCell());
                 }
             }
         }
@@ -175,37 +179,26 @@ public class Board {
         for (int y = 0; y < pattern.length; y++) {
             byte[] row = pattern[y];
             for (int x = 0; x < row.length; x++) {
-                byte cell = row[x];
+                boolean cell = row[x] == 1;
 
                 int relY = originRow + y;
                 int relX = originCol + x;
-                ArrayList<Cell> activeRow = board.get(relY);
+                List<Cell> activeRow = board.get(relY);
                 Cell activeCell = activeRow.get(relX);
-                activeCell.setState(cell);
+                activeCell.getState().setAlive(cell);
             }
         }
     }
 
     /**
-     * Returns the state of a cell at the given coordinates.
+     * Returns the cell at the given coordinates.
      *
      * @param x The column of the cell.
      * @param y The row of the cell.
-     * @return The state of the cell.
+     * @return The cell at the given coordinates.
      */
-    public byte getValue(int x, int y){
-        return board.get(y).get(x).getState();
-    }
-
-    /**
-     * Sets the state of a cell at the given coordinates.
-     *
-     * @param x The column of the cell.
-     * @param y The row of the cell.
-     * @param state The new state for the cell.
-     */
-    public void setValue(int x, int y, byte state){
-        board.get(y).get(x).setState(state);
+    public Cell getCell(int x, int y){
+        return board.get(y).get(x);
     }
 
     /**
@@ -214,15 +207,17 @@ public class Board {
      * @param oldBoard Board to copy.
      * @return A clone of the passed board.
      */
-    private static ArrayList<ArrayList<Cell>> cloneBoard(ArrayList<ArrayList<Cell>> oldBoard) {
+    private static List<List<Cell>> cloneBoard(List<List<Cell>> oldBoard) {
         int oldSizeY = oldBoard.size();
         int oldSizeX = oldBoard.get(0).size();
-        ArrayList<ArrayList<Cell>> newBoard = new ArrayList<>(oldSizeY);
-        for (ArrayList<Cell> oldRow : oldBoard) {
-            ArrayList<Cell> newRow = new ArrayList<>(oldSizeX);
+        List<List<Cell>> newBoard = new ArrayList<>(oldSizeY);
+        for (List<Cell> oldRow : oldBoard) {
+            List<Cell> newRow = new ArrayList<>(oldSizeX);
             newBoard.add(newRow);
             for (Cell cell : oldRow) {
-                newRow.add(new Cell(cell.getState()));
+                Cell newCell = new ByteCell();
+                newCell.getState().setAlive(cell.getState().isAlive());
+                newRow.add(newCell);
             }
         }
         return newBoard;
@@ -232,15 +227,15 @@ public class Board {
      * Iterates through all cells in the board, counting their alive neighbors and applying the rule set to them.
      */
     public void nextGeneration() {
-        ArrayList<ArrayList<Cell>> oldBoard = cloneBoard(board);
+        List<List<Cell>> oldBoard = cloneBoard(board);
         for (int y = 0; y < oldBoard.size(); y++) {
             List<Cell> row = oldBoard.get(y);
             for (int x = 0; x < row.size(); x++) {
                 Cell cell = row.get(x);
 
                 int numNeighbours = neighbours(oldBoard, x, y);
-                byte newState = ruleSet.getNewState(cell.getState(), numNeighbours);
-                board.get(y).get(x).setState(newState);
+                State newState = ruleSet.getNewState(cell.getState(), numNeighbours);
+                board.get(y).get(x).getState().setAlive(newState.isAlive());
             }
         }
     }
@@ -250,91 +245,37 @@ public class Board {
         System.out.println("board.get(0).size = " + board.get(0).size());
     }
 
-
-
-
-
-
-
-
-
-
     public void addRowBottom(){
-        ArrayList<model.Cell> row = new ArrayList<>(board.get(0).size());
+        List<Cell> row = new ArrayList<>(board.get(0).size());
         for (int i = 0; i < board.get(0).size(); i++) {
-            row.add(new Cell(0));
+            row.add(new ByteCell());
         }
         board.add(row);
     }
 
     public void addRowTop(){
-        ArrayList<model.Cell> row = new ArrayList<>(board.get(0).size());
+        List<Cell> row = new ArrayList<>(board.get(0).size());
         for (int i = 0; i < board.get(0).size(); i++) {
-            row.add(new Cell(0));
+            row.add(new ByteCell());
         }
         board.add(0, row);
     }
 
     public void addColRight(){
-        ArrayList<model.Cell> col = new ArrayList<>(board.size());
+        List<Cell> col = new ArrayList<>(board.size());
         for (int i = 0; i < board.size(); i++) {
-            col.add(new Cell(0));
+            col.add(new ByteCell());
             board.get(i).add(col.get(i));
         }
     }
 
     public void addColLeft(){
-        ArrayList<model.Cell> col = new ArrayList<>(board.size());
+        List<Cell> col = new ArrayList<>(board.size());
         for (int i = 0; i < board.size(); i++) {
-            col.add(new Cell(0));
+            col.add(new ByteCell());
             board.get(i).add(0, col.get(i));
         }
     }
-
-
-
-
-//
-//    /**
-//     * Doubles the current number of rows.
-//     */
-//    private void doubleRows() {
-//        int currRowCount = board.size();
-//        int targetRowCount = currRowCount * 2;
-//        for (int y = 0; y < targetRowCount; y++) {
-//            try {
-//                board.get(y);
-//            } catch (IndexOutOfBoundsException e) {
-//                int cols = board.get(0).size();
-//                ArrayList<Cell> row = new ArrayList<>(cols);
-//                for (int i = 0; i < cols; i++) {
-//                    row.add(new Cell(0));
-//                }
-//                board.add(row);
-//            }
-//        }
-//    }
-//
-//    /**
-//     * Doubles the current number of columns.
-//     */
-//    private void doubleCols() {
-//        int currColCount = board.get(0).size();
-//        int targetColCount = currColCount * 2;
-//        for (ArrayList<Cell> row : board) {
-//            for (int x = 0; x < targetColCount; x++) {
-//                try {
-//                    row.get(x);
-//                } catch (IndexOutOfBoundsException e) {
-//                    row.add(new Cell());
-//                }
-//            }
-//        }
-//    }
-
-
-
-
 
     /**
      * Method for checking a specific cell's neighbour count.
@@ -344,31 +285,31 @@ public class Board {
      * @param cellY Y-position of the cell.
      * @return Number of neighbours.
      */
-    private int neighbours(ArrayList<ArrayList<Cell>> board, int cellX, int cellY) {
+    private int neighbours(List<List<Cell>> board, int cellX, int cellY) {
         int lenX = board.get(0).size();
         int lenY = board.size();
         int num = 0;
         boolean borderCell = false;
 
-        if(dynamicBoard){
-            byte state = board.get(cellY).get(cellX).getState();
+        if (dynamicBoard){
+            State state = board.get(cellY).get(cellX).getState();
             if (cellX == 0) {
-                if (state == 1) {
+                if (state.isAlive()) {
                     addColLeft();
                 }
             }
-            if (cellX == lenX-1) {
-                if (state == 1) {
+            if (cellX == lenX - 1) {
+                if (state.isAlive()) {
                     addColRight();
                 }
             }
             if (cellY == 0) {
-                if (state == 1) {
+                if (state.isAlive()) {
                     addRowTop();
                 }
             }
-            if (cellY == lenY-1) {
-                if (state == 1) {
+            if (cellY == lenY - 1) {
+                if (state.isAlive()) {
                     addRowBottom();
                 }
             }
@@ -389,7 +330,7 @@ public class Board {
                 }
 
                 try {
-                    if (board.get(neighborY).get(neighborX).getState() == 1) {
+                    if (board.get(neighborY).get(neighborX).getState().isAlive()) {
                         num++;
                     }
                 } catch (IndexOutOfBoundsException | NullPointerException ignored){
@@ -424,15 +365,15 @@ public class Board {
     public String toString() {
         return toString(board);
     }
-    private String toString(ArrayList<ArrayList<Cell>> board) {
+    private String toString(List<List<Cell>> board) {
         if (board.size() == 0) {
             return "";
         }
 
         StringBuilder sb = new StringBuilder();
-        for(ArrayList<Cell> row : board) {
+        for(List<Cell> row : board) {
             for(Cell cell : row) {
-                if (cell.getState() == 1) {
+                if (cell.getState().isAlive()) {
                     sb.append("1");
                 } else {
                     sb.append("0");
@@ -447,7 +388,7 @@ public class Board {
      *
      * @return The current board.
      */
-    public ArrayList<ArrayList<Cell>> getBoard() {
+    public List<List<Cell>> getBoard() {
         return board;
     }
 
@@ -460,7 +401,7 @@ public class Board {
         BoundingBox bb = new BoundingBox(board.size(), board.get(0).size(), 0, 0);
         for(int i = 0; i < board.size(); i++) {
             for(int j = 0; j < board.get(i).size(); j++) {
-                if (board.get(i).get(j).getState() == 0) continue;
+                if (!board.get(i).get(j).getState().isAlive()) continue;
 
                 if (i < bb.getFirstRow()) {
                     bb.setFirstRow(i);
