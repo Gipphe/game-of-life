@@ -8,6 +8,7 @@ import javafx.geometry.Point2D;
 import javafx.scene.control.*;
 import javafx.scene.layout.Pane;
 import model.*;
+import model.cell.ByteCell;
 import model.cell.Cell;
 import javafx.animation.AnimationTimer;
 import javafx.collections.FXCollections;
@@ -70,18 +71,14 @@ public class Controller implements Initializable {
     private Pane canvasWrapper;
 
     public void testButton() {
-        //nextGenerationConcurrentPrintPerformance();
-        nextGenerationPrintPerformance();
-//        board.addRowBottom();
-//        board.addColRight();
-//        board.addRowTop();
-        board.addColLeft();
+        nextGenerationConcurrentPrintPerformance();
+//        nextGenerationPrintPerformance();
         canvasController.draw(board);
     }
 
     public void nextGenerationPrintPerformance() {
         long x1 = System.currentTimeMillis();
-        for (int i = 0; i<3000; i++){
+        for (int i = 0; i<1; i++){
             board.nextGeneration();
         }
         long deltaX = System.currentTimeMillis() - x1;
@@ -90,7 +87,7 @@ public class Controller implements Initializable {
 
     public void nextGenerationConcurrentPrintPerformance() {
         long x1 = System.currentTimeMillis();
-        for (int i = 0; i<3000; i++){
+        for (int i = 0; i<1; i++){
             board.nextGenerationConcurrent();
         }
         long deltaX = System.currentTimeMillis() - x1;
