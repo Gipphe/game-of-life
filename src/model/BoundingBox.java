@@ -101,7 +101,7 @@ public class BoundingBox {
      *
      * @return The X size of the Bounding Box.
      */
-    int getSizeX() {
+    public int getSizeX() {
         int sizeX = (getLastCol() - getFirstCol()) + 1;
         return sizeX;
     }
@@ -111,7 +111,7 @@ public class BoundingBox {
      *
      * @return The Y size of the Bounding Box.
      */
-    int getSizeY() {
+    public int getSizeY() {
         int sizeY = (getLastRow() - getFirstRow()) + 1;
         return sizeY;
     }

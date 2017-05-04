@@ -6,9 +6,9 @@ import java.util.Date;
 
 public class Parser {
     /**
-     * Converts a passed Parser string to a byte[][] model for consumption by the Board class.
+     * Converts a passed Parser string to a byte[][] model for consumption by the ArrayListBoard class.
      * @param RLEString Source Parser string to convert to model.
-     * @return Board representing the pattern described in the passed Parser string.
+     * @return ArrayListBoard representing the pattern described in the passed Parser string.
      */
     public static ParsedPattern toPattern(String RLEString) {
         FileContents contents = new FileContents(RLEString);

@@ -1,17 +1,18 @@
 package model;
 
+import model.board.ArrayListBoard;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class BoardTest {
+class ArrayListBoardTest {
     @Test
     void should_insert_byte_board() {
         byte[][] testBoard = {
                 {1,0},
                 {0,1}
         };
-        Board board = new Board(2, 2);
+        ArrayListBoard board = new ArrayListBoard(2, 2);
         assertEquals("0000", board.toString());
         board.insertPattern(testBoard);
         assertEquals("1001", board.toString());
@@ -19,7 +20,7 @@ class BoardTest {
 
     @Test
     void should_expand_when_inserting_too_large_pattern() {
-        Board board = new Board(2, 2);
+        ArrayListBoard board = new ArrayListBoard(2, 2);
         byte[][] pattern = new byte[][] {
                 {1,1,1,0},
                 {1,1,0,1},
@@ -34,7 +35,7 @@ class BoardTest {
     
     @Test
     void squares_remain_squares() {
-        Board testBoard = new Board(4, 4);
+        ArrayListBoard testBoard = new ArrayListBoard(4, 4);
 
         testBoard.insertPattern(new byte[][]{
                 {0,0,0,0},
@@ -55,7 +56,7 @@ class BoardTest {
                 {0,1,0},
                 {0,0,0}
         };
-        Board testGrid = new Board(3, 3);
+        ArrayListBoard testGrid = new ArrayListBoard(3, 3);
 
         testGrid.insertPattern(testBoard);
         testGrid.nextGeneration();
@@ -69,7 +70,7 @@ class BoardTest {
                 {0,0,1},
                 {1,1,1}
         };
-        Board board = new Board(5, 5);
+        ArrayListBoard board = new ArrayListBoard(5, 5);
         board.insertPattern(glider);
         assertEquals("0000000100000100111000000", board.toString());
         board.nextGeneration();

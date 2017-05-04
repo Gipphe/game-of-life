@@ -1,7 +1,5 @@
 package app;
 
-import model.cell.Cell;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,11 +37,11 @@ class Pattern {
      * @param name Name of the pattern in question.
      * @param pattern Two-dimensional array representing the pattern.
      */
-    Pattern(String name, List<List<Cell>> pattern) {
+    Pattern(String name, List<List<Boolean>> pattern) {
         byte[][] convertedPattern = new byte[pattern.size()][pattern.get(0).size()];
         for (int y = 0; y < pattern.size(); y++) {
             for (int x = 0; x < pattern.get(0).size(); x++) {
-                byte cellState = pattern.get(y).get(x).getState().isAlive() ? (byte) 1 : 0;
+                byte cellState = pattern.get(y).get(x) ? (byte) 1 : 0;
                 convertedPattern[y][x] = cellState;
             }
         }

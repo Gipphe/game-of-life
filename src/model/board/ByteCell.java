@@ -1,14 +1,13 @@
-package model.cell;
+package model.board;
 
-import model.state.ReferenceState;
+import model.state.ByteState;
 import model.state.State;
 
 /**
  * A cell object representing a single point on the simulation model.
- * Benched at 351385KB on Turing Machine.
+ * Benched at 350856KB on Turing Machine.
  */
-@Deprecated
-public class ReferenceCell implements Cell {
+public class ByteCell implements Cell {
 
     private State state;
 
@@ -16,8 +15,17 @@ public class ReferenceCell implements Cell {
      * Constructor.
      * Initializes as a dead cell.
      */
-    public ReferenceCell() {
-        this.state = new ReferenceState();
+    public ByteCell() {
+        this.state = new ByteState();
+    }
+
+    /**
+     * Constructor.
+     * Initializes as the passed cell's state.
+     * @param cell The cell to mirror the state of.
+     */
+    public ByteCell(Cell cell) {
+        this.state = new ByteState(cell.getState().isAlive());
     }
 
     /**
@@ -25,8 +33,8 @@ public class ReferenceCell implements Cell {
      * Initializes to the passed state.
      * @param state State to initialize to.
      */
-    public ReferenceCell(boolean state) {
-        this.state = new ReferenceState(state);
+    public ByteCell(boolean state) {
+        this.state = new ByteState(state);
     }
 
     /**
@@ -35,7 +43,7 @@ public class ReferenceCell implements Cell {
      * @return Itself, for chaining.
      */
     @Override
-    public ReferenceCell kill() {
+    public ByteCell kill() {
         setState(false);
         return this;
     }
@@ -46,7 +54,7 @@ public class ReferenceCell implements Cell {
      * @return Itself, for chaining.
      */
     @Override
-    public ReferenceCell resurrect() {
+    public ByteCell resurrect() {
         setState(true);
         return this;
     }

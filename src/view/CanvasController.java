@@ -5,8 +5,8 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
-import model.Board;
-import model.cell.Cell;
+import model.board.Board;
+import model.board.Cell;
 
 import java.util.List;
 
@@ -92,11 +92,8 @@ public class CanvasController {
         // Clear the canvas first.
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
 
-        List<List<Cell>> gameBoard = board.getBoard();
+        List<List<Cell>> gameBoard = board.getThisGen();
         double cellWithBorder = cellScale - borderWidth;
-
-        int boardWidth = board.getSizeX();
-        int boardHeight = board.getSizeY();
 
         recalculateOffset();
 
@@ -245,7 +242,7 @@ public class CanvasController {
      */
     private void setZoomLevel(int zoomLevel) {
         int maxZoom = 10;
-        int minZoom = 1;
+        int minZoom = 0;
         zoomLevel = limit(maxZoom, minZoom, zoomLevel);
 
         this.zoomLevel = zoomLevel;

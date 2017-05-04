@@ -1,7 +1,7 @@
 package RLE;
 
 /**
- * Container for an RLE to Board parsing's output, containing the parsed pattern and the rule the pattern is designed
+ * Container for an RLE to ArrayListBoard parsing's output, containing the parsed pattern and the rule the pattern is designed
  * for. Can be expanded to include metadata such as author, creation date etc.
  */
 public class ParsedPattern {

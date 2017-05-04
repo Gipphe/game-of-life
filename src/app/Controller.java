@@ -7,9 +7,8 @@ import javafx.stage.Modality;
 import javafx.geometry.Point2D;
 import javafx.scene.control.*;
 import javafx.scene.layout.Pane;
-import model.*;
-import model.cell.ByteCell;
-import model.cell.Cell;
+import model.board.ArrayListBoard;
+import model.board.Board;
 import javafx.animation.AnimationTimer;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -27,7 +26,6 @@ import view.CanvasController;
 import view.BoardCoordinate;
 
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -79,7 +77,7 @@ public class Controller implements Initializable {
 
     public void nextGenerationPrintPerformance() {
         long x1 = System.currentTimeMillis();
-        for (int i = 0; i<1; i++){
+        for (int i = 0; i < 100; i++){
             board.nextGeneration();
         }
         long deltaX = System.currentTimeMillis() - x1;
@@ -88,7 +86,7 @@ public class Controller implements Initializable {
 
     public void nextGenerationConcurrentPrintPerformance() {
         long x1 = System.currentTimeMillis();
-        for (int i = 0; i<1; i++){
+        for (int i = 0; i < 100; i++){
             board.nextGenerationConcurrent();
         }
         long deltaX = System.currentTimeMillis() - x1;
@@ -168,13 +166,13 @@ public class Controller implements Initializable {
     public void exportFile() {
         FileHandler fileHandler = new FileHandler();
         try {
-            List<List<Cell>> currentBoard = board.getBoard();
+            List<List<Boolean>> currentBoard = board.getEnumerable();
             byte[][] newArray = new byte[currentBoard.size()][currentBoard.get(0).size()];
             for (int y = 0; y < currentBoard.size(); y++) {
-                List<Cell> row = currentBoard.get(y);
+                List<Boolean> row = currentBoard.get(y);
                 for (int x = 0; x < row.size(); x++) {
-                    Cell cell = row.get(x);
-                    newArray[y][x] = cell.getState().isAlive() ? (byte) 1 : 0;
+                    boolean cellAlive = row.get(x);
+                    newArray[y][x] = cellAlive ? (byte) 1 : 0;
                 }
             }
             ParsedPattern pp = new ParsedPattern("", "", "", board.getRuleSet().getRuleString(), newArray);
@@ -199,7 +197,7 @@ public class Controller implements Initializable {
         try {
             editor = new EditorController(board.getRuleSet(), board.patternToBoard(), this);
         } catch (IllegalArgumentException iae){
-            editor = new EditorController(board.getRuleSet(), new Board(10, 10), this);
+            editor = new EditorController(board.getRuleSet(), new ArrayListBoard(10, 10), this);
         }
 
         editor.initModality(Modality.WINDOW_MODAL);
@@ -225,7 +223,7 @@ public class Controller implements Initializable {
      * Toggles the dynamic state boolean of board depending on dy ToggleButton.
      */
     public void toggleDynamicBoard() {
-        board.dynamicBoard = !board.dynamicBoard;
+        board.setDynamic(!board.getDynamic());
         if (dynamicBoardButton.selectedProperty().getValue()) {
             dynamicBoardButton.setText("Turn off");
         } else {
@@ -238,7 +236,7 @@ public class Controller implements Initializable {
      * Clears the model entirely.
      */
     public void clearBoard() {
-        this.board = new Board(board.getSizeX(), board.getSizeY());
+        board.clearBoard();
         canvas.setTranslateX(0);
         canvas.setTranslateY(0);
         canvas.setScaleX(1.0);
@@ -375,8 +373,9 @@ public class Controller implements Initializable {
      * Calls the boards nextGeneration() method and re-draws the grid.
      */
     public void nextFrame() {
-        board.nextGeneration();
-        canvasController.draw(board);
+        testButton();
+//        board.nextGeneration();
+//        canvasController.draw(board);
     }
 
     /**
@@ -419,13 +418,13 @@ public class Controller implements Initializable {
                 coord.getY() >= board.getSizeY()) {
             return;
         }
-        Cell cell = board.getCell(coord.getX(), coord.getY());
-        if (!cell.getState().isAlive()) {
-            cell.getState().setAlive(true);
+        boolean cell = board.getCellAlive(coord.getY(), coord.getX());
+        if (!cell) {
+            board.setCellAlive(coord.getY(), coord.getX(), true);
             onDragValue = true;
             canvasController.draw(board);
         } else {
-            cell.getState().setAlive(false);
+            board.setCellAlive(coord.getY(), coord.getX(), false);
             onDragValue = false;
             canvasController.draw(board);
         }
@@ -452,13 +451,9 @@ public class Controller implements Initializable {
                 coord.getY() >= board.getSizeY()) {
             return;
         }
-        board.getCell(coord.getX(), coord.getY()).getState().setAlive(onDragValue);
+        board.setCellAlive(coord.getY(), coord.getX(), true);
 
         canvasController.draw(board);
-    }
-
-    public void setRule(String name) {
-        board.setRuleSet(name);
     }
 
     /**
@@ -468,7 +463,7 @@ public class Controller implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         int sizeX = 100;
         int sizeY = 100;
-        board = new Board(sizeX, sizeY);
+        board = new ArrayListBoard(sizeX, sizeY);
         aliveColorPicker.setValue(Color.BLACK);
         deadColorPicker.setValue(Color.WHITE);
 
@@ -498,7 +493,7 @@ public class Controller implements Initializable {
             String name = ruleSet.getName();
             MenuItem menuEntry = new MenuItem();
             menuEntry.setText(name);
-            menuEntry.setOnAction((event) -> setRule(name));
+            menuEntry.setOnAction((event) -> board.setRuleSet(ruleSet));
             rulesMenu.getItems().add(menuEntry);
         }
 
