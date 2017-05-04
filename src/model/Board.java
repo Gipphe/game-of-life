@@ -6,8 +6,10 @@
  */
 package model;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
+import org.codehaus.groovy.runtime.powerassert.SourceText;
 import model.cell.Cell;
 import model.cell.ByteCell;
 import model.state.State;
@@ -41,17 +43,17 @@ public class Board {
         createWorkers();
         try {
             runWorkers();
-        }catch (InterruptedException ie){
+        } catch (InterruptedException ie) {
             ie.printStackTrace();
-            //TODO ADD TO AlertLibrary
-
+            //TODO_DTL ADD TO AlertLibrary
         }
         workers.clear();
         threadIndex = 0;
     }
 
     /**
-     * Calculates how big of a chunk each thread should take care of, calculates nextGen.() and sets the updated cells to the board
+     * Calculates how big of a chunk each thread should take care of, calculates nextGen.()
+     * and sets the updated cells to the board.
      *
      * @param threadIndex The index of the instantiated thread.
      * @param oldBoard A clone of the old board.
@@ -63,7 +65,6 @@ public class Board {
             toX = oldBoard.size();
         }
         int fromX = blockSize * (threadIndex - 1);
-//        System.out.println("!!!!" + threadIndex + "!!!!" + "\n" + "blockSize: " + blockSize + "\n" + "fromX: " + fromY + "\n" + "toX: " + toY);
 
         for (int y = 0; y < oldBoard.size(); y++) {
             List<Cell> row = oldBoard.get(y);
@@ -388,6 +389,40 @@ public class Board {
     }
 
     /**
+     * Returns a 1/0 String of only the pattern within the bounding box.
+     *
+     * @return 1s and 0s representing the contained pattern.
+     */
+    public String patternToString(){
+        BoundingBox bb = getBoundingBox();
+        StringBuilder sb = new StringBuilder();
+
+        for(int row = bb.getFirstRow(); row <= bb.getLastRow(); row++) {
+            for(int col = bb.getFirstCol(); col <= bb.getLastCol(); col++) {
+                sb.append(board.get(row).get(col).getState());
+            }
+        }
+        return sb.toString();
+    }
+
+    public Board patternToBoard() {
+        BoundingBox patternBB = getBoundingBox();
+        Board patternBoard = new Board(patternBB.getSizeX(), patternBB.getSizeY());
+        int patternRow = 0;
+        int patternCol = 0;
+
+        for(int row = patternBB.getFirstRow(); row <= patternBB.getLastRow(); row++) {
+            for(int col = patternBB.getFirstCol(); col <= patternBB.getLastCol(); col++) {
+                patternBoard.getCell(col, row).getState().setAlive(board.get(row).get(col).getState().isAlive());
+                patternCol++;
+            }
+            patternRow++;
+            patternCol = 0;
+        }
+        return patternBoard;
+    }
+
+    /**
      * Getter for the board.
      *
      * @return The current board.
@@ -401,7 +436,7 @@ public class Board {
      *
      * @return The BoundingBox representing the area of interest.
      */
-    private BoundingBox getBoundingBox() {
+    public BoundingBox getBoundingBox() {
         BoundingBox bb = new BoundingBox(board.size(), board.get(0).size(), 0, 0);
         for(int i = 0; i < board.size(); i++) {
             for(int j = 0; j < board.get(i).size(); j++) {
@@ -467,5 +502,19 @@ public class Board {
      */
     public int getSizeY() {
         return board.size();
+    }
+
+    @Override
+    public Board clone() throws CloneNotSupportedException {
+        Board returnClone = new Board(getSizeX(), getSizeY());
+
+        for (int y = 0; y < board.size(); y++) {
+            List<Cell> row = board.get(y);
+            for(int x = 0; x < board.get(0).size(); x++){
+                returnClone.getCell(x, y).getState().setAlive(board.get(y).get(x).getState().isAlive());
+            }
+        }
+
+        return returnClone;
     }
 }
