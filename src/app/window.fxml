@@ -31,7 +31,7 @@
                     <MenuItem mnemonicParsing="false" onAction="#importFile" text="*.RLE" />
                     <MenuItem mnemonicParsing="false" onAction="#importURL" text="URL" />
                 </Menu>
-                <Menu mnemonicParsing="false" text="Export as...">
+                <Menu mnemonicParsing="false" text="Export to...">
                     <MenuItem mnemonicParsing="false" onAction="#exportFile" text="*.RLE" />
                <MenuItem fx:id="editor" mnemonicParsing="false" onAction="#editor" text="Editor" />
                 </Menu>

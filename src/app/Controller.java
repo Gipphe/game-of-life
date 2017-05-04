@@ -170,7 +170,8 @@ public class Controller implements Initializable {
                     newArray[y][x] = cell.getState();
                 }
             }
-            String RLEString = Parser.fromPattern(newArray);
+            ParsedPattern pp = new ParsedPattern("", "", "", board.getRuleSet().getRuleString(), newArray);
+            String RLEString = Parser.fromPattern(pp);
             fileHandler.writeToFile(RLEString);
 
         } catch (IOException e) {
@@ -486,7 +487,6 @@ public class Controller implements Initializable {
     }
 
     public void setRule(String name) {
-        System.out.println(name);
         board.setRuleSet(name);
     }
 
