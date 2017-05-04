@@ -5,10 +5,6 @@ package RLE;
  * for. Can be expanded to include metadata such as author, creation date etc.
  */
 public class ParsedPattern {
-    private String name;
-    private String author;
-    private String description;
-
     /**
      * The rule designation that this pattern is designed for.
      */
@@ -17,13 +13,6 @@ public class ParsedPattern {
      * The pattern itself, represented as a two-state two-dimensional byte array for simplicity.
      */
     private byte[][] pattern;
-    public ParsedPattern(String name, String author, String description, String rule, byte[][] pattern) {
-        this.name = name;
-        this.author = author;
-        this.description = description;
-        this.rule = rule;
-        this.pattern = pattern;
-    }
 
     /**
      * Constructor
@@ -34,6 +23,7 @@ public class ParsedPattern {
         this.rule = rule;
         this.pattern = pattern;
     }
+
     /**
      *
      * @return The rule this pattern is designed for.
@@ -48,29 +38,5 @@ public class ParsedPattern {
      */
     public byte[][] getPattern() {
         return pattern;
-    }
-
-    /**
-     *
-     * @return The name of the pattern.
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     *
-     * @return The name of the author.
-     */
-    public String getAuthor() {
-        return author;
-    }
-
-    /**
-     *
-     * @return The description of the pattern.
-     */
-    public String getDescription() {
-        return description;
     }
 }

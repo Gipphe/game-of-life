@@ -15,8 +15,9 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
+
 <?import javafx.scene.layout.Pane?>
-<BorderPane fx:id="borderPane" onKeyPressed="#onKeyPressed" onKeyReleased="#onKeyReleased" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.Controller">
+<BorderPane onKeyPressed="#onKeyPressed" onKeyReleased="#onKeyReleased" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.Controller">
     <center>
         <Pane fx:id="canvasWrapper">
             <Canvas fx:id="canvas" onMouseDragged="#onDrag" onMousePressed="#onClick" onScroll="#scrollEvent" BorderPane.alignment="CENTER">
@@ -33,9 +34,8 @@
                     <MenuItem onAction="#importFile" text="*._RLE" />
                     <MenuItem onAction="#importURL" text="_URL" />
                 </Menu>
-                <Menu mnemonicParsing="false" text="Export to...">
-                    <MenuItem mnemonicParsing="false" onAction="#exportFile" text="*.RLE" />
-               <MenuItem fx:id="editor" mnemonicParsing="false" onAction="#editor" text="Editor" />
+                <Menu text="_Export as...">
+                    <MenuItem onAction="#exportFile" text="*._RLE" />
                 </Menu>
                 <MenuItem onAction="#exit" text="E_xit" />
             </Menu>
