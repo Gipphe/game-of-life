@@ -1,28 +1,29 @@
-Utførte oppgaver (u/ å ta hensyn til * Kvalitet på kildekode)
+UtfÃ¸rte oppgaver (u/ Ã¥ ta hensyn til * Kvalitet pÃ¥ kildekode)
 
 * Korrekt implementasjon av GoL
-	* Støtte for animasjon etter spillereglene til GoL.
+	* StÃ¸tte for animasjon etter spillereglene til GoL.
 
 	* Implementert et grafisk brukergrensesnitt med JavaFX/FXML som er brukervennlig og har god estetisk kvalitet.
 
 * Filbehandling
-	* Støtte for innlastning av GoL mønstre med bruk av .RLE filformat og URL kode.
-	
-* Bruk av Java Collections for brettstruktur
-		* Støtte for både statisk og dynamisk brett.
-			* Statisk: brettet "wrap"-er da mønsteret når et hjørne.
-			* Dynamisk: brettet får et rad eller kolonne lagt til seg da mønsteret når et hjørne, 
-			  og forblir rektangulær. 
+	* StÃ¸tte for innlastning av GoL mÃ¸nstre med bruk av .RLE filformat og URL kode.
+	
 
-* Bruk av flere tråder for å oppnå forbedret ytelse
-	* Observerbar bedre ytelse når man bruker flere tråder på store brett. 
+* Bruk av Java Collections for brettstruktur
+		* StÃ¸tte for bÃ¥de statisk og dynamisk brett.
+			* Statisk: brettet "wrap"-er da mÃ¸nsteret nÃ¥r et hjÃ¸rne.
+			* Dynamisk: brettet fÃ¥r et rad eller kolonne lagt til seg da mÃ¸nsteret nÃ¥r et hjÃ¸rne,
+			  og forblir rektangulÃ¦r.
+
+* Bruk av flere trÃ¥der for Ã¥ oppnÃ¥ forbedret ytelse
+	* Observerbar bedre ytelse nÃ¥r man bruker flere trÃ¥der pÃ¥ store brett.
 	  En generasjon av log(t) growth tar ~14 sekunder (median av 20 tester) 
-	  med fire tråder, sammenlignet med en median av 39 sekunder med kun en tråd. 
-	  Bruker 1-3 generasjoner før den normaliserer seg.
+	  med fire trÃ¥der, sammenlignet med en median av 39 sekunder med kun en trÃ¥d.
+	  Bruker 1-3 generasjoner fÃ¥r den normaliserer seg.
 
 * Utvidelsesoppgaver
-	* Implementasjon av Android app med støtte for "text-to-QR" GoL brett.
+	* Implementasjon av Android app med stÃ¸tte for "text-to-QR" GoL brett.
 	* Manipuleringseditor og lagring til .GIF og .RLE 
 	* "Custom" spillregler
 		* brukerdefinerte spillregler
-		* bibliotek med forhåndsdefinerte spillregler
+		* bibliotek med forhÃ¥ndsdefinerte spillregler
