@@ -65,4 +65,15 @@ public class AlertLibrary {
         alert.show();
     }
 
+    /**
+     * Returns an IO Warning when importing files from URL/RLE, and exporting.
+     *
+     * @param iowa (IOWarningAlert)
+     */
+    public static void ioe(IOException ioe) {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle("IO Exception");
+
+        alert.show();
+    }
 }

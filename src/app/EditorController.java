@@ -21,6 +21,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.transform.Affine;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import lieng.GIFWriter;
 import model.Board;
 import model.BoundingBox;
 import model.Cell;
@@ -46,6 +47,20 @@ public class EditorController extends Stage implements Initializable {
     int cellWidth = 20;
     private RuleSet ruleSet;
     private byte onDragValue;
+
+    int gifWidth;
+    int gifHeight;
+    int gifTimeBetweenFramesMS = 1000;
+    int gifCellSize = 20;
+    String gifFilepath = "C:\\Users\\yanis\\Desktop\\file.gif";
+    java.awt.Color gifAliveColor = new java.awt.Color(  (float) aliveColor.getRed(),
+                                                        (float) aliveColor.getGreen(),
+                                                        (float) aliveColor.getBlue(),
+                                                        (float) aliveColor.getOpacity() );
+    java.awt.Color gifDeadColor = new java.awt.Color(   (float) deadColor.getRed(),
+                                                        (float) deadColor.getGreen(),
+                                                        (float) deadColor.getBlue(),
+                                                        (float) deadColor.getOpacity() );
 
     @FXML
     private TextField name;
@@ -96,16 +111,6 @@ public class EditorController extends Stage implements Initializable {
     }
 
     @FXML
-    void onSaveGifButtonAction(ActionEvent event) {
-
-    }
-
-    /**
-     * Method for save to RLE button.
-     *
-     * @param event
-     */
-    @FXML
     void onSaveRleButtonAction(ActionEvent event) {
         String ruleString = ruleSet.getRuleString();
 
@@ -147,10 +152,48 @@ public class EditorController extends Stage implements Initializable {
         close();
     }
 
-    /*
+    @FXML
+    void onSaveGifButtonAction(ActionEvent event) throws Exception {    //Throws CloneNotSupportedException and IOException
+        int counter = 0;
+        gifWidth = editorBoard.getSizeX();
+        gifHeight = editorBoard.getSizeY();
+        lieng.GIFWriter gifWriter = new GIFWriter(gifWidth*gifCellSize+1, gifHeight*gifCellSize+1, gifFilepath, gifTimeBetweenFramesMS);  //TODO_DTL make constructor input customizable to user in GUI.
+        gifWriter.setBackgroundColor(gifDeadColor);
+        Board clonedBoard = editorBoard.clone();
+        writeGOLSequenceToGif(gifWriter, clonedBoard, counter);
+        System.out.println("FERDIG!");
+    }
+
+    void writeGOLSequenceToGif(lieng.GIFWriter gifWriter, Board boardToGif, int counter) throws IOException{
+        if (counter > 10) {
+            return;
+        }
+        ArrayList<ArrayList<model.Cell>> gameBoardToGif = boardToGif.getBoard();
+        System.out.println("Counter: " + counter);
+        for (int y = 0; y < gameBoardToGif.size(); y++) {
+            for (int x = 0; x < gameBoardToGif.get(0).size(); x++) {
+                System.out.println("I am X: " + x + " Y: " + y);
+                if (gameBoardToGif.get(y).get(x).getState() == 1){
+//                    gifWriter.fillRect(x, x+1, y, y+1, java.awt.Color.BLACK);
+                    gifWriter.fillRect(x*gifCellSize, x*gifCellSize+gifCellSize, y*gifCellSize, y*gifCellSize+gifCellSize, gifAliveColor);
+                } else {
+                    gifWriter.fillRect(x*gifCellSize, x*gifCellSize+gifCellSize, y*gifCellSize, y*gifCellSize+gifCellSize, gifDeadColor);
+//                    gifWriter.fillRect(x, x+1, y, y+1, java.awt.Color.WHITE);
+                }
+            }
+        }
+        gifWriter.insertAndProceed();
+        boardToGif.nextGeneration();
+        writeGOLSequenceToGif(gifWriter, boardToGif, counter + 1);            //Recursive method
+    }
+
+
+
+
     @FXML
     void updateStrip(ActionEvent event) {
         Board clonedBoard = new Board(0, 0);
+        
         try {
             clonedBoard = editorBoard.clone();
         }catch (CloneNotSupportedException ignoredCNSE){
@@ -204,7 +247,6 @@ public class EditorController extends Stage implements Initializable {
         gcs.setFill(Color.ORANGERED);
         gcs.fillRect(clonedBoard.getBoard().get(0).size()*stripCellWidth, 0, 5, 255); //Draws separator line between each drawn generation
     }
-    */
 
     public void setRule(String name) {
         editorBoard.setRuleSet(name);
