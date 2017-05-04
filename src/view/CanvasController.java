@@ -351,29 +351,25 @@ public class CanvasController {
         lastMouseY = event.getY();
     }
 
-    public void panDown(Board board) {
-        double deltaRows = boardHeight / cellScale;
+    public void panDown(Board board, double deltaRows) {
         setPanningY(panningY + deltaRows);
         recalculateTableBounds(board);
         draw(board);
     }
 
-    public void panUp(Board board) {
-        double deltaRows = boardHeight / cellScale;
+    public void panUp(Board board, double deltaRows) {
         setPanningY(panningY - deltaRows);
         recalculateTableBounds(board);
         draw(board);
     }
 
-    public void panRight(Board board) {
-        double deltaCols = boardWidth / cellScale;
+    public void panRight(Board board, double deltaCols) {
         setPanningX(panningX + deltaCols);
         recalculateTableBounds(board);
         draw(board);
     }
 
-    public void panLeft(Board board) {
-        double deltaCols = boardWidth / cellScale;
+    public void panLeft(Board board, double deltaCols) {
         setPanningX(panningX - deltaCols);
         recalculateTableBounds(board);
         draw(board);
