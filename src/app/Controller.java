@@ -47,7 +47,7 @@ public class Controller implements Initializable {
      * Is set to the inverse of the value of the first cell clicked.
      */
     private boolean onDragValue;
-    private byte moveSpeed = 10;
+    private byte moveSpeed = 1;
 
     @FXML
     private Menu rulesMenu;
@@ -287,7 +287,7 @@ public class Controller implements Initializable {
      */
     public void onKeyPressed(KeyEvent event){
         if(event.getCode() == SHIFT){
-            moveSpeed = 50;
+            moveSpeed = 5;
         }
 
 
@@ -295,17 +295,16 @@ public class Controller implements Initializable {
         double currXPos = canvas.getTranslateX();
         switch (event.getCode()) {
             case W:
-                canvasController.panUp(board);
-                //TODO AAAAAA
+                canvasController.panUp(board, moveSpeed);
                 break;
             case A:
-                canvasController.panLeft(board);
+                canvasController.panLeft(board, moveSpeed);
                 break;
             case S:
-                canvasController.panDown(board);
+                canvasController.panDown(board, moveSpeed);
                 break;
             case D:
-                canvasController.panRight(board);
+                canvasController.panRight(board, moveSpeed);
                 break;
             case Q:
                 startStopButton.selectedProperty().setValue(!startStopButton.selectedProperty().getValue());
@@ -317,7 +316,7 @@ public class Controller implements Initializable {
     public void onKeyReleased(KeyEvent event){
         switch (event.getCode()){
             case SHIFT:
-                moveSpeed = 10;
+                moveSpeed = 1;
         }
     }
 

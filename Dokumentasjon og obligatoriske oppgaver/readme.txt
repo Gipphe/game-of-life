@@ -1,4 +1,4 @@
-Utførte oppgaver (u/ å ta hensyn til * Kvalitet på kildekode)
+﻿Utførte oppgaver (u/ å ta hensyn til * Kvalitet på kildekode)
 
 * Korrekt implementasjon av GoL
 	* Støtte for animasjon etter spillereglene til GoL.
@@ -24,6 +24,9 @@ Utførte oppgaver (u/ å ta hensyn til * Kvalitet på kildekode)
 * Utvidelsesoppgaver
 	* Implementasjon av Android app med støtte for "text-to-QR" GoL brett.
 	* Manipuleringseditor og lagring til .GIF og .RLE 
+	* Tastatur-funksjoner og mus-funksjonalitet
+		* W, A, S og D knappene flytter brettet dersom
+//TODO BE GAY
 	* "Custom" spillregler
 		* brukerdefinerte spillregler
 		* bibliotek med forhåndsdefinerte spillregler
