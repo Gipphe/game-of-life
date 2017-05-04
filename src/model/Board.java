@@ -49,7 +49,8 @@ public class Board {
     }
 
     /**
-     * Calculates how big of a chunk each thread should take care of, calculates nextGen.() and sets the updated cells to the board
+     * Calculates how big of a chunk each thread should take care of, calculates nextGen.() and sets the updated cells
+     * to the board.
      *
      * @param threadIndex The index of the instantiated thread.
      * @param oldBoard A clone of the old board.

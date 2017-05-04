@@ -1,5 +1,7 @@
 package app;
 
+import RLE.ParsedPattern;
+import RLE.Parser;
 import com.sun.corba.se.impl.orbutil.graph.Graph;
 import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
@@ -11,6 +13,7 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
+import javafx.scene.control.ColorPicker;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
@@ -31,6 +34,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import static app.AlertLibrary.iowa;
+
 public class EditorController extends Stage implements Initializable {
     private Board editorBoard;
     private Color aliveColor = Color.BLACK;
@@ -47,11 +52,13 @@ public class EditorController extends Stage implements Initializable {
     @FXML
     private TextField author;
     @FXML
-    private TextField desciption;
+    private TextField description;
     @FXML
     private Button saveGifButton;
     @FXML
     private Button saveRleButton;
+    @FXML
+    private Button saveAndCloseButton;
     @FXML
     private Button closeButton;
     @FXML
@@ -60,7 +67,17 @@ public class EditorController extends Stage implements Initializable {
     private Canvas canvas;
     @FXML
     private Canvas strip;
+    @FXML
+    private ColorPicker aliveColorPicker;
+    @FXML
+    private ColorPicker deadColorPicker;
 
+    /**
+     * Constructor for EditorController.
+     *
+     * @param ruleSet
+     * @param receivedBoard
+     */
     public EditorController(RuleSet ruleSet, Board receivedBoard) {
         setTitle("Pattern Editor");
         this.ruleSet = ruleSet;
@@ -79,30 +96,58 @@ public class EditorController extends Stage implements Initializable {
     }
 
     @FXML
-    void onCloseButtonAction(ActionEvent event) {
-        close();
-    }
-
-    @FXML
     void onSaveGifButtonAction(ActionEvent event) {
 
     }
 
+    /**
+     * Method for save to RLE button.
+     *
+     * @param event
+     */
     @FXML
     void onSaveRleButtonAction(ActionEvent event) {
         String ruleString = ruleSet.getRuleString();
 
-        FileChooser fs = new FileChooser();
-        fs.setTitle("Save file");
-        fs.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("Text Files", "*.RLE", "*.rle"));
-        File f = fs.showSaveDialog(new Stage());
+        FileHandler fileHandler = new FileHandler();
+        try {
+            ArrayList<ArrayList<Cell>> currentBoard = editorBoard.getBoard();
+            byte[][] newArray = new byte[currentBoard.size()][currentBoard.get(0).size()];
+            for (int y = 0; y < currentBoard.size(); y++) {
+                ArrayList<Cell> row = currentBoard.get(y);
+                for (int x = 0; x < row.size(); x++) {
+                    Cell cell = row.get(x);
+                    newArray[y][x] = cell.getState();
+                }
+            }
+            ParsedPattern pp = new ParsedPattern(name.getText(), author.getText(), description.getText(), editorBoard.getRuleSet().getRuleString(), newArray);
+            String RLEString = Parser.fromPattern(pp);
+            fileHandler.writeToFile(RLEString);
 
-        if (f == null) {
-            return;
+        } catch (IOException e) {
+            iowa(e);
+
+            e.printStackTrace();
         }
     }
 
+    //TODO
+    @FXML
+    void onSaveAndCloseButtonAction(ActionEvent event) {
+
+    }
+
+    /**
+     * Method for close button.
+     *
+     * @param event
+     */
+    @FXML
+    void onCloseButtonAction(ActionEvent event) {
+        close();
+    }
+
+    /*
     @FXML
     void updateStrip(ActionEvent event) {
         Board clonedBoard = new Board(0, 0);
@@ -159,9 +204,9 @@ public class EditorController extends Stage implements Initializable {
         gcs.setFill(Color.ORANGERED);
         gcs.fillRect(clonedBoard.getBoard().get(0).size()*stripCellWidth, 0, 5, 255); //Draws separator line between each drawn generation
     }
+    */
 
     public void setRule(String name) {
-        System.out.println(name);
         editorBoard.setRuleSet(name);
     }
 
@@ -193,6 +238,22 @@ public class EditorController extends Stage implements Initializable {
                 gcd.fillRect(x * cellWidth, y * cellWidth, cellWithBorder, cellWithBorder);
             }
         }
+    }
+
+    /**
+     * Sets the aliveColor value to the current value of the aliveColorPicker, then draws the GraphicsContext.
+     */
+    public void setAliveColor() {
+        aliveColor = aliveColorPicker.getValue();
+        draw();
+    }
+
+    /**
+     * Sets the deadColor value to the current value of the deadColorPicker, then draws the GraphicsContext.
+     */
+    public void setDeadColor() {
+        deadColor = deadColorPicker.getValue();
+        draw();
     }
 
     /**
