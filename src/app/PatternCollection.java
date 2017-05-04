@@ -1,5 +1,7 @@
 package app;
 
+import model.cell.Cell;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,7 +22,8 @@ class Pattern {
     private final byte[][] pattern;
 
     /**
-     * Constructor
+     * Constructor for the Pattern class using primitive byte array.
+     *
      * @param name Name of the pattern in question.
      * @param pattern Two-dimensional array representing the pattern.
      */
@@ -30,7 +33,29 @@ class Pattern {
     }
 
     /**
+     * Constructor for the Pattern class importing a List<List<Cell>> array,
+     * converting it to a primitive byte array and constructing the Pattern.
+     *
+     * @param name Name of the pattern in question.
+     * @param pattern Two-dimensional array representing the pattern.
+     */
+    Pattern(String name, List<List<Cell>> pattern) {
+        byte[][] convertedPattern = new byte[pattern.size()][pattern.get(0).size()];
+        for (int y = 0; y < pattern.size(); y++) {
+            for (int x = 0; x < pattern.get(0).size(); x++) {
+                byte cellState = pattern.get(y).get(x).getState().isAlive() ? (byte) 1 : 0;
+                convertedPattern[y][x] = cellState;
+            }
+        }
+        this.name = name;
+        this.pattern = convertedPattern;
+    }
+
+
+
+    /**
      * Getter for the name.
+     *
      * @return Name of the pattern.
      */
     String getName() {

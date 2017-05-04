@@ -36,11 +36,12 @@ import static app.AlertLibrary.iowa;
 import static javafx.scene.input.KeyCode.SHIFT;
 
 public class Controller implements Initializable {
-    private Board board;
+    public Board board;
+    public CanvasController canvasController;
     private AnimationTimer timer;
     private double frameInterval;
     private Pattern[] patterns = PatternCollection.getCollection();
-    private CanvasController canvasController;
+
 
     /**
      * Value to paste onto the cells dragged over by the user when clicking and dragging the mouse over the canvas.
@@ -193,14 +194,16 @@ public class Controller implements Initializable {
     public void editor(){
         EditorController editor;
         try {
-            editor = new EditorController(board.getRuleSet(), board.patternToBoard());
+            editor = new EditorController(board.getRuleSet(), board.patternToBoard(), this);
         } catch (IllegalArgumentException iae){
-            editor = new EditorController(board.getRuleSet(), new Board(10, 10));
+            editor = new EditorController(board.getRuleSet(), new Board(10, 10), this);
         }
 
         editor.initModality(Modality.WINDOW_MODAL);
         editor.initOwner(borderPane.getScene().getWindow());
         editor.showAndWait();
+
+
     }
 
 

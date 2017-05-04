@@ -31,7 +31,9 @@ import rules.RulesCollection;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -86,6 +88,7 @@ public class EditorController extends Stage implements Initializable {
     private ColorPicker aliveColorPicker;
     @FXML
     private ColorPicker deadColorPicker;
+    Controller mainController;
 
     /**
      * Constructor for EditorController.
@@ -93,7 +96,8 @@ public class EditorController extends Stage implements Initializable {
      * @param ruleSet
      * @param receivedBoard
      */
-    public EditorController(RuleSet ruleSet, Board receivedBoard) {
+    public EditorController(RuleSet ruleSet, Board receivedBoard, Controller mainController) {
+        this.mainController = mainController;
         setTitle("Pattern Editor");
         this.ruleSet = ruleSet;
         editorBoard = receivedBoard;
@@ -138,19 +142,27 @@ public class EditorController extends Stage implements Initializable {
         }
     }
 
-    //TODO
-    @FXML
-    void onSaveAndCloseButtonAction(ActionEvent event) {
-
-    }
-
     /**
-     * Method for close button.
+     * Transfers the editor pattern to a Pattern object and passes the pattern
+     * to the Controller, placing it in the middle of the game board.
      *
      * @param event
      */
     @FXML
-    void onCloseButtonAction(ActionEvent event) {
+    void onSaveAndCloseButtonAction(ActionEvent event) {
+        Pattern editorBoardExport = new Pattern("Editor Board", editorBoard.getBoard());
+        mainController.board.insertPattern(editorBoardExport.getPattern());
+        mainController.canvasController.draw(mainController.board);
+        close();
+    }
+
+    /**
+     * Closes Editor.fxml.
+     *
+     * @param event
+     */
+    @FXML
+    void onCloseButtonAction(ActionEvent event) throws CloneNotSupportedException {
         close();
     }
 
@@ -309,8 +321,8 @@ public class EditorController extends Stage implements Initializable {
         int x = (int) event.getX() / cellWidth;
         int y = (int) event.getY() / cellWidth;
 
-        if (editorBoard.getCell(x, y).getState() == 0) {
-            editorBoard.setValue(x, y, (byte) 1);
+        if (!editorBoard.getCell(x, y).getState().isAlive()) {
+            editorBoard.getCell(x, y).getState().setAlive(true);
             if (x == 0) {
                 editorBoard.addColLeft();
             }
@@ -326,12 +338,13 @@ public class EditorController extends Stage implements Initializable {
             onDragValue = 1;
             draw();
         } else {
-            editorBoard.setValue(x, y, (byte) 0);
+            editorBoard.getCell(x, y).getState().setAlive(false);;
             onDragValue = 0;
             draw();
         }
     }
     */
+
 
     /**
      * Handles "prolonged clicks" - drags.
