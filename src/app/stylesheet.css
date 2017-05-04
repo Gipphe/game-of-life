@@ -1,14 +1,16 @@
 .root{
-    -fx-font-size: 16pt;
+    -fx-font-size: 22px;
     -fx-font-family: "Verdana";
     -fx-base: #adadad;
     -fx-background: #dadada;
 }
 
-.bottomHBox {
-    -fx-background-color: #247BA0;
+.left-pane {
+    -fx-alignment: TOP_CENTER;
+    -fx-background-color: GRAY;
 }
 
-#testButton {
-    -fx-background-color: #FF1654;
+.top {
+    -fx-font-size: 48px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 0);
 }
