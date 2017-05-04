@@ -97,26 +97,6 @@ public class BoundingBox {
     }
 
     /**
-     * Getter for the X size of the Bounding Box.
-     *
-     * @return The X size of the Bounding Box.
-     */
-    int getSizeX() {
-        int sizeX = (getLastCol() - getFirstCol()) + 1;
-        return sizeX;
-    }
-
-    /**
-     * Getter for the Y size of the Bounding Box.
-     *
-     * @return The Y size of the Bounding Box.
-     */
-    int getSizeY() {
-        int sizeY = (getLastRow() - getFirstRow()) + 1;
-        return sizeY;
-    }
-
-    /**
      * Constructor accepting all 4 coordinates of the bounding box to be made.
      * @param firstRow First row.
      * @param firstCol First column.

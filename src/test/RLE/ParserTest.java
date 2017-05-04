@@ -113,8 +113,7 @@ class ParserTest {
         };
         String expected = "x = 2, y = 2, rule = B3/S23\n2o$2o!";
 
-        ParsedPattern pp = new ParsedPattern("", "", "", "", base);
-        String result = Parser.fromPattern(pp);
+        String result = Parser.fromPattern(base);
 
         assertEquals(expected, result);
     }
@@ -128,8 +127,7 @@ class ParserTest {
         };
         String expected = "x = 3, y = 3, rule = B3/S23\nbob$o2b$3o!";
 
-        ParsedPattern pp = new ParsedPattern("", "", "", "", base);
-        String result = Parser.fromPattern(pp);
+        String result = Parser.fromPattern(base);
 
         assertEquals(expected, result);
     }
@@ -156,8 +154,7 @@ class ParserTest {
                 "2b3o3b3o2b2$o4bobo4bo$o4bobo4bo$o4bobo4bo$2b3o3b3o2b2$2b3o3b3o2b$o4bob\n" +
                 "o4bo$o4bobo4bo$o4bobo4bo2$2b3o3b3o!";
 
-        ParsedPattern pp = new ParsedPattern("", "", "", "", base);
-        String result = Parser.fromPattern(pp);
+        String result = Parser.fromPattern(base);
 
         assertEquals(expected, result);
     }
@@ -170,8 +167,7 @@ class ParserTest {
 
         String expected = "x = 18, y = 1, rule = B3/S23\n" +
                 "18o!";
-        ParsedPattern pp = new ParsedPattern("", "", "", "", base);
-        String result = Parser.fromPattern(pp);
+        String result = Parser.fromPattern(base);
 
         assertEquals(expected, result);
     }
