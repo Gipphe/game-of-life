@@ -295,16 +295,17 @@ public class Controller implements Initializable {
         double currXPos = canvas.getTranslateX();
         switch (event.getCode()) {
             case W:
-                canvas.setTranslateY(currYPos - moveSpeed);
+                canvasController.panUp(board);
+                //TODO AAAAAA
                 break;
             case A:
-                canvas.setTranslateX(currXPos - moveSpeed);
+                canvasController.panLeft(board);
                 break;
             case S:
-                canvas.setTranslateY(currYPos + moveSpeed);
+                canvasController.panDown(board);
                 break;
             case D:
-                canvas.setTranslateX(currXPos + moveSpeed);
+                canvasController.panRight(board);
                 break;
             case Q:
                 startStopButton.selectedProperty().setValue(!startStopButton.selectedProperty().getValue());
