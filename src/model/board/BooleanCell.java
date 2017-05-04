@@ -1,13 +1,14 @@
-package model.cell;
+package model.board;
 
-import model.state.ByteState;
+import model.state.BooleanState;
 import model.state.State;
 
 /**
  * A cell object representing a single point on the simulation model.
- * Benched at 350856KB on Turing Machine.
+ * Benched at 350869KB on Turing Machine.
  */
-public class ByteCell implements Cell {
+@Deprecated
+class BooleanCell implements Cell {
 
     private State state;
 
@@ -15,8 +16,8 @@ public class ByteCell implements Cell {
      * Constructor.
      * Initializes as a dead cell.
      */
-    public ByteCell() {
-        this.state = new ByteState();
+    public BooleanCell() {
+        this.state = new BooleanState();
     }
 
     /**
@@ -24,8 +25,8 @@ public class ByteCell implements Cell {
      * Initializes to the passed state.
      * @param state State to initialize to.
      */
-    public ByteCell(boolean state) {
-        this.state = new ByteState(state);
+    public BooleanCell(boolean state) {
+        this.state = new BooleanState(state);
     }
 
     /**
@@ -34,7 +35,7 @@ public class ByteCell implements Cell {
      * @return Itself, for chaining.
      */
     @Override
-    public ByteCell kill() {
+    public BooleanCell kill() {
         setState(false);
         return this;
     }
@@ -45,7 +46,7 @@ public class ByteCell implements Cell {
      * @return Itself, for chaining.
      */
     @Override
-    public ByteCell resurrect() {
+    public BooleanCell resurrect() {
         setState(true);
         return this;
     }

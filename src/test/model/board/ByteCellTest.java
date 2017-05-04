@@ -1,31 +1,30 @@
-package model.cell;
+package model.board;
 
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@Deprecated
-class BooleanCellTest {
+class ByteCellTest {
     @Test
     void initializes_as_dead() {
-        BooleanCell result = new BooleanCell();
+        ByteCell result = new ByteCell();
         assertEquals("cell is dead", result.toString());
     }
     @Test
     void initializes_as_passed() {
-        BooleanCell result = new BooleanCell(true);
+        ByteCell result = new ByteCell(true);
         assertEquals("cell is alive", result.toString());
-        result = new BooleanCell(false);
+        result = new ByteCell(false);
         assertEquals("cell is dead", result.toString());
     }
     @Test
     void is_resurrected_on_resurrect() {
-        BooleanCell result = new BooleanCell().resurrect();
+        ByteCell result = new ByteCell().resurrect();
         assertEquals("cell is alive", result.toString());
     }
     @Test
     void is_killed_on_kill() {
-        BooleanCell result = new BooleanCell().resurrect();
+        ByteCell result = new ByteCell().resurrect();
         assertEquals("cell is alive", result.toString());
         result.kill();
         assertEquals("cell is dead", result.toString());

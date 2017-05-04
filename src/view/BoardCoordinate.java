@@ -1,5 +1,7 @@
 package view;
 
+import java.util.Objects;
+
 /**
  * Represents a coordinate pair of a Y-coordinate and an X-coordinate on the board.
  */
@@ -38,5 +40,26 @@ public class BoardCoordinate {
      */
     public int getX() {
         return x;
+    }
+
+    @Override
+    public String toString() {
+        return "Coordinate at " + y + ", " + x;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+
+        if (o == null || getClass() != o.getClass()) return false;
+
+        return y == ((BoardCoordinate) o).getY() && x == ((BoardCoordinate) o).getX();
+    }
+
+    @Override
+    public int hashCode() {
+        int result = y;
+        result = 31 * result + x;
+        return result;
     }
 }

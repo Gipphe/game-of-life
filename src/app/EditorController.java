@@ -2,8 +2,6 @@ package app;
 
 import RLE.ParsedPattern;
 import RLE.Parser;
-import com.sun.corba.se.impl.orbutil.graph.Graph;
-import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -16,22 +14,17 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.ColorPicker;
-import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.transform.Affine;
-import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import lieng.GIFWriter;
-import model.Board;
-import model.BoundingBox;
-import model.cell.ByteCell;
-import model.cell.Cell;
+import model.board.ArrayListBoard;
+import model.board.Board;
 import rules.RuleSet;
 import rules.RulesCollection;
 
-import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Array;
 import java.net.URL;
@@ -131,16 +124,22 @@ public class EditorController extends Stage implements Initializable {
 
         FileHandler fileHandler = new FileHandler();
         try {
-            List<List<Cell>> currentBoard = editorBoard.getBoard();
+            List<List<Boolean>> currentBoard = editorBoard.getEnumerable();
             byte[][] newArray = new byte[currentBoard.size()][currentBoard.get(0).size()];
             for (int y = 0; y < currentBoard.size(); y++) {
-                List<Cell> row = currentBoard.get(y);
+                List<Boolean> row = currentBoard.get(y);
                 for (int x = 0; x < row.size(); x++) {
-                    Cell cell = row.get(x);
-                    newArray[y][x] = cell.getState().isAlive() ? (byte) 1 : 0;
+                    Boolean cell = row.get(x);
+                    newArray[y][x] = cell ? (byte) 1 : 0;
                 }
             }
-            ParsedPattern pp = new ParsedPattern(name.getText(), author.getText(), description.getText(), editorBoard.getRuleSet().getRuleString(), newArray);
+            ParsedPattern pp = new ParsedPattern(
+                    name.getText(),
+                    author.getText(),
+                    description.getText(),
+                    editorBoard.getRuleSet().getRuleString(),
+                    newArray
+            );
             String RLEString = Parser.fromPattern(pp);
             fileHandler.writeToFile(RLEString);
 
@@ -159,7 +158,7 @@ public class EditorController extends Stage implements Initializable {
      */
     @FXML
     void onSaveAndCloseButtonAction(ActionEvent event) {
-        Pattern editorBoardExport = new Pattern("Editor Board", editorBoard.getBoard());
+        Pattern editorBoardExport = new Pattern("Editor Board", editorBoard.getEnumerable());
         mainController.clearBoard();
         mainController.board.insertPattern(editorBoardExport.getPattern());
         mainController.canvasController.draw(mainController.board);
@@ -177,7 +176,7 @@ public class EditorController extends Stage implements Initializable {
     }
 
     @FXML
-    void onSaveGifButtonAction(ActionEvent event) throws Exception {    //Throws CloneNotSupportedException and IOException
+    void onSaveGifButtonAction(ActionEvent event) throws Exception {
         int counter = 0;
 
         gifWidth = editorBoard.getSizeX();
@@ -186,7 +185,7 @@ public class EditorController extends Stage implements Initializable {
         gifFilepath = fileHandler.writeToGif();
         lieng.GIFWriter gifWriter = new GIFWriter(gifWidth*gifCellSize+1, gifHeight*gifCellSize+1, gifFilepath, gifTimeBetweenFramesMS);  //TODO_DTL make constructor input customizable to user in GUI.
         gifWriter.setBackgroundColor(gifDeadColor);
-        Board clonedBoard = editorBoard.clone();
+        Board clonedBoard = new ArrayListBoard(editorBoard);
         writeGOLSequenceToGif(gifWriter, clonedBoard, counter);
         gifWriter.close();
         System.out.println("FERDIG!");
@@ -196,40 +195,48 @@ public class EditorController extends Stage implements Initializable {
         if (counter > 10) {
             return;
         }
-        List<List<Cell>> gameBoardToGif = boardToGif.getBoard();
+        List<List<Boolean>> gameBoardToGif = boardToGif.getEnumerable();
         System.out.println("Counter: " + counter);
         for (int y = 0; y < gameBoardToGif.size(); y++) {
             for (int x = 0; x < gameBoardToGif.get(0).size(); x++) {
-                if (gameBoardToGif.get(y).get(x).getState().isAlive()){
-                    gifWriter.fillRect(x*gifCellSize, x*gifCellSize+gifCellSize, y*gifCellSize, y*gifCellSize+gifCellSize, gifAliveColor);
+                if (gameBoardToGif.get(y).get(x)){
+                    gifWriter.fillRect(
+                            x * gifCellSize,
+                            x * gifCellSize + gifCellSize,
+                            y * gifCellSize,
+                            y * gifCellSize + gifCellSize,
+                            gifAliveColor
+                    );
                 } else {
-                    gifWriter.fillRect(x*gifCellSize, x*gifCellSize+gifCellSize, y*gifCellSize, y*gifCellSize+gifCellSize, gifDeadColor);
+                    gifWriter.fillRect(
+                            x * gifCellSize,
+                            x * gifCellSize + gifCellSize,
+                            y * gifCellSize,
+                            y * gifCellSize + gifCellSize,
+                            gifDeadColor
+                    );
                 }
             }
         }
         gifWriter.insertAndProceed();
         boardToGif.nextGeneration();
-        writeGOLSequenceToGif(gifWriter, boardToGif, counter + 1);            //Recursive method
+        writeGOLSequenceToGif(gifWriter, boardToGif, counter + 1);
     }
 
     @FXML
     void updateStrip(ActionEvent event) {
-        Board clonedBoard = new Board(0, 0);
+        Board clonedBoard = new ArrayListBoard(0, 0);
         
-        try {
-            clonedBoard = editorBoard.clone();
-        }catch (CloneNotSupportedException ignoredCNSE){
-
-        }
+        clonedBoard = new ArrayListBoard(editorBoard);
         double stripCellWidth = 0;
         double stripCellHeight = 225;
         Affine xform = new Affine();
         double xpadding = 5;
         double tx = xpadding;
-        if (clonedBoard.getBoard().size() > clonedBoard.getBoard().get(0).size()) {
-            stripCellWidth = stripCellHeight / clonedBoard.getBoard().size();
+        if (clonedBoard.getEnumerable().size() > clonedBoard.getEnumerable().get(0).size()) {
+            stripCellWidth = stripCellHeight / clonedBoard.getEnumerable().size();
         } else {
-            stripCellWidth = stripCellHeight / clonedBoard.getBoard().get(0).size();
+            stripCellWidth = stripCellHeight / clonedBoard.getEnumerable().get(0).size();
         }
         GraphicsContext gcs = strip.getGraphicsContext2D();
         gcs.clearRect(0, 0, strip.widthProperty().doubleValue(), strip.heightProperty().doubleValue());
@@ -238,9 +245,11 @@ public class EditorController extends Stage implements Initializable {
             xform.setTx(tx);
             gcs.setTransform(xform);
             if (!(nextGenerationCounter == 0)) {
-                clonedBoard.nextGeneration();   //We have not used multi-threading here as a user-generated pattern is probably not all that large, and thus would benefit from a single-thread nextGen-call.
+                // We have not used multi-threading here as a user-generated pattern is probably not all that large,
+                // and thus would benefit from a single-thread nextGen-call.
+                clonedBoard.nextGeneration();
             }
-            drawToStrip(gcs, clonedBoard, clonedBoard.getBoard(), stripCellWidth);
+            drawToStrip(gcs, clonedBoard, clonedBoard.getEnumerable(), stripCellWidth);
             tx += stripCellHeight + xpadding;
         }
 
@@ -248,14 +257,15 @@ public class EditorController extends Stage implements Initializable {
         gcs.setTransform(xform);
     }
 
-    public void drawToStrip(GraphicsContext gcs, Board clonedBoard, List<List<Cell>> gameBoard, double stripCellWidth){
+    public void drawToStrip(GraphicsContext gcs, Board clonedBoard, List<List<Boolean>> gameBoard, double stripCellWidth) {
+        List<List<Boolean>> clonedBoardEnumerable = clonedBoard.getEnumerable();
         for (int y = 0; y < gameBoard.size(); y++) {
-            List<Cell> row = gameBoard.get(y);
+            List<Boolean> row = gameBoard.get(y);
 
-            for (int x = 0; x < clonedBoard.getBoard().get(0).size(); x++) {
-                Cell cell = row.get(x);
+            for (int x = 0; x < clonedBoardEnumerable.get(0).size(); x++) {
+                Boolean cell = row.get(x);
 
-                if (cell.getState().isAlive()) {
+                if (cell) {
                     gcs.setFill(aliveColor);
                 } else {
                     gcs.setFill(deadColor);
@@ -265,11 +275,8 @@ public class EditorController extends Stage implements Initializable {
             }
         }
         gcs.setFill(Color.ORANGERED);
-        gcs.fillRect(clonedBoard.getBoard().get(0).size()*stripCellWidth, 0, 5, 255); //Draws separator line between each drawn generation
-    }
-
-    public void setRule(String name) {
-        editorBoard.setRuleSet(name);
+        //Draws separator line between each drawn generation
+        gcs.fillRect(clonedBoardEnumerable.get(0).size() * stripCellWidth, 0, 5, 255);
     }
 
     /**
@@ -279,19 +286,19 @@ public class EditorController extends Stage implements Initializable {
     private void draw() {
         GraphicsContext gcd = gc;
 
-        List<List<Cell>> gameBoard = editorBoard.getBoard();
+        List<List<Boolean>> gameBoard = editorBoard.getEnumerable();
         int borderWidth = 1;
         int cellWithBorder = cellWidth - borderWidth;
         gcd.getCanvas().setHeight(cellWidth * gameBoard.size());
         gcd.getCanvas().setWidth(cellWidth * gameBoard.get(0).size());
 
         for (int y = 0; y < gameBoard.size(); y++) {
-            List<Cell> row = gameBoard.get(y);
+            List<Boolean> row = gameBoard.get(y);
 
-            for (int x = 0; x < editorBoard.getBoard().get(0).size(); x++) {
-                Cell cell = row.get(x);
+            for (int x = 0; x < row.size(); x++) {
+                Boolean cell = row.get(x);
 
-                if (cell.getState().isAlive()) {
+                if (cell) {
                     gcd.setFill(aliveColor);
                 } else {
                     gcd.setFill(deadColor);
@@ -362,14 +369,14 @@ public class EditorController extends Stage implements Initializable {
      * @param event (MouseEvent)
      */
 
-    /*
+
     @FXML
     public void onDrag(MouseEvent event) {
         int x = (int)event.getX() /cellWidth;
         int y = (int)event.getY()/  cellWidth;
 
         try {
-            editorBoard.setValue(x, y, onDragValue);
+            editorBoard.setCellAlive(y, x, onDragValue == 1);
             if (x == 0) {
                 if (onDragValue == 1){
                     editorBoard.addColLeft();
@@ -394,7 +401,6 @@ public class EditorController extends Stage implements Initializable {
 
         draw();
     }
-    */
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {

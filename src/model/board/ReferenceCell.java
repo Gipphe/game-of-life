@@ -1,14 +1,14 @@
-package model.cell;
+package model.board;
 
-import model.state.BooleanState;
+import model.state.ReferenceState;
 import model.state.State;
 
 /**
  * A cell object representing a single point on the simulation model.
- * Benched at 350869KB on Turing Machine.
+ * Benched at 351385KB on Turing Machine.
  */
 @Deprecated
-public class BooleanCell implements Cell {
+class ReferenceCell implements Cell {
 
     private State state;
 
@@ -16,8 +16,8 @@ public class BooleanCell implements Cell {
      * Constructor.
      * Initializes as a dead cell.
      */
-    public BooleanCell() {
-        this.state = new BooleanState();
+    public ReferenceCell() {
+        this.state = new ReferenceState();
     }
 
     /**
@@ -25,8 +25,8 @@ public class BooleanCell implements Cell {
      * Initializes to the passed state.
      * @param state State to initialize to.
      */
-    public BooleanCell(boolean state) {
-        this.state = new BooleanState(state);
+    public ReferenceCell(boolean state) {
+        this.state = new ReferenceState(state);
     }
 
     /**
@@ -35,7 +35,7 @@ public class BooleanCell implements Cell {
      * @return Itself, for chaining.
      */
     @Override
-    public BooleanCell kill() {
+    public ReferenceCell kill() {
         setState(false);
         return this;
     }
@@ -46,7 +46,7 @@ public class BooleanCell implements Cell {
      * @return Itself, for chaining.
      */
     @Override
-    public BooleanCell resurrect() {
+    public ReferenceCell resurrect() {
         setState(true);
         return this;
     }

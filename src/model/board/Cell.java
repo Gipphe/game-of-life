@@ -1,4 +1,4 @@
-package model.cell;
+package model.board;
 
 import model.state.State;
 
