@@ -351,6 +351,34 @@ public class CanvasController {
         lastMouseY = event.getY();
     }
 
+    public void panDown(Board board) {
+        double deltaRows = boardHeight / cellScale;
+        setPanningY(panningY + deltaRows);
+        recalculateTableBounds(board);
+        draw(board);
+    }
+
+    public void panUp(Board board) {
+        double deltaRows = boardHeight / cellScale;
+        setPanningY(panningY - deltaRows);
+        recalculateTableBounds(board);
+        draw(board);
+    }
+
+    public void panRight(Board board) {
+        double deltaCols = boardWidth / cellScale;
+        setPanningX(panningX + deltaCols);
+        recalculateTableBounds(board);
+        draw(board);
+    }
+
+    public void panLeft(Board board) {
+        double deltaCols = boardWidth / cellScale;
+        setPanningX(panningX - deltaCols);
+        recalculateTableBounds(board);
+        draw(board);
+    }
+
     /**
      * Calculates the board coordinate of the passed canvas coordinate.
      * @param point The canvas coordinate to find on the board.
