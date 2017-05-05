@@ -4,11 +4,20 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class Parser {
+/**
+ * RLE parser toolbox class for reading and writing RLE strings to two-dimensional byte arrays.
+ */
+public final class Parser {
     /**
-     * Converts a passed Parser string to a byte[][] model for consumption by the ArrayListBoard class.
-     * @param RLEString Source Parser string to convert to model.
-     * @return ArrayListBoard representing the pattern described in the passed Parser string.
+     * Hogging the constructor, to prevent instantiation.
+     */
+    private Parser() {}
+
+    /**
+     * Converts the passed RLE string to a two-dimensional byte array, contained in a container class with its
+     * corresponding metadata, for consumption by Board instances.
+     * @param RLEString Source RLE string to convert to byte array.
+     * @return A {@code ParsedPattern} containing metadata on the pattern, as well as the pattern itself.
      */
     public static ParsedPattern toPattern(String RLEString) {
         FileContents contents = new FileContents(RLEString);
@@ -23,9 +32,12 @@ public class Parser {
         int pY = 0;
 
         StringBuilder digitAccumulator = new StringBuilder();
+        boolean done = false;
         for (String line : contents.getLines()) {
+            if (done) break;
             for (char ch : line.toCharArray()) {
                 if (ch == '!') {
+                    done = true;
                     break;
                 }
 
@@ -71,7 +83,7 @@ public class Parser {
     /**
      * Finds out whether the passed row is made up entirely of dead cells or not.
      * @param row Row to check.
-     * @return True if the row is empty, false otherwise.
+     * @return True if the row contains nothing but dead cells, false otherwise.
      */
     private static boolean isEmptyRow(byte[] row) {
         for (byte col : row) {
@@ -94,16 +106,15 @@ public class Parser {
     }
 
     /**
-     * Parses passed model into RLE for consumption by a file writer.
-     * @param parsedPattern parsedPattern to convert to an RLE string.
-     * @return Parser string representing the model.
+     * Parses passed {@code ParsedPattern}, extracting its two-dimensional {@code byte} pattern, and converts it into
+     * an RLE string for consumption by a file writer.
+     * @param parsedPattern {@code ParsedPattern} containing the pattern to convert.
+     * @return RLE string representing the pattern.
      */
     public static String fromPattern(ParsedPattern parsedPattern) {
         byte[][] pattern = parsedPattern.getPattern();
         StringBuilder result = new StringBuilder();
         StringBuilder line = new StringBuilder();
-        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm");
-        Date date = new Date();
         if (parsedPattern.getName().length() > 0) {
             line
                     .append("#N ")
@@ -111,17 +122,22 @@ public class Parser {
                     .append("\n");
         }
 
-        if (parsedPattern.getAuthor().length() > 0) {
+        if (parsedPattern.getAuthor().length() > 0 && parsedPattern.getDate().length() > 0) {
             line
                     .append("#O ")
                     .append(parsedPattern.getAuthor())
                     .append(", ")
-                    .append(dateFormat.format(date))
+                    .append(parsedPattern.getDate())
                     .append("\n");
-        } else {
+        } else if (parsedPattern.getAuthor().length() > 0) {
             line
                     .append("#O ")
-                    .append(dateFormat.format(date))
+                    .append(parsedPattern.getAuthor())
+                    .append("\n");
+        } else if(parsedPattern.getDate().length() > 0) {
+            line
+                    .append("#O ")
+                    .append(parsedPattern.getDate())
                     .append("\n");
         }
 

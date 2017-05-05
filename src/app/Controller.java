@@ -27,6 +27,9 @@ import view.BoardCoordinate;
 
 import java.io.IOException;
 import java.net.URL;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -175,7 +178,9 @@ public class Controller implements Initializable {
                     newArray[y][x] = cellAlive ? (byte) 1 : 0;
                 }
             }
-            ParsedPattern pp = new ParsedPattern("", "", "", board.getRuleSet().getRuleString(), newArray);
+            DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm");
+            Date date = new Date();
+            ParsedPattern pp = new ParsedPattern("", "", "", dateFormat.format(date), board.getRuleSet().getRuleString(), newArray);
             String RLEString = Parser.fromPattern(pp);
             fileHandler.writeToFile(RLEString);
 

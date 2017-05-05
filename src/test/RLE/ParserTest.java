@@ -113,7 +113,7 @@ class ParserTest {
         };
         String expected = "x = 2, y = 2, rule = B3/S23\n2o$2o!";
 
-        ParsedPattern pp = new ParsedPattern("", "", "", "", base);
+        ParsedPattern pp = new ParsedPattern("B3/S23", base);
         String result = Parser.fromPattern(pp);
 
         assertEquals(expected, result);
@@ -128,7 +128,7 @@ class ParserTest {
         };
         String expected = "x = 3, y = 3, rule = B3/S23\nbob$o2b$3o!";
 
-        ParsedPattern pp = new ParsedPattern("", "", "", "", base);
+        ParsedPattern pp = new ParsedPattern("B3/S23", base);
         String result = Parser.fromPattern(pp);
 
         assertEquals(expected, result);
@@ -156,24 +156,73 @@ class ParserTest {
                 "2b3o3b3o2b2$o4bobo4bo$o4bobo4bo$o4bobo4bo$2b3o3b3o2b2$2b3o3b3o2b$o4bob\n" +
                 "o4bo$o4bobo4bo$o4bobo4bo2$2b3o3b3o!";
 
-        ParsedPattern pp = new ParsedPattern("", "", "", "", base);
+        ParsedPattern pp = new ParsedPattern("B3/S23", base);
         String result = Parser.fromPattern(pp);
 
         assertEquals(expected, result);
     }
 
     @Test
-    void converts_from_board_even_when_there_are_double_digits_length_encoding() {
+    void converts_from_pattern_even_when_there_are_double_digits_length_encoding() {
         byte[][] base = {
                 {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
         };
 
         String expected = "x = 18, y = 1, rule = B3/S23\n" +
                 "18o!";
-        ParsedPattern pp = new ParsedPattern("", "", "", "", base);
+        ParsedPattern pp = new ParsedPattern("B3/S23", base);
         String result = Parser.fromPattern(pp);
 
         assertEquals(expected, result);
     }
 
+    @Test
+    void includes_name_when_converting_from_pattern() {
+        byte[][] base = {{1}};
+
+        String expected  = "#N Name\nx = 1, y = 1, rule = B3/S23\no!";
+        ParsedPattern pp = new ParsedPattern("Name", "", "", "", "B3/S23", base);
+        String result = Parser.fromPattern(pp);
+
+        assertEquals(expected, result);
+    }
+
+    @Test
+    void includes_author_when_converting_from_pattern() {
+        byte[][] base = {{1}};
+        String expected = "#O Author\nx = 1, y = 1, rule = B3/S23\no!";
+        ParsedPattern pp = new ParsedPattern("", "Author", "", "", "B3/S23", base);
+        String result = Parser.fromPattern(pp);
+
+        assertEquals(expected, result);
+    }
+
+    @Test
+    void inclues_date_when_converting_from_pattern() {
+        byte[][] base = {{1}};
+        String expected = "#O Date\nx = 1, y = 1, rule = B3/S23\no!";
+        ParsedPattern pp = new ParsedPattern("", "", "", "Date", "B3/S23", base);
+        String result = Parser.fromPattern(pp);
+
+        assertEquals(expected, result);
+    }
+    @Test
+    void includes_author_and_date_when_converting_from_pattern() {
+        byte[][] base = {{1}};
+        String expected = "#O Author, Date\nx = 1, y = 1, rule = B3/S23\no!";
+        ParsedPattern pp = new ParsedPattern("", "Author", "", "Date", "B3/S23", base);
+        String result = Parser.fromPattern(pp);
+
+        assertEquals(expected, result);
+    }
+
+    @Test
+    void includes_description_when_converting_from_pattern() {
+        byte[][] base = {{1}};
+        String expected = "#C Description\nx = 1, y = 1, rule = B3/S23\no!";
+        ParsedPattern pp = new ParsedPattern("", "", "Description", "", "B3/S23", base);
+        String result = Parser.fromPattern(pp);
+
+        assertEquals(expected, result);
+    }
 }

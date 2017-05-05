@@ -29,7 +29,10 @@ import view.CanvasController;
 import java.io.IOException;
 import java.lang.reflect.Array;
 import java.net.URL;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -135,10 +138,13 @@ public class EditorController extends Stage implements Initializable {
                     newArray[y][x] = cell ? (byte) 1 : 0;
                 }
             }
+            DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm");
+            Date date = new Date();
             ParsedPattern pp = new ParsedPattern(
                     name.getText(),
                     author.getText(),
                     description.getText(),
+                    dateFormat.format(date),
                     editorBoard.getRuleSet().getRuleString(),
                     newArray
             );
