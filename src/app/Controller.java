@@ -3,6 +3,7 @@ package app;
 import RLE.ParsedPattern;
 import RLE.Parser;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.geometry.Point2D;
 import javafx.scene.control.*;
@@ -71,6 +72,12 @@ public class Controller implements Initializable {
     private BorderPane borderPane;
     @FXML
     private Pane canvasWrapper;
+    @FXML
+    private Text genCount;
+    @FXML
+    private Text aliveCount;
+    @FXML
+    private Text deadCount;
 
     /**
      * Inserts a premade pattern to the middle of the board.
@@ -257,6 +264,7 @@ public class Controller implements Initializable {
                 past = now;
 
                 board.nextGeneration();
+                genCount.setText(String.valueOf(board.getGenCount()));
                 canvasController.recalculateTableBounds(board);
                 canvasController.draw(board);
             }
