@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">Game of Life Android App</string>
+    <string name="main_message">Welcome! Please select your activity</string>
+    <string name="bottom_text">s309732 | s300766 | s237590</string>
+    <string name="button_text_to_QR">Convert text to QR GoL</string>
+    <string name="button_enter_text">Enter message</string>
+    <string name="text_text_QR_hint">Enter message</string>
+    <string name="button_send_text_to_QR">Convert text to QR GoL</string>
+    <string name="next_generation_button">Next Generation</string>
+    <string name="start_stop_button">Start / Stop</string>
+    <string name="toggle_off">Start</string>
+    <string name="toggle_on">Stop</string>
+    <string name="user_input">User input:</string>
+    <string name="about_button">About</string>
+</resources>
