@@ -43,8 +43,6 @@
             </Menu>
             <Menu fx:id="rulesMenu" text="_Rules">
             </Menu>
-            <Menu text="About">
-            </Menu>
         </MenuBar>
     </top>
    <left>
