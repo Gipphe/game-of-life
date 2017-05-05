@@ -253,6 +253,7 @@ public class ArrayListBoard implements Board {
 
     public void clearBoard() {
         killBoard(thisGen);
+        lastGetEnumerableGen = -1;
     }
 
     private Set<BoardCoordinate> growSelection(BoardCoordinate coordinate) {

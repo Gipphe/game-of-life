@@ -223,10 +223,6 @@ public class Controller implements Initializable {
      */
     public void clearBoard() {
         board.clearBoard();
-        canvas.setTranslateX(0);
-        canvas.setTranslateY(0);
-        canvas.setScaleX(1.0);
-        canvas.setScaleY(1.0);
         canvasController.recalculateTableBounds(board);
         canvasController.resetPanningPointers(board);
         canvasController.draw(board);
@@ -277,9 +273,6 @@ public class Controller implements Initializable {
             moveSpeed = 5;
         }
 
-
-        double currYPos = canvas.getTranslateY();
-        double currXPos = canvas.getTranslateX();
         switch (event.getCode()) {
             case W:
                 canvasController.panUp(board, moveSpeed);
