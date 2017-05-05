@@ -55,7 +55,7 @@ public class EditorController extends Stage implements Initializable {
 
     private int gifWidth;
     private int gifHeight;
-    private int gifTimeBetweenFramesMS = 1000;
+    private int gifTimeBetweenFramesMS = 500;
     private int gifCellSize = 20;
     private String gifFilepath = "C:\\Users\\yanis\\Desktop\\file.gif";
     private java.awt.Color gifAliveColor;
@@ -188,6 +188,7 @@ public class EditorController extends Stage implements Initializable {
         gifWriter.setBackgroundColor(gifDeadColor);
         Board clonedBoard = editorBoard.clone();
         writeGOLSequenceToGif(gifWriter, clonedBoard, counter);
+        gifWriter.close();
         System.out.println("FERDIG!");
     }
 
@@ -211,9 +212,6 @@ public class EditorController extends Stage implements Initializable {
         writeGOLSequenceToGif(gifWriter, boardToGif, counter + 1);            //Recursive method
     }
 
-
-
-
     @FXML
     void updateStrip(ActionEvent event) {
         Board clonedBoard = new Board(0, 0);
@@ -230,10 +228,8 @@ public class EditorController extends Stage implements Initializable {
         double tx = xpadding;
         if (clonedBoard.getBoard().size() > clonedBoard.getBoard().get(0).size()) {
             stripCellWidth = stripCellHeight / clonedBoard.getBoard().size();
-            System.out.println("picked .size");
         } else {
             stripCellWidth = stripCellHeight / clonedBoard.getBoard().get(0).size();
-            System.out.println("picked .get(0).size");
         }
         GraphicsContext gcs = strip.getGraphicsContext2D();
         gcs.clearRect(0, 0, strip.widthProperty().doubleValue(), strip.heightProperty().doubleValue());
@@ -414,6 +410,6 @@ public class EditorController extends Stage implements Initializable {
         Platform.runLater(() -> saveGifButton.requestFocus());
         List<RuleSet> ruleSets = RulesCollection.getCollection();
 
-        draw();
+        //draw();
     }
 }

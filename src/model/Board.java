@@ -416,7 +416,6 @@ public class Board {
 
         for(int row = patternBB.getFirstRow(); row <= patternBB.getLastRow(); row++) {
             for(int col = patternBB.getFirstCol(); col <= patternBB.getLastCol(); col++) {
-                System.out.println("row: " + row + "col: " + col);
                 patternBoard.getBoard().get(patternRow).get(patternCol).getState().setAlive(board.get(row).get(col).getState().isAlive());
                 patternCol++;
             }

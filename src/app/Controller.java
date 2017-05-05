@@ -243,8 +243,6 @@ public class Controller implements Initializable {
         canvas.setTranslateY(0);
         canvas.setScaleX(1.0);
         canvas.setScaleY(1.0);
-        canvasController.setAliveColor(Color.BLACK);
-        canvasController.setDeadColor(Color.WHITE);
         canvasController.recalculateTableBounds(board);
         canvasController.resetPanningPointers(board);
         canvasController.draw(board);
