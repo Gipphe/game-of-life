@@ -173,6 +173,7 @@ public class EditorController extends Stage implements Initializable {
         close();
     }
 
+
     public void onSaveGifButtonAction() throws Exception {    //Throws CloneNotSupportedException and IOException
         int counter = 0;
 

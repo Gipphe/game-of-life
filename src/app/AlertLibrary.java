@@ -15,7 +15,7 @@ public class AlertLibrary {
      * @param aioobe (ArrayIndexOutOfBoundsException)
      * @param message (String) Additional message that should be shown in the Content field.
      */
-    public static void aioobe(ArrayIndexOutOfBoundsException aioobe, String message){
+    public static void aioobe(ArrayIndexOutOfBoundsException aioobe, String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Array Index Out Of Bounds Exception");
         alert.setHeaderText("Pattern out of bounds!");
@@ -31,7 +31,7 @@ public class AlertLibrary {
      * @param ioobe (IndexOutOfBoundsException)
      * @param message (String) Additional message that should be shown in the Content field.
      */
-    public static void ioobe(IndexOutOfBoundsException ioobe, String message){
+    public static void ioobe(IndexOutOfBoundsException ioobe, String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Index Out Of Bounds Exception");
         alert.setHeaderText("Runtime Error");
@@ -46,7 +46,7 @@ public class AlertLibrary {
      * @param ioobe (IllegalArgumentException)
      * @param message (String) Additional message that should be shown in the Content field.
      */
-    public static void iae(IllegalArgumentException ioobe, String message){
+    public static void iae(IllegalArgumentException ioobe, String message) {
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setTitle("Illegal Argument Exception");
         alert.setContentText("No pattern found. Please import a pattern or create your own.");
