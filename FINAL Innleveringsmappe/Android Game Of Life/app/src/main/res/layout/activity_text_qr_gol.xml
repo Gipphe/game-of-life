@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.android.gameoflifeandroid.TextQrGol">
+
+    <com.example.android.gameoflifeandroid.GameViewer android:id="@+id/game" android:layout_height="wrap_content" android:layout_width="wrap_content" android:background="@color/colorPrimary"/>
+
+    <Button
+        android:id="@+id/nextGenerationButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:layout_marginLeft="16dp"
+        android:onClick="nextGenerationClick"
+        android:text="@string/next_generation_button"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent" />
+
+    <ToggleButton
+        android:id="@+id/startStopToggle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:checked="false"
+        android:text="ToggleButton"
+        android:textOff="@string/toggle_off"
+        android:textOn="@string/toggle_on"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@+id/nextGenerationButton"
+        app:layout_constraintRight_toRightOf="parent"
+        android:onClick="startStopClick"/>
+
+    <TextView
+        android:id="@+id/inputTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="7dp"
+        android:text="TextView"
+        android:textAlignment="center"
+        android:textColor="@android:color/white"
+        android:textSize="18sp"
+        android:textStyle="bold|italic"
+        app:layout_constraintBottom_toTopOf="@+id/startStopToggle"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
+</android.support.constraint.ConstraintLayout>
+

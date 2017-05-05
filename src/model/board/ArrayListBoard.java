@@ -455,12 +455,16 @@ public class ArrayListBoard implements Board {
     public Board patternToBoard() {
         BoundingBox bb = getBoundingBox();
         Board patternBoard = new ArrayListBoard(bb.getSizeX(), bb.getSizeY());
+        int patternBoardCol = 0;
+        int patternBoardRow = 0;
 
         for(int row = bb.getFirstRow(); row <= bb.getLastRow(); row++) {
             for(int col = bb.getFirstCol(); col <= bb.getLastCol(); col++) {
-                System.out.println("row: " + row + "col: " + col);
-                patternBoard.setCellAlive(row, col, thisGen.get(row).get(col).getState().isAlive());
+                patternBoard.setCellAlive(patternBoardRow, patternBoardCol, thisGen.get(row).get(col).getState().isAlive());
+                patternBoardCol++;
             }
+            patternBoardRow++;
+            patternBoardCol = 0;
         }
         return patternBoard;
     }

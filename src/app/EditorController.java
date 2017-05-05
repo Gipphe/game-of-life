@@ -24,6 +24,7 @@ import model.board.ArrayListBoard;
 import model.board.Board;
 import rules.RuleSet;
 import rules.RulesCollection;
+import view.CanvasController;
 
 import java.io.IOException;
 import java.lang.reflect.Array;
@@ -44,7 +45,8 @@ public class EditorController extends Stage implements Initializable {
     int cellWidth = 20;
     private RuleSet ruleSet;
     private byte onDragValue;
-    Controller mainController;
+    private Controller mainController;
+    private CanvasController canvasController;
 
     private int gifWidth;
     private int gifHeight;
@@ -116,10 +118,10 @@ public class EditorController extends Stage implements Initializable {
         {
             e.printStackTrace();
         }
+
     }
 
-    @FXML
-    void onSaveRleButtonAction(ActionEvent event) {
+    public void onSaveRleButtonAction() {
         String ruleString = ruleSet.getRuleString();
 
         FileHandler fileHandler = new FileHandler();
@@ -153,11 +155,8 @@ public class EditorController extends Stage implements Initializable {
     /**
      * Transfers the editor pattern to a Pattern object and passes the pattern
      * to the Controller, placing it in the middle of the game board.
-     *
-     * @param event
      */
-    @FXML
-    void onSaveAndCloseButtonAction(ActionEvent event) {
+    public void onSaveAndCloseButtonAction() {
         Pattern editorBoardExport = new Pattern("Editor Board", editorBoard.getEnumerable());
         mainController.clearBoard();
         mainController.board.insertPattern(editorBoardExport.getPattern());
@@ -167,16 +166,12 @@ public class EditorController extends Stage implements Initializable {
 
     /**
      * Closes Editor.fxml.
-     *
-     * @param event
      */
-    @FXML
-    void onCloseButtonAction(ActionEvent event) throws CloneNotSupportedException {
+    public void onCloseButtonAction() throws CloneNotSupportedException {
         close();
     }
 
-    @FXML
-    void onSaveGifButtonAction(ActionEvent event) throws Exception {
+    public void onSaveGifButtonAction() throws Exception {    //Throws CloneNotSupportedException and IOException
         int counter = 0;
 
         gifWidth = editorBoard.getSizeX();
@@ -191,7 +186,7 @@ public class EditorController extends Stage implements Initializable {
         System.out.println("FERDIG!");
     }
 
-    void writeGOLSequenceToGif(lieng.GIFWriter gifWriter, Board boardToGif, int counter) throws IOException{
+    public void writeGOLSequenceToGif(lieng.GIFWriter gifWriter, Board boardToGif, int counter) throws IOException{
         if (counter > 10) {
             return;
         }
@@ -223,10 +218,8 @@ public class EditorController extends Stage implements Initializable {
         writeGOLSequenceToGif(gifWriter, boardToGif, counter + 1);
     }
 
-    @FXML
-    void updateStrip(ActionEvent event) {
+    public void updateStrip() {
         Board clonedBoard = new ArrayListBoard(0, 0);
-        
         clonedBoard = new ArrayListBoard(editorBoard);
         double stripCellWidth = 0;
         double stripCellHeight = 225;
@@ -415,7 +408,10 @@ public class EditorController extends Stage implements Initializable {
         gc = canvas.getGraphicsContext2D();
         Platform.runLater(() -> saveGifButton.requestFocus());
         List<RuleSet> ruleSets = RulesCollection.getCollection();
+        updateStrip();
+        canvasController = new CanvasController(canvas);
+        canvasController.recalculateTableBounds(editorBoard);
 
-        //draw();
+        canvasController.draw(editorBoard);
     }
 }
