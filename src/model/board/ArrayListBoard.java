@@ -42,11 +42,6 @@ public class ArrayListBoard implements Board {
     private int aliveCount = 0;
 
     /**
-     * Number of dead cells since this board started.
-     */
-    private long deadCount = 0;
-
-    /**
      * Number of generations since this board's creation.
      */
     private int genCount = 0;
@@ -128,13 +123,15 @@ public class ArrayListBoard implements Board {
 
         Set<BoardCoordinate> interestingCells = getCellsOfInterest(oldBoard, fromY, toY);
 
-        for (BoardCoordinate aliveCoordinate : interestingCells) {
-            Cell cell = oldBoard.get(aliveCoordinate.getY()).get(aliveCoordinate.getX());
-            int numNeighbors = neighbours(oldBoard, aliveCoordinate);
+        for (BoardCoordinate coordinate : interestingCells) {
+            Cell cell = oldBoard.get(coordinate.getY()).get(coordinate.getX());
+            int numNeighbors = neighbours(oldBoard, coordinate);
             State newState = ruleSet.getNewState(cell.getState(), numNeighbors);
-            thisGen.get(aliveCoordinate.getY()).get(aliveCoordinate.getX()).getState().setAlive(newState.isAlive());
-            if (newState.isAlive()) aliveCount++;
-            else deadCount++;
+            State cellState = thisGen.get(coordinate.getY()).get(coordinate.getX()).getState();
+            if (!cellState.isAlive() && newState.isAlive() || (cellState.isAlive() && newState.isAlive())) {
+                aliveCount++;
+            }
+            cellState.setAlive(newState.isAlive());
         }
     }
 
@@ -292,7 +289,6 @@ public class ArrayListBoard implements Board {
         killBoard(thisGen);
         genCount = 0;
         aliveCount = 0;
-        deadCount = 0;
         lastGetEnumerableGen = -1;
     }
 
@@ -366,9 +362,11 @@ public class ArrayListBoard implements Board {
             int numNeighbors = neighbours(prevGen, coordinate);
             Cell cell = prevGen.get(coordinate.getY()).get(coordinate.getX());
             State newState = ruleSet.getNewState(cell.getState(), numNeighbors);
-            thisGen.get(coordinate.getY()).get(coordinate.getX()).getState().setAlive(newState.isAlive());
-            if (newState.isAlive()) aliveCount++;
-            else deadCount++;
+            State cellState = thisGen.get(coordinate.getY()).get(coordinate.getX()).getState();
+            if (!cellState.isAlive() && newState.isAlive() || (cellState.isAlive() && newState.isAlive())) {
+                aliveCount++;
+            }
+            cellState.setAlive(newState.isAlive());
         }
         if (dynamic) {
             postGenerationGrow();
@@ -824,13 +822,5 @@ public class ArrayListBoard implements Board {
     @Override
     public int getAliveCount() {
         return aliveCount;
-    }
-
-    /**
-     * @return The number of dead cells since clearing this board.
-     */
-    @Override
-    public long getDeadCount() {
-        return deadCount;
     }
 }

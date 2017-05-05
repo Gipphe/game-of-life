@@ -33,5 +33,4 @@ public interface Board {
     int getGenCount();
 
     int getAliveCount();
-    long getDeadCount();
 }
