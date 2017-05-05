@@ -113,7 +113,6 @@ public class ArrayListBoard implements Board {
 
     /**
      * nextGeneration with multi-threading enabled. Reads no. of processors and distributes workload accordingly.
-     * Provides a performance increase of roughly 20%.
      */
     @Override
     public void nextGenerationConcurrent() {
