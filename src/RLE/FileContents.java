@@ -7,16 +7,33 @@ import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * A loaded RLE file's data.
+ *
+ * Represents the contents of a loaded RLE file, divided up into logical constructs based on the pattern's number of
+ * columns, number of rows, rule, and the pattern itself. The pattern is divided up by lines to skip having to deal
+ * with newline characters at the expense of computation in dividing up the pattern by lines, as well as the miniscule
+ * memory overhead from using a Stack instead of a String.
+ */
 class FileContents {
     /**
      * Number of columns in the pattern.
      */
     private int numCols;
+
     /**
      * Number of rows in the pattern.
      */
     private int numRows;
+
+    /**
+     * Rule string, usually in the form of {@code survival_counts/birth_counts} (23/3 for Conway).
+     */
     private String rule;
+
+    /**
+     * The pattern information, divided up by lines.
+     */
     private Stack<String> lines;
 
     /**
@@ -58,9 +75,9 @@ class FileContents {
      * @return The size of the Parser pattern along the passed axis. Returns 0 if no such size was found.
      */
     private static int getAxisSize(String source, String axis) {
-        String result = getFirstMatch(source, axis + " = (\\d+),");
-        if (result == null) {
-            return 0;
+        String result = getFirstMatch(source, axis + " = (\\d+)");
+        if (result.length() <= 0) {
+            throw new RLEException("Missing axis information: " + axis);
         }
 
         return Integer.parseInt(result);
@@ -95,16 +112,19 @@ class FileContents {
     }
 
     /**
-     * Returns the rule string.
      * @param rle Source string to find the rule of.
-     * @return The rule line. Usually "rule = B3/S23", for Conway's rule.
+     * @return The rule as contained in the RLE file. Defaults to "B3/S23" if not found.
      */
     private static String getRule(String rle) {
-        return getFirstMatch(rle, "rule = (.+)");
+        String rule = getFirstMatch(rle, "rule ?= ?(.+)");
+        if (rule.length() <= 0) {
+            return "B3/S23";
+        }
+        return rule;
     }
 
     /**
-     * Strips metadata off of the supplied source string.
+     * Strips RLE metadata off of the supplied source string.
      * @param source String to strip of metadata.
      * @return New string without any lines beginning with #.
      */
@@ -126,7 +146,7 @@ class FileContents {
 
     /**
      * Constructor
-     * @param contents full string contents of a potential Parser file.
+     * @param contents Full string contents of a potential Parser file.
      */
     FileContents(String contents) {
         String bareData = stripMeta(contents);
