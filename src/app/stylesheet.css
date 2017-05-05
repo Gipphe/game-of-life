@@ -1,4 +1,4 @@
-.root{
+.root {
     -fx-font-size: 22px;
     -fx-font-family: "Verdana";
     -fx-base: #adadad;
@@ -6,11 +6,19 @@
 }
 
 .left-pane {
-    -fx-alignment: TOP_CENTER;
     -fx-background-color: GRAY;
 }
 
 .top {
     -fx-font-size: 48px;
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 0);
+}
+
+.metaData {
+    -fx-font-size: 36px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 0);
+}
+
+.bottom {
+    -fx-font-size: 15px;
 }

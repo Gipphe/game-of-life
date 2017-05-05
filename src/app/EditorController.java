@@ -99,6 +99,8 @@ public class EditorController extends Stage implements Initializable {
         editorBoard = receivedBoard;
         FXMLLoader loader = new FXMLLoader(getClass().getResource("Editor.fxml"));
         loader.setController(this);
+        super.setMinHeight(750);
+        super.setMinWidth(650);
 
         try
         {
