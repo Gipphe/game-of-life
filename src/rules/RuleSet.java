@@ -43,8 +43,6 @@ public class RuleSet {
     public boolean isEqual(String otherRuleString) {
         String thisRule = ruleString.toLowerCase();
         String otherRule = otherRuleString.toLowerCase();
-        System.out.println(thisRule);
-        System.out.println(otherRule);
         String[] thisRuleBits = thisRule.split("/");
         String[] otherRuleBits = otherRule.split("/");
 
