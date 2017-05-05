@@ -49,10 +49,12 @@ public class ArrayListBoard implements Board {
      * Number of generations since this board's creation.
      */
     private int genCount = 0;
+
     /**
      * The genCount where the enumerable was last created.
      */
     private int lastGetEnumerableGen = -1;
+
     /**
      * The cached enumerable two-dimensional Boolean List.
      */
@@ -68,6 +70,10 @@ public class ArrayListBoard implements Board {
         initBoard(sizeX, sizeY);
     }
 
+    /**
+     * Constructor for ArrayListBoard
+     * @param board
+     */
     public ArrayListBoard(Board board) {
         initBoard(board.getSizeX(), board.getSizeY());
         List<List<Boolean>> boolBoard = board.getEnumerable();
@@ -130,11 +136,18 @@ public class ArrayListBoard implements Board {
         }
     }
 
-    private int getThreadIndex() {
+    /**
+     * "Counter" method for threads. Gives each thread an index
+     * @return
+     */
+    private synchronized int getThreadIndex() {
         threadIndex++;
         return threadIndex;
     }
 
+    /**
+     * Creates workers and refers their task.
+     */
     private void createWorkers() {
         List<List<Cell>> temp = thisGen;
         thisGen = prevGen;
@@ -149,13 +162,15 @@ public class ArrayListBoard implements Board {
         }
     }
 
-    // kjør trådobjektene
+    /**
+     * Runs all available workers
+     * @throws InterruptedException
+     */
     private static void runWorkers() throws InterruptedException {
         for(Thread t : workers) {
             t.start();
         }
 
-        // vent på at alle trådene har kjørt ferdig før vi returnerer
         for(Thread t : workers) {
             t.join();
         }
@@ -254,6 +269,11 @@ public class ArrayListBoard implements Board {
         }
     }
 
+    /**
+     * Sets all cells in a board to 0.
+     * @param board
+     * @return a shell-board filled with 0-cells.
+     */
     private List<List<Cell>> killBoard(List<List<Cell>> board) {
         for (List<Cell> row : board) {
             for (Cell cell : row) {
@@ -263,6 +283,9 @@ public class ArrayListBoard implements Board {
         return board;
     }
 
+    /**
+     * Clears all drawn cells from the board.
+     */
     public void clearBoard() {
         killBoard(thisGen);
         genCount = 0;
@@ -271,6 +294,11 @@ public class ArrayListBoard implements Board {
         lastGetEnumerableGen = -1;
     }
 
+    /**
+     * Returns the coordinates of all cells surrounding a cell.
+     * @param coordinate of the target cell.
+     * @return a set of coordinates of neighbour cells.
+     */
     private Set<BoardCoordinate> growSelection(BoardCoordinate coordinate) {
         Set<BoardCoordinate> result = new HashSet<>();
 
@@ -295,6 +323,13 @@ public class ArrayListBoard implements Board {
         return result;
     }
 
+    /**
+     * Gets all relevant cells (cells that have the ability to be affected- or affect other cells.
+     * @param board
+     * @param startRow
+     * @param endRow
+     * @return
+     */
     private Set<BoardCoordinate> getCellsOfInterest(List<List<Cell>> board, int startRow, int endRow) {
         Set<BoardCoordinate> result = new HashSet<>();
         for (int y = startRow; y < endRow; y++) {
@@ -338,10 +373,9 @@ public class ArrayListBoard implements Board {
         }
     }
 
-    public boolean[] growthSummary(boolean up, boolean right, boolean down, boolean left) {
-        return new boolean[]{up, right, down, left};
-    }
-
+    /**
+     * Checks board edges for live cells, and expands if any are found.
+     */
     private void postGenerationGrow() {
         boolean leftAdded = false;
         boolean rightAdded = false;
@@ -394,11 +428,18 @@ public class ArrayListBoard implements Board {
         }
     }
 
+    /**
+     * Displays current generation sizes for testing purposes.
+     */
     public void tester() {
         System.out.println("thisGen.size() = " + thisGen.size());
         System.out.println("thisGen.get(0).size = " + thisGen.get(0).size());
     }
 
+    /**
+     * Creates and returns an empty row
+     * @return row
+     */
     private List<Cell> getEmptyRow() {
         List<Cell> row = new ArrayList<>(thisGen.get(0).size());
         for (int i = 0; i < thisGen.get(0).size(); i++) {
@@ -407,18 +448,27 @@ public class ArrayListBoard implements Board {
         return row;
     }
 
+    /**
+     * Adds an empty row to the bottom of the board
+     */
     public void addRowBottom(){
         lastGetEnumerableGen = -1;
         thisGen.add(getEmptyRow());
         prevGen.add(getEmptyRow());
     }
 
+    /**
+     * Adds an empty row to the top of the board
+     */
     public void addRowTop(){
         lastGetEnumerableGen = -1;
         thisGen.add(0, getEmptyRow());
         prevGen.add(0, getEmptyRow());
     }
 
+    /**
+     * Adds an empty column to the right of the board
+     */
     public void addColRight(){
         lastGetEnumerableGen = -1;
         for (int i = 0; i < thisGen.size(); i++) {
@@ -429,6 +479,9 @@ public class ArrayListBoard implements Board {
         }
     }
 
+    /**
+     * Adds an empty column to the left of the board
+     */
     public void addColLeft(){
         lastGetEnumerableGen = -1;
         for (int i = 0; i < thisGen.size(); i++) {
@@ -441,7 +494,6 @@ public class ArrayListBoard implements Board {
 
     /**
      * Method for checking a specific cell's neighbour count.
-     *
      * @return Number of neighbours.
      */
     private int neighbours(List<List<Cell>> board, BoardCoordinate coordinate) {
@@ -477,7 +529,6 @@ public class ArrayListBoard implements Board {
 
     /**
      * Transforms the thisGen into a single String of 0s and 1s.
-     *
      * @return String of 1 and 0 representing the byte[][] array.
      */
     @Override
@@ -485,6 +536,11 @@ public class ArrayListBoard implements Board {
         return toString(thisGen);
     }
 
+    /**
+     * Returns a toString of a 2D List array.
+     * @param board to be converted
+     * @return String of 1 and 0 representing the List<List<Cell>> array.
+     */
     private String toString(List<List<Cell>> board) {
         if (board.size() == 0) {
             return "";
@@ -506,7 +562,6 @@ public class ArrayListBoard implements Board {
 
     /**
      * Returns a 1/0 String of only the pattern within the bounding box.
-     *
      * @return 1s and 0s representing the contained pattern.
      */
     public String patternToString(){
@@ -521,6 +576,10 @@ public class ArrayListBoard implements Board {
         return sb.toString();
     }
 
+    /**
+     * Creates and returns a "trimmed" board, only within the BoundingBox.
+     * @return patternBoard
+     */
     public Board patternToBoard() {
         BoundingBox bb = getBoundingBox();
         Board patternBoard = new ArrayListBoard(bb.getSizeX(), bb.getSizeY());
@@ -540,7 +599,6 @@ public class ArrayListBoard implements Board {
 
     /**
      * Creates a bounding box within which the current state of the thisGen is of interest (boundary of alive cells).
-     *
      * @return The BoundingBox representing the area of interest.
      */
     public BoundingBox getBoundingBox() {
@@ -566,43 +624,73 @@ public class ArrayListBoard implements Board {
         return bb;
     }
 
+    /**
+     * TODO Victor
+     */
     private List<Consumer<Size>> postResizeListeners = new ArrayList<>();
+
+    /**
+     * TODO Victor
+     */
     private List<Consumer<Size>> preResizeListeners = new ArrayList<>();
 
+    /**
+     * TODO Victor
+     * @param runner
+     */
     @Override
     public void addPostResizeListener(Consumer<Size> runner) {
         postResizeListeners.add(runner);
     }
+
+    /**
+     * TODO Victor
+     * @param runner
+     */
     @Override
     public void addPreResizeListener(Consumer<Size> runner) {
         preResizeListeners.add(runner);
     }
 
+    /**
+     * TODO Victor
+     */
     private void callPostResizeListeners() {
         for (Consumer<Size> runner : postResizeListeners) {
             runner.accept(new Size(getSizeY(), getSizeX()));
         }
     }
 
+    /**
+     * TODO Victor
+     * @param size
+     */
     private void callPostResizeListeners(Size size) {
         for (Consumer<Size> runner : postResizeListeners) {
             runner.accept(size);
         }
     }
 
+    /**
+     * TODO Victor
+     */
     private void callPreResizeListeners() {
         for (Consumer<Size> runner : preResizeListeners) {
             runner.accept(new Size(getSizeY(), getSizeX()));
         }
     }
 
+    /**
+     * Setter method for the active board rules.
+     * @param ruleSet The requested rule set.
+     */
     @Override
     public void setRuleSet(RuleSet ruleSet) {
         this.ruleSet = ruleSet;
     }
 
     /**
-     *
+     * Getter method for the active board rules.
      * @return The current rule set.
      */
     @Override
@@ -612,7 +700,6 @@ public class ArrayListBoard implements Board {
 
     /**
      * Returns the number of columns in the thisGen.
-     *
      * @return The number of columns.
      */
     @Override
@@ -622,7 +709,6 @@ public class ArrayListBoard implements Board {
 
     /**
      * Returns the number of rows in the thisGen.
-     *
      * @return The number of rows.
      */
     @Override
@@ -630,11 +716,19 @@ public class ArrayListBoard implements Board {
         return thisGen.size();
     }
 
+    /**
+     * Getter for thisGen.
+     * @return Curr
+     */
     @Override
     public List<List<Cell>> getThisGen() {
         return thisGen;
     }
 
+    /**
+     * TODO Victor
+     * @return
+     */
     @Override
     public List<List<Boolean>> getEnumerable() {
         if (genCount == lastGetEnumerableGen) {
@@ -653,23 +747,43 @@ public class ArrayListBoard implements Board {
         return result;
     }
 
+    /**
+     * Getter for the current dynamic status of the board.
+     * @return dynamic
+     */
     @Override
     public boolean getDynamic() {
         return dynamic;
     }
 
+    /**
+     * Setter for the current dynamic status of the board.
+     * @param dynamic
+     */
     @Override
     public void setDynamic(boolean dynamic) {
         lastGetEnumerableGen = -1;
         this.dynamic = dynamic;
     }
 
+    /**
+     * Sets the value of a cell.
+     * @param y coordinate
+     * @param x coordinate
+     * @param alive required status.
+     */
     @Override
     public void setCellAlive(int y, int x, boolean alive) {
         lastGetEnumerableGen = -1;
         thisGen.get(y).get(x).getState().setAlive(alive);
     }
 
+    /**
+     * Gets the status of a cell.
+     * @param y coordinate
+     * @param x coordinate
+     * @return status of the cell.
+     */
     @Override
     public boolean getCellAlive(int y, int x) {
         return thisGen.get(y).get(x).getState().isAlive();
