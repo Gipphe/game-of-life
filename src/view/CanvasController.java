@@ -14,48 +14,92 @@ import java.util.List;
 import static utils.Utils.limit;
 
 /**
- * Controller for handling all actions, draws and method calls on the canvas itself.
+ * Controller for handling all actions, draws and method calls on the passed canvas
  */
 public class CanvasController {
     /**
      * The graphics context to wrap around.
      */
     private GraphicsContext gc;
+
     /**
      * The canvas within the aforementioned graphics context.
      */
     private Canvas canvas;
+
     /**
      * Cell width and height. Cells are always square in shape.
      */
     private double cellScale = 5;
+
     /**
      * Border width between each cell.
      */
     private int borderWidth = 1;
+
     /**
      * Panning pointer along the Y-axis.
      */
     private double panningY = 0;
+
+    /**
+     * The lower bound for the {@code panningY} pointer.
+     */
     private double panningYLowerBound = 0;
+
+    /**
+     * The upper bound for the {@code panningY} pointer.
+     */
     private double panningYUpperBound = 0;
+
     /**
      * Panning pointer along the X-axis.
      */
     private double panningX = 0;
-    private double panningXLowerBound = 0;
-    private double panningXUpperBound = 0;
+
     /**
-     * Alive cells are
+     * The lower bound for the {@code panningX} pointer.
+     */
+    private double panningXLowerBound = 0;
+
+    /**
+     * The upper bound for the {@code panningX} pointer.
+     */
+    private double panningXUpperBound = 0;
+
+    /**
+     * Alive cells are represented by this color when drawn.
      */
     private Color aliveColor = Color.BLACK;
+
+    /**
+     * Dead cells are represented by this color when drawn.
+     */
     private Color deadColor = Color.WHITE;
+
+    /**
+     * Zoom level from 0 to 10, indicating the relative size of each cell.
+     */
     private int zoomLevel = 1;
 
+    /**
+     * The first row to draw.
+     */
     private int firstRowIndex;
+
+    /**
+     * The first column to draw.
+     */
     private int firstColIndex;
 
+    /**
+     * The height of the board being drawn.
+     */
     private int boardWidth;
+
+    /**
+     * The width of the board being drawn.
+     */
     private int boardHeight;
 
     /**
@@ -76,6 +120,13 @@ public class CanvasController {
         this.canvas = canvas;
     }
 
+    /**
+     * Initializes this canvasController.
+     *
+     * Sets the table bounds relative to the selected board, resets the panning pointers to the middle of the passed
+     * board.
+     * @param board Board to initialize to.
+     */
     public void initialize(Board board) {
         recalculateTableBounds(board);
         resetPanningPointers(board);
@@ -94,6 +145,7 @@ public class CanvasController {
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
 
         List<List<Cell>> gameBoard = board.getThisGen();
+        
         double cellWithBorder = cellScale - borderWidth;
 
         recalculateOffset();
@@ -358,24 +410,44 @@ public class CanvasController {
         lastMouseY = event.getY();
     }
 
+    /**
+     * Pans the view downwards.
+     * @param board Board to pan along.
+     * @param deltaRows Number of rows to pan.
+     */
     public void panDown(Board board, double deltaRows) {
         setPanningY(panningY + deltaRows);
         recalculateTableBounds(board);
         draw(board);
     }
 
+    /**
+     * Pans the view upwards.
+     * @param board Board to pan along.
+     * @param deltaRows Number of rows to pan.
+     */
     public void panUp(Board board, double deltaRows) {
         setPanningY(panningY - deltaRows);
         recalculateTableBounds(board);
         draw(board);
     }
 
+    /**
+     * Pans the view rightwards.
+     * @param board Board to pan along.
+     * @param deltaCols Number of columns to pan.
+     */
     public void panRight(Board board, double deltaCols) {
         setPanningX(panningX + deltaCols);
         recalculateTableBounds(board);
         draw(board);
     }
 
+    /**
+     * Pans the view rightwards.
+     * @param board Board to pan along.
+     * @param deltaCols Number of columns to pan.
+     */
     public void panLeft(Board board, double deltaCols) {
         setPanningX(panningX - deltaCols);
         recalculateTableBounds(board);
@@ -393,13 +465,4 @@ public class CanvasController {
         int x = (int) Math.round((point.getX() - (cellScale / 2)) / cellScale) + firstColIndex - offsetCol;
         return new BoardCoordinate(y, x);
     }
-
-    /**
-     *
-     * @return The current cell scale. Cell scale is bound to the zoom level of the board.
-     */
-    public double getCellScale() {
-        return cellScale;
-    }
-
 }
