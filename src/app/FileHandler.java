@@ -99,7 +99,7 @@ class FileHandler {
     /**
      * Opens a file chooser where it is possible to save a GIF file.
      *
-     * @return //TODO LEGG TIL TODO
+     * @return f.getPath() is the desired save-path.
      * @throws IOException Throws an exception if the IO operation fails.
      */
     String writeToGif() throws IOException {

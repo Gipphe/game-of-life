@@ -10,14 +10,17 @@ import javafx.geometry.Point2D;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.transform.Affine;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import lieng.GIFWriter;
 import model.board.ArrayListBoard;
@@ -80,6 +83,8 @@ public class EditorController extends Stage implements Initializable {
     private ColorPicker aliveColorPicker;
     @FXML
     private ColorPicker deadColorPicker;
+    @FXML
+    private BorderPane editorBorderPane;
 
 
 
@@ -177,16 +182,27 @@ public class EditorController extends Stage implements Initializable {
 
     public void onSaveGifButtonAction() throws Exception {    //Throws CloneNotSupportedException and IOException
         int counter = 0;
-
         gifWidth = editorBoard.getSizeX();
         gifHeight = editorBoard.getSizeY();
         FileHandler fileHandler = new FileHandler();
         gifFilepath = fileHandler.writeToGif();
-        lieng.GIFWriter gifWriter = new GIFWriter(gifWidth*gifCellSize+1, gifHeight*gifCellSize+1, gifFilepath, gifTimeBetweenFramesMS);  //TODO_DTL make constructor input customizable to user in GUI.
+        Alert waitAlert = gifWaitAlert();
+        waitAlert.show();
+        lieng.GIFWriter gifWriter = new GIFWriter(gifWidth*gifCellSize+1, gifHeight*gifCellSize+1, gifFilepath, gifTimeBetweenFramesMS);
         gifWriter.setBackgroundColor(gifDeadColor);
         Board clonedBoard = new ArrayListBoard(editorBoard);
         writeGOLSequenceToGif(gifWriter, clonedBoard, counter);
         gifWriter.close();
+        waitAlert.close();
+    }
+
+    private Alert gifWaitAlert() {
+        Alert waitAlert = new Alert(Alert.AlertType.INFORMATION);
+        waitAlert.setTitle("Loading (...)");
+        waitAlert.setContentText("Saving your pattern to GIF, please wait!");
+        waitAlert.setHeaderText("Creating GIF");
+        waitAlert.initModality(Modality.WINDOW_MODAL);
+        return waitAlert;
     }
 
     public void writeGOLSequenceToGif(lieng.GIFWriter gifWriter, Board boardToGif, int counter) throws IOException{
