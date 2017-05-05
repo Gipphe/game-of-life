@@ -24,16 +24,50 @@ import static utils.Utils.wrap;
  * table.
  */
 public class ArrayListBoard implements Board {
+    /**
+     * The current generation of the board. Swapped around with prevGen.
+     */
     private List<List<Cell>> thisGen;
+
+    /**
+     * The previous generation of the board. Swapped around with thisGen.
+     */
     private List<List<Cell>> prevGen;
-    private Set<BoardCoordinate> aliveCells;
+
+    /**
+     * Set of cells that have the possibility of changing state in the next generation.
+     */
+    private Set<BoardCoordinate> cellsOfInterest;
+
+    /**
+     * Current rule set being used to evaluate cell states each generation.
+     */
     private RuleSet ruleSet;
 
+    /**
+     * Worker threads.
+     */
     private static List<Thread> workers = new ArrayList<>();
-    private int parallelLevel = Runtime.getRuntime().availableProcessors();
+
+    /**
+     * Number of threads to employ.
+     */
+    private int maxThreads = Runtime.getRuntime().availableProcessors();
+
+    /**
+     * {@code true} if this {@code Board} is dynamic, {@code false} otherwise.
+     */
     private boolean dynamic;
+
+    /**
+     * {@code true} is multi threading is enabled, false otherwise.
+     */
     private boolean multithreadingEnabled;
 
+    /**
+     * Index for initializing threads.
+     * @see ArrayListBoard#createWorkers()
+     */
     private int threadIndex = 0;
 
     /**
@@ -47,18 +81,8 @@ public class ArrayListBoard implements Board {
     private int genCount = 0;
 
     /**
-     * The genCount where the enumerable was last created.
-     */
-    private int lastGetEnumerableGen = -1;
-
-    /**
-     * The cached enumerable two-dimensional Boolean List.
-     */
-    private List<List<Boolean>> enumerable;
-
-    /**
-     * Constructor accepting the initial sizes of the thisGen.
-     *
+     * Constructor.
+     * Accepts the initial sizes of thisGen.
      * @param sizeX Length of the thisGen.
      * @param sizeY Height of the thisGen.
      */
@@ -67,17 +91,18 @@ public class ArrayListBoard implements Board {
     }
 
     /**
-     * Constructor for ArrayListBoard
-     * @param board
+     * Constructor.
+     * Accepts a {@code Board} instance for copying. Returns an equivalent instance of the passed {@code Board} instance.
+     * @param board The {@code Board} instance to copy.
      */
     public ArrayListBoard(Board board) {
         initBoard(board.getSizeX(), board.getSizeY());
-        List<List<Boolean>> boolBoard = board.getEnumerable();
+        List<List<Cell>> boolBoard = board.getThisGen();
         for (int y = 0; y < boolBoard.size(); y++) {
-            List<Boolean> row = boolBoard.get(y);
+            List<Cell> row = boolBoard.get(y);
             for (int x = 0; x < row.size(); x++) {
-                Boolean cell = row.get(x);
-                thisGen.get(y).get(x).getState().setAlive(cell);
+                Cell cell = row.get(x);
+                thisGen.get(y).get(x).getState().setAlive(cell.getState().isAlive());
             }
         }
         this.dynamic = board.getDynamic();
@@ -86,7 +111,7 @@ public class ArrayListBoard implements Board {
 
     /**
      * nextGeneration with multi-threading enabled. Reads no. of processors and distributes workload accordingly.
-     * Provides a performance increase of TODO Add multi-threading performance increase percentage
+     * Provides a performance increase of roughly 20%.
      */
     @Override
     public void nextGenerationConcurrent() {
@@ -105,18 +130,16 @@ public class ArrayListBoard implements Board {
     }
 
     /**
-     * Calculates how big of a chunk each thread should take care of, calculates prevGen.() and sets the updated cells to the board
-     * and sets the updated cells to the thisGen.
-     *
+     * Evaluates the board relative to the passed {@code threadIndex}.
      * @param threadIndex The index of the instantiated thread.
-     * @param oldBoard A clone of the old thisGen.
+     * @param oldBoard The previous generation to calculate from.
      */
     private void evaluateChunkSize(int threadIndex, List<List<Cell>> oldBoard) {
-        int blockSize = oldBoard.size() / parallelLevel;
+        int blockSize = oldBoard.size() / maxThreads;
         int toY = blockSize * threadIndex;
         // this if-sentence makes the last thread take care of all remaining rows of the current thisGen, ensuring that
-        // the thisGen y-value does NOT need to be a factorial of parallelLevel.
-        if (threadIndex == parallelLevel) {
+        // the thisGen y-value does NOT need to be a factorial of maxThreads.
+        if (threadIndex == maxThreads) {
             toY = oldBoard.size();
         }
         int fromY = blockSize * (threadIndex - 1);
@@ -125,7 +148,7 @@ public class ArrayListBoard implements Board {
 
         for (BoardCoordinate coordinate : interestingCells) {
             Cell cell = oldBoard.get(coordinate.getY()).get(coordinate.getX());
-            int numNeighbors = neighbours(oldBoard, coordinate);
+            int numNeighbors = neighbors(oldBoard, coordinate);
             State newState = ruleSet.getNewState(cell.getState(), numNeighbors);
             State cellState = thisGen.get(coordinate.getY()).get(coordinate.getX()).getState();
             if (!cellState.isAlive() && newState.isAlive() || (cellState.isAlive() && newState.isAlive())) {
@@ -136,8 +159,7 @@ public class ArrayListBoard implements Board {
     }
 
     /**
-     * "Counter" method for threads. Gives each thread an index
-     * @return
+     * Retrieves the next threadIndex.
      */
     private synchronized int getThreadIndex() {
         threadIndex++;
@@ -145,7 +167,7 @@ public class ArrayListBoard implements Board {
     }
 
     /**
-     * Creates workers and refers their task.
+     * Creates workers and assigns their tasks.
      */
     private void createWorkers() {
         List<List<Cell>> temp = thisGen;
@@ -153,7 +175,7 @@ public class ArrayListBoard implements Board {
         prevGen = temp;
         thisGen = killBoard(thisGen);
 
-        for(int i = 1; i <= parallelLevel; i++) {
+        for(int i = 1; i <= maxThreads; i++) {
             workers.add(new Thread(() -> {
                 int threadIndex = getThreadIndex();
                 evaluateChunkSize(threadIndex, prevGen);
@@ -162,8 +184,8 @@ public class ArrayListBoard implements Board {
     }
 
     /**
-     * Runs all available workers
-     * @throws InterruptedException
+     * Runs all available workers.
+     * @throws InterruptedException Throws if thread execution was interrupted.
      */
     private static void runWorkers() throws InterruptedException {
         for(Thread t : workers) {
@@ -176,14 +198,13 @@ public class ArrayListBoard implements Board {
     }
 
     /**
-     * Initializes the thisGen with the passed sizes.
-     *
+     * Initializes thisGen and prevGen as empty tables with the passed sizes.
      * @param sizeX Number of columns to initialize with.
      * @param sizeY Number of rows to initialize with.
      */
     private void initBoard(int sizeX, int sizeY) {
         ruleSet = rules.RulesCollection.getByName("Conway");
-        aliveCells = new HashSet<>();
+        cellsOfInterest = new HashSet<>();
 
         prevGen = new ArrayList<>(sizeY);
         thisGen = new ArrayList<>(sizeY);
@@ -200,7 +221,7 @@ public class ArrayListBoard implements Board {
     }
 
     /**
-     * Doubles the current number of rows.
+     * Doubles the number of rows of both thisGen and prevGen.
      */
     private void doubleRows() {
         int currRowCount = thisGen.size();
@@ -218,7 +239,7 @@ public class ArrayListBoard implements Board {
     }
 
     /**
-     * Doubles the current number of columns.
+     * Doubles the number of columns of both thisGen and prevGen.
      */
     private void doubleCols() {
         int currColCount = thisGen.get(0).size();
@@ -233,13 +254,11 @@ public class ArrayListBoard implements Board {
     }
 
     /**
-     * Inserts a pattern, starting from the top-left corner of the thisGen (0,0).
-     *
+     * Inserts a pattern into both thisGen and prevGen, placing it in the middle.
      * @param pattern Pattern to insert into the thisGen.
      */
     @Override
     public void insertPattern(byte[][] pattern) {
-        lastGetEnumerableGen = -1;
         while (pattern.length > thisGen.size()) {
             doubleRows();
         }
@@ -269,9 +288,9 @@ public class ArrayListBoard implements Board {
     }
 
     /**
-     * Sets all cells in a board to 0.
-     * @param board
-     * @return a shell-board filled with 0-cells.
+     * Sets all cells in a board to dead.
+     * @param board Board to set cells to dead in.
+     * @return The passed board, now with all dead cells.
      */
     private List<List<Cell>> killBoard(List<List<Cell>> board) {
         for (List<Cell> row : board) {
@@ -289,7 +308,6 @@ public class ArrayListBoard implements Board {
         killBoard(thisGen);
         genCount = 0;
         aliveCount = 0;
-        lastGetEnumerableGen = -1;
     }
 
     /**
@@ -322,11 +340,12 @@ public class ArrayListBoard implements Board {
     }
 
     /**
-     * Gets all relevant cells (cells that have the ability to be affected- or affect other cells.
-     * @param board
-     * @param startRow
-     * @param endRow
-     * @return
+     * Retrieves all alive cells and their neighbors. These are the cells that are applicable for dying or resurrection,
+     * since both transitions requires alive cells as neighbors.
+     * @param board Board to fetch cells of interest in.
+     * @param startRow Start from this row.
+     * @param endRow End at this row.
+     * @return A set of coordinates where there are cells of interest.
      */
     private Set<BoardCoordinate> getCellsOfInterest(List<List<Cell>> board, int startRow, int endRow) {
         Set<BoardCoordinate> result = new HashSet<>();
@@ -344,7 +363,8 @@ public class ArrayListBoard implements Board {
     }
 
     /**
-     * Iterates through all cells in the thisGen, counting their alive neighbors and applying the rule set to them.
+     * Iterates through cells of interest in prevGen, counting their alive neighbors and applying the new state for
+     * each cell in thisGen.
      */
     @Override
     public void nextGeneration() {
@@ -356,10 +376,10 @@ public class ArrayListBoard implements Board {
         thisGen = killBoard(thisGen);
         aliveCount = 0;
 
-        aliveCells = getCellsOfInterest(prevGen, 0, getSizeY());
+        cellsOfInterest = getCellsOfInterest(prevGen, 0, getSizeY());
 
-        for (BoardCoordinate coordinate : aliveCells) {
-            int numNeighbors = neighbours(prevGen, coordinate);
+        for (BoardCoordinate coordinate : cellsOfInterest) {
+            int numNeighbors = neighbors(prevGen, coordinate);
             Cell cell = prevGen.get(coordinate.getY()).get(coordinate.getX());
             State newState = ruleSet.getNewState(cell.getState(), numNeighbors);
             State cellState = thisGen.get(coordinate.getY()).get(coordinate.getX()).getState();
@@ -429,16 +449,8 @@ public class ArrayListBoard implements Board {
     }
 
     /**
-     * Displays current generation sizes for testing purposes.
-     */
-    public void tester() {
-        System.out.println("thisGen.size() = " + thisGen.size());
-        System.out.println("thisGen.get(0).size = " + thisGen.get(0).size());
-    }
-
-    /**
-     * Creates and returns an empty row
-     * @return row
+     * Creates and returns an empty row.
+     * @return A new empty row.
      */
     private List<Cell> getEmptyRow() {
         List<Cell> row = new ArrayList<>(thisGen.get(0).size());
@@ -449,28 +461,25 @@ public class ArrayListBoard implements Board {
     }
 
     /**
-     * Adds an empty row to the bottom of the board
+     * Adds an empty row to the bottom of the board.
      */
     public void addRowBottom(){
-        lastGetEnumerableGen = -1;
         thisGen.add(getEmptyRow());
         prevGen.add(getEmptyRow());
     }
 
     /**
-     * Adds an empty row to the top of the board
+     * Adds an empty row to the top of the board.
      */
     public void addRowTop(){
-        lastGetEnumerableGen = -1;
         thisGen.add(0, getEmptyRow());
         prevGen.add(0, getEmptyRow());
     }
 
     /**
-     * Adds an empty column to the right of the board
+     * Adds an empty column to the right of the board.
      */
     public void addColRight(){
-        lastGetEnumerableGen = -1;
         for (int i = 0; i < thisGen.size(); i++) {
             List<Cell> row = thisGen.get(i);
             List<Cell> prevRow = prevGen.get(i);
@@ -480,10 +489,9 @@ public class ArrayListBoard implements Board {
     }
 
     /**
-     * Adds an empty column to the left of the board
+     * Adds an empty column to the left of the board.
      */
     public void addColLeft(){
-        lastGetEnumerableGen = -1;
         for (int i = 0; i < thisGen.size(); i++) {
             List<Cell> prevRow = prevGen.get(i);
             List<Cell> row = thisGen.get(i);
@@ -493,10 +501,12 @@ public class ArrayListBoard implements Board {
     }
 
     /**
-     * Method for checking a specific cell's neighbour count.
-     * @return Number of neighbours.
+     * Method for checking a specific cell coordinate's neighbour count.
+     * @param board The board to check the cell neighbor count in.
+     * @param coordinate The coordinate of the cell to count the neighbors of.
+     * @return Number of neighbors.
      */
-    private int neighbours(List<List<Cell>> board, BoardCoordinate coordinate) {
+    private int neighbors(List<List<Cell>> board, BoardCoordinate coordinate) {
         int cellY = coordinate.getY();
         int cellX = coordinate.getX();
         int boardColLen = board.get(0).size();
@@ -528,26 +538,16 @@ public class ArrayListBoard implements Board {
     }
 
     /**
-     * Transforms the thisGen into a single String of 0s and 1s.
-     * @return String of 1 and 0 representing the byte[][] array.
+     * @return {@code thisGen} into a single line {@code String} of 0s and 1s.
      */
     @Override
     public String toString() {
-        return toString(thisGen);
-    }
-
-    /**
-     * Returns a toString of a 2D List array.
-     * @param board to be converted
-     * @return String of 1 and 0 representing the List<List<Cell>> array.
-     */
-    private String toString(List<List<Cell>> board) {
-        if (board.size() == 0) {
+        if (thisGen.size() == 0) {
             return "";
         }
 
         StringBuilder sb = new StringBuilder();
-        for(List<Cell> row : board) {
+        for(List<Cell> row : thisGen) {
             for(Cell cell : row) {
                 if (cell.getState().isAlive()) {
                     sb.append("1");
@@ -559,26 +559,9 @@ public class ArrayListBoard implements Board {
         return sb.toString();
     }
 
-
     /**
-     * Returns a 1/0 String of only the pattern within the bounding box.
-     * @return 1s and 0s representing the contained pattern.
-     */
-    public String patternToString(){
-        BoundingBox bb = getBoundingBox();
-        StringBuilder sb = new StringBuilder();
-
-        for(int row = bb.getFirstRow(); row <= bb.getLastRow(); row++) {
-            for(int col = bb.getFirstCol(); col <= bb.getLastCol(); col++) {
-                sb.append(thisGen.get(row).get(col).getState());
-            }
-        }
-        return sb.toString();
-    }
-
-    /**
-     * Creates and returns a "trimmed" board, only within the BoundingBox.
-     * @return patternBoard
+     * Creates and returns a "trimmed" board, only within the {@code BoundingBox}.
+     * @return A new {@code Board} containing only the cells within this {@code Board}'s {@code BoundingBox}.
      */
     public Board patternToBoard() {
         BoundingBox bb = getBoundingBox();
@@ -601,7 +584,7 @@ public class ArrayListBoard implements Board {
      * Creates a bounding box within which the current state of the thisGen is of interest (boundary of alive cells).
      * @return The BoundingBox representing the area of interest.
      */
-    public BoundingBox getBoundingBox() {
+    private BoundingBox getBoundingBox() {
         BoundingBox bb = new BoundingBox(thisGen.size(), thisGen.get(0).size(), 0, 0);
         for(int i = 0; i < thisGen.size(); i++) {
             for(int j = 0; j < thisGen.get(i).size(); j++) {
@@ -625,18 +608,13 @@ public class ArrayListBoard implements Board {
     }
 
     /**
-     * TODO Victor
+     * List of listeners to be called after the board resizes.
      */
     private List<Consumer<Size>> postResizeListeners = new ArrayList<>();
 
     /**
-     * TODO Victor
-     */
-    private List<Consumer<Size>> preResizeListeners = new ArrayList<>();
-
-    /**
-     * TODO Victor
-     * @param runner
+     * Adds the passed {@code Consumer} to the list of post resize listeners.
+     * @param runner Runner to add to list of listeners.
      */
     @Override
     public void addPostResizeListener(Consumer<Size> runner) {
@@ -644,39 +622,12 @@ public class ArrayListBoard implements Board {
     }
 
     /**
-     * TODO Victor
-     * @param runner
-     */
-    @Override
-    public void addPreResizeListener(Consumer<Size> runner) {
-        preResizeListeners.add(runner);
-    }
-
-    /**
-     * TODO Victor
-     */
-    private void callPostResizeListeners() {
-        for (Consumer<Size> runner : postResizeListeners) {
-            runner.accept(new Size(getSizeY(), getSizeX()));
-        }
-    }
-
-    /**
-     * TODO Victor
-     * @param size
+     * Calls all registered post resize listeners with the passed {@code Size} object.
+     * @param size Size object to pass to each listener.
      */
     private void callPostResizeListeners(Size size) {
         for (Consumer<Size> runner : postResizeListeners) {
             runner.accept(size);
-        }
-    }
-
-    /**
-     * TODO Victor
-     */
-    private void callPreResizeListeners() {
-        for (Consumer<Size> runner : preResizeListeners) {
-            runner.accept(new Size(getSizeY(), getSizeX()));
         }
     }
 
@@ -726,30 +677,7 @@ public class ArrayListBoard implements Board {
     }
 
     /**
-     * TODO Victor
-     * @return
-     */
-    @Override
-    public List<List<Boolean>> getEnumerable() {
-        if (genCount == lastGetEnumerableGen) {
-            return enumerable;
-        }
-        List<List<Boolean>> result = new ArrayList<>(getSizeY());
-        for (int y = 0; y < getSizeY(); y++) {
-            List<Boolean> row = new ArrayList<>(getSizeX());
-            result.add(row);
-            for (int x = 0; x < getSizeX(); x++) {
-                row.add(thisGen.get(y).get(x).getState().isAlive());
-            }
-        }
-        this.enumerable = result;
-        lastGetEnumerableGen = genCount;
-        return result;
-    }
-
-    /**
-     * Getter for the current dynamic status of the board.
-     * @return dynamic
+     * @return True if this {@code Board} is currently dynamic.
      */
     @Override
     public boolean getDynamic() {
@@ -757,18 +685,15 @@ public class ArrayListBoard implements Board {
     }
 
     /**
-     * Setter for the current dynamic status of the board.
-     * @param dynamic
+     * @param dynamic New dynamic status for this {@code Board}.
      */
     @Override
     public void setDynamic(boolean dynamic) {
-        lastGetEnumerableGen = -1;
         this.dynamic = dynamic;
     }
 
     /**
-     * Getter for multithreading status
-     * @return the status of multithreadingEnabled
+     * @return True if multithreading is enable, false otherwise.
      */
     @Override
     public boolean getMultithreading() {
@@ -776,32 +701,28 @@ public class ArrayListBoard implements Board {
     }
 
     /**
-     * Setter for multithreading
-     * @param multithreadingEnabled
+     * @param multithreadingEnabled Sets multithreading status.
      */
     @Override
     public void setMultithreading(boolean multithreadingEnabled) {
-        lastGetEnumerableGen = -1;
         this.multithreadingEnabled = multithreadingEnabled;
     }
 
     /**
-     * Sets the value of a cell
-     * @param y coordinate
-     * @param x coordinate
-     * @param alive required status.
+     * Sets the value of the cell at the passed Y and X coordinates.
+     * @param y Y-coordinate of the cell to set.
+     * @param x X-coordinate of the cell to set.
+     * @param alive New status of the cell.
      */
     @Override
     public void setCellAlive(int y, int x, boolean alive) {
-        lastGetEnumerableGen = -1;
         thisGen.get(y).get(x).getState().setAlive(alive);
     }
 
     /**
-     * Gets the status of a cell.
-     * @param y coordinate
-     * @param x coordinate
-     * @return status of the cell.
+     * Gets the value of the cell at the passed Y and X coordinates.
+     * @param y Y-coordinate of the cell to get.
+     * @param x X-coordinate of the cell to get.
      */
     @Override
     public boolean getCellAlive(int y, int x) {
