@@ -22,6 +22,7 @@ import javafx.stage.Stage;
 import lieng.GIFWriter;
 import model.board.ArrayListBoard;
 import model.board.Board;
+import model.board.Cell;
 import rules.RuleSet;
 import view.BoardCoordinate;
 import view.CanvasController;
@@ -125,13 +126,13 @@ public class EditorController extends Stage implements Initializable {
 
         FileHandler fileHandler = new FileHandler();
         try {
-            List<List<Boolean>> currentBoard = editorBoard.getEnumerable();
+            List<List<Cell>> currentBoard = editorBoard.getThisGen();
             byte[][] newArray = new byte[currentBoard.size()][currentBoard.get(0).size()];
             for (int y = 0; y < currentBoard.size(); y++) {
-                List<Boolean> row = currentBoard.get(y);
+                List<Cell> row = currentBoard.get(y);
                 for (int x = 0; x < row.size(); x++) {
-                    Boolean cell = row.get(x);
-                    newArray[y][x] = cell ? (byte) 1 : 0;
+                    Cell cell = row.get(x);
+                    newArray[y][x] = cell.getState().isAlive() ? (byte) 1 : 0;
                 }
             }
             DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm");
@@ -159,7 +160,7 @@ public class EditorController extends Stage implements Initializable {
      * to the Controller, placing it in the middle of the game board.
      */
     public void onSaveAndCloseButtonAction() {
-        Pattern editorBoardExport = new Pattern("Editor Board", editorBoard.getEnumerable());
+        Pattern editorBoardExport = new Pattern("Editor Board", editorBoard.getThisGen());
         mainController.clearBoard();
         mainController.board.insertPattern(editorBoardExport.getPattern());
         mainController.canvasController.draw(mainController.board);
@@ -192,10 +193,10 @@ public class EditorController extends Stage implements Initializable {
         if (counter > 10) {
             return;
         }
-        List<List<Boolean>> gameBoardToGif = boardToGif.getEnumerable();
+        List<List<Cell>> gameBoardToGif = boardToGif.getThisGen();
         for (int y = 0; y < gameBoardToGif.size(); y++) {
             for (int x = 0; x < gameBoardToGif.get(0).size(); x++) {
-                if (gameBoardToGif.get(y).get(x)){
+                if (gameBoardToGif.get(y).get(x).getState().isAlive()){
                     gifWriter.fillRect(
                             x * gifCellSize,
                             x * gifCellSize + gifCellSize,
@@ -230,10 +231,10 @@ public class EditorController extends Stage implements Initializable {
         double xPadding = 5;
         double transform = xPadding;
 
-        if (clonedBoard.getEnumerable().size() > clonedBoard.getEnumerable().get(0).size()) {
-            stripCellWidth = stripCellHeight / clonedBoard.getEnumerable().size();
+        if (clonedBoard.getSizeY() > clonedBoard.getSizeX()) {
+            stripCellWidth = stripCellHeight / clonedBoard.getSizeY();
         } else {
-            stripCellWidth = stripCellHeight / clonedBoard.getEnumerable().get(0).size();
+            stripCellWidth = stripCellHeight / clonedBoard.getSizeX();
         }
         GraphicsContext gc = strip.getGraphicsContext2D();
         clearStrip();
@@ -262,14 +263,14 @@ public class EditorController extends Stage implements Initializable {
      * @param stripCellWidth Width of each strip "snapshot".
      */
     public void drawToStrip(GraphicsContext gcs, Board clonedBoard, double stripCellWidth) {
-        List<List<Boolean>> gameBoard = clonedBoard.getEnumerable();
+        List<List<Cell>> gameBoard = clonedBoard.getThisGen();
         for (int y = 0; y < gameBoard.size(); y++) {
-            List<Boolean> row = gameBoard.get(y);
+            List<Cell> row = gameBoard.get(y);
 
             for (int x = 0; x < gameBoard.get(0).size(); x++) {
-                Boolean cell = row.get(x);
+                Cell cell = row.get(x);
 
-                if (cell) {
+                if (cell.getState().isAlive()) {
                     gcs.setFill(aliveColor);
                 } else {
                     gcs.setFill(deadColor);
@@ -290,19 +291,19 @@ public class EditorController extends Stage implements Initializable {
     private void draw() {
         GraphicsContext gcd = gc;
 
-        List<List<Boolean>> gameBoard = editorBoard.getEnumerable();
+        List<List<Cell>> gameBoard = editorBoard.getThisGen();
         int borderWidth = 1;
         int cellWithBorder = cellWidth - borderWidth;
         gcd.getCanvas().setHeight(cellWidth * gameBoard.size());
         gcd.getCanvas().setWidth(cellWidth * gameBoard.get(0).size());
 
         for (int y = 0; y < gameBoard.size(); y++) {
-            List<Boolean> row = gameBoard.get(y);
+            List<Cell> row = gameBoard.get(y);
 
             for (int x = 0; x < row.size(); x++) {
-                Boolean cell = row.get(x);
+                Cell cell = row.get(x);
 
-                if (cell) {
+                if (cell.getState().isAlive()) {
                     gcd.setFill(aliveColor);
                 } else {
                     gcd.setFill(deadColor);

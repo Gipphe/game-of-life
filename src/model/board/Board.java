@@ -11,12 +11,10 @@ public interface Board {
     void nextGeneration();
     void insertPattern(byte[][] pattern);
     void addPostResizeListener(Consumer<Size> runner);
-    void addPreResizeListener(Consumer<Size> runner);
     RuleSet getRuleSet();
     void setRuleSet(RuleSet ruleSet);
     int getSizeX();
     int getSizeY();
-    List<List<Boolean>> getEnumerable();
     List<List<Cell>> getThisGen();
     Board patternToBoard();
     boolean getDynamic();
@@ -31,6 +29,5 @@ public interface Board {
     void addColRight();
     void clearBoard();
     int getGenCount();
-
     int getAliveCount();
 }

@@ -9,6 +9,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
+
 import javafx.scene.control.*;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
@@ -20,6 +21,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import model.board.ArrayListBoard;
 import model.board.Board;
+import model.board.Cell;
 import rules.RuleException;
 import rules.RuleSet;
 import rules.RulesCollection;
@@ -230,13 +232,13 @@ public class Controller implements Initializable {
     public void exportFile() {
         FileHandler fileHandler = new FileHandler();
         try {
-            List<List<Boolean>> currentBoard = board.getEnumerable();
+            List<List<Cell>> currentBoard = board.getThisGen();
             byte[][] newArray = new byte[currentBoard.size()][currentBoard.get(0).size()];
             for (int y = 0; y < currentBoard.size(); y++) {
-                List<Boolean> row = currentBoard.get(y);
+                List<Cell> row = currentBoard.get(y);
                 for (int x = 0; x < row.size(); x++) {
-                    boolean cellAlive = row.get(x);
-                    newArray[y][x] = cellAlive ? (byte) 1 : 0;
+                    Cell cell = row.get(x);
+                    newArray[y][x] = cell.getState().isAlive() ? (byte) 1 : 0;
                 }
             }
             DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm");
