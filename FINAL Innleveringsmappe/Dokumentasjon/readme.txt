@@ -9,12 +9,8 @@
 * Filbehandling
 	* Støtte for innlastning av GoL mønstre med bruk av .RLE filformat og URL kode.
 	
-
 * Bruk av Java Collections for brettstruktur
 	* Støtte for både statisk og dynamisk brett.
-		* Statisk: brettet "wrap"-er da mønsteret når et hjørne.
-		* Dynamisk: brettet får et rad eller kolonne lagt til seg da mønsteret når
-		  et hjørne, og forblir rektangulær.
 
 * Bruk av flere tråder for å oppnå forbedret ytelse
 	* Observerbar bedre ytelse når man bruker flere tråder på store brett.
@@ -25,8 +21,12 @@
 * Utvidelsesoppgaver
 	* Implementasjon av Android app med støtte for "text-to-QR" GoL brett
 	* Manipuleringseditor og lagring til .GIF og .RLE
-		* Importerer farger og tegner en fremvisning på "Strip"-en.
+		* Importerer farger og tegner en fremvisning på "Strip"-en. (fargene til
+		  hovedbrettet blir satt til svart og hvit for å gjøre den lettere å se og
+		  endre på. "Strip" og GIFs blir tegnet med de brukerdefinerte fargene.
 		* Sender brettet tilbake til hoved GoL-en dersom brukeren ønsker det.
+		* Strip re-tegnes automatisk etter hver endring brukeren gjør
+		* Dynamisk hovedbrett (der brukeren kan manipulere mønsteret)
 	* Tastatur-funksjoner og mus-funksjonalitet
 		* W, A, S og D knappene flytter brettet dersom brettet ikke er
 		  "zoomed" helt ut (da blir den sentrert). 
