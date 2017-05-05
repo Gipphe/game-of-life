@@ -5,6 +5,8 @@ import RLE.Parser;
 import com.sun.corba.se.impl.orbutil.graph.Graph;
 import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -49,20 +51,15 @@ public class EditorController extends Stage implements Initializable {
     int cellWidth = 20;
     private RuleSet ruleSet;
     private byte onDragValue;
+    Controller mainController;
 
-    int gifWidth;
-    int gifHeight;
-    int gifTimeBetweenFramesMS = 1000;
-    int gifCellSize = 20;
-    String gifFilepath = "C:\\Users\\yanis\\Desktop\\file.gif";
-    java.awt.Color gifAliveColor = new java.awt.Color(  (float) aliveColor.getRed(),
-                                                        (float) aliveColor.getGreen(),
-                                                        (float) aliveColor.getBlue(),
-                                                        (float) aliveColor.getOpacity() );
-    java.awt.Color gifDeadColor = new java.awt.Color(   (float) deadColor.getRed(),
-                                                        (float) deadColor.getGreen(),
-                                                        (float) deadColor.getBlue(),
-                                                        (float) deadColor.getOpacity() );
+    private int gifWidth;
+    private int gifHeight;
+    private int gifTimeBetweenFramesMS = 1000;
+    private int gifCellSize = 20;
+    private String gifFilepath = "C:\\Users\\yanis\\Desktop\\file.gif";
+    private java.awt.Color gifAliveColor;
+    private java.awt.Color gifDeadColor;
 
     @FXML
     private TextField name;
@@ -88,7 +85,8 @@ public class EditorController extends Stage implements Initializable {
     private ColorPicker aliveColorPicker;
     @FXML
     private ColorPicker deadColorPicker;
-    Controller mainController;
+
+
 
     /**
      * Constructor for EditorController.
@@ -97,6 +95,17 @@ public class EditorController extends Stage implements Initializable {
      * @param receivedBoard
      */
     public EditorController(RuleSet ruleSet, Board receivedBoard, Controller mainController) {
+        aliveColor = mainController.aliveColorPicker.getValue();
+        deadColor = mainController.deadColorPicker.getValue();
+        gifAliveColor = new java.awt.Color(  (float) aliveColor.getRed(),
+                (float) aliveColor.getGreen(),
+                (float) aliveColor.getBlue(),
+                (float) aliveColor.getOpacity() );
+        gifDeadColor = new java.awt.Color(   (float) deadColor.getRed(),
+                (float) deadColor.getGreen(),
+                (float) deadColor.getBlue(),
+                (float) deadColor.getOpacity() );
+
         this.mainController = mainController;
         setTitle("Pattern Editor");
         this.ruleSet = ruleSet;
@@ -149,6 +158,7 @@ public class EditorController extends Stage implements Initializable {
     @FXML
     void onSaveAndCloseButtonAction(ActionEvent event) {
         Pattern editorBoardExport = new Pattern("Editor Board", editorBoard.getBoard());
+        mainController.clearBoard();
         mainController.board.insertPattern(editorBoardExport.getPattern());
         mainController.canvasController.draw(mainController.board);
         close();
@@ -167,8 +177,11 @@ public class EditorController extends Stage implements Initializable {
     @FXML
     void onSaveGifButtonAction(ActionEvent event) throws Exception {    //Throws CloneNotSupportedException and IOException
         int counter = 0;
+
         gifWidth = editorBoard.getSizeX();
         gifHeight = editorBoard.getSizeY();
+        FileHandler fileHandler = new FileHandler();
+        gifFilepath = fileHandler.writeToGif();
         lieng.GIFWriter gifWriter = new GIFWriter(gifWidth*gifCellSize+1, gifHeight*gifCellSize+1, gifFilepath, gifTimeBetweenFramesMS);  //TODO_DTL make constructor input customizable to user in GUI.
         gifWriter.setBackgroundColor(gifDeadColor);
         Board clonedBoard = editorBoard.clone();

@@ -19,14 +19,22 @@
 	* Observerbar bedre ytelse når man bruker flere tråder på store brett.
 	  En generasjon av log(t) growth tar ~14 sekunder (median av 20 tester) 
 	  med fire tråder, sammenlignet med en median av 39 sekunder med kun en tråd.
-	  Bruker 1-3 generasjoner får den normaliserer seg.
+	  Bruker 1-3 generasjoner får den normaliserer seg. På noen maskiner med
+	  fire tråd blir nextGenerationConcurrent for øyeblikket 
 
 * Utvidelsesoppgaver
 	* Implementasjon av Android app med støtte for "text-to-QR" GoL brett.
 	* Manipuleringseditor og lagring til .GIF og .RLE 
+	
 	* Tastatur-funksjoner og mus-funksjonalitet
-		* W, A, S og D knappene flytter brettet dersom
-//TODO BE GAY
+		* W, A, S og D knappene flytter brettet dersom brettet ikke er
+		  "zoomed" helt ut (da blir den sentrert). 
+			* Shift-knappen øker farten på flyttingen mens den 
+			  holdes ned. 
+			* Q er toggle for Start/Stop og E kjører "next frame".
+		* Venstreklikk bytter cellenes tilstand (m/ støtte for intuitiv
+		  "dragging"). Høyreklikk-og-dra flytter "scope"-en til canvas 
+		  (panning), og slutter å tegne celler som er utenfor "scope".
 	* "Custom" spillregler
 		* brukerdefinerte spillregler
 		* bibliotek med forhåndsdefinerte spillregler

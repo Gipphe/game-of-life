@@ -53,9 +53,9 @@ public class Controller implements Initializable {
     @FXML
     private Menu rulesMenu;
     @FXML
-    private ColorPicker aliveColorPicker;
+    public ColorPicker aliveColorPicker;
     @FXML
-    private ColorPicker deadColorPicker;
+    public ColorPicker deadColorPicker;
     @FXML
     private Canvas canvas;
     @FXML
@@ -192,6 +192,9 @@ public class Controller implements Initializable {
      * Creates and opens the pattern editor pane.
      */
     public void editor(){
+        startStopButton.setText("Start");
+        stop();
+
         EditorController editor;
         try {
             editor = new EditorController(board.getRuleSet(), board.patternToBoard(), this);
@@ -202,8 +205,6 @@ public class Controller implements Initializable {
         editor.initModality(Modality.WINDOW_MODAL);
         editor.initOwner(borderPane.getScene().getWindow());
         editor.showAndWait();
-
-
     }
 
 
@@ -312,6 +313,9 @@ public class Controller implements Initializable {
             case Q:
                 startStopButton.selectedProperty().setValue(!startStopButton.selectedProperty().getValue());
                 toggleStartStop();
+                break;
+            case E:
+                nextFrame();
                 break;
         }
     }
