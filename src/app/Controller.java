@@ -160,13 +160,6 @@ public class Controller implements Initializable {
     private Text aliveCount;
 
     /**
-     * Text field for writing the count of dead cells.
-     * @see Board#getDeadCount()
-     */
-    @FXML
-    private Text deadCount;
-
-    /**
      * Inserts a premade pattern to the middle of the board.
      * @param premadePattern Name of the pattern to insert.
      */
@@ -468,7 +461,6 @@ public class Controller implements Initializable {
     private void recountCellsAndGeneration() {
         genCount.setText(String.valueOf(board.getGenCount()));
         aliveCount.setText(String.valueOf(board.getAliveCount()));
-        deadCount.setText(String.valueOf(board.getDeadCount()));
     }
 
     /**
