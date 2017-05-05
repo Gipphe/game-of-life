@@ -21,6 +21,8 @@ public interface Board {
     Board patternToBoard();
     boolean getDynamic();
     void setDynamic(boolean dynamic);
+    boolean getMultithreading();
+    void setMultithreading(boolean multithreadingEnabled);
     void setCellAlive(int y, int x, boolean alive);
     boolean getCellAlive(int y, int x);
     void addRowTop();

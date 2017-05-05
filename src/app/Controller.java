@@ -120,6 +120,12 @@ public class Controller implements Initializable {
     private Slider speedSlider;
 
     /**
+     * Toggle button for multithreading functionality.
+     */
+    @FXML
+    private ToggleButton multithreadingButton;
+
+    /**
      * Drop-down menu for selecting one of the default patterns. Pattern is then inserted onto the middle of the board.
      */
     @FXML
@@ -298,6 +304,18 @@ public class Controller implements Initializable {
         }
     }
 
+    /**
+     * Toggles multithreading
+     */
+    public void toggleMultithreading() {
+        board.setMultithreading(!board.getMultithreading());
+        if (multithreadingButton.selectedProperty().getValue()) {
+            multithreadingButton.setText("Turn off");
+        } else {
+            multithreadingButton.setText("Turn on");
+        }
+    }
+
 
     /**
      * Clears the board entirely.
@@ -336,7 +354,11 @@ public class Controller implements Initializable {
                 if (now - past < frameInterval) return;
                 past = now;
 
-                board.nextGeneration();
+                if(board.getMultithreading()){
+                    board.nextGenerationConcurrent();
+                } else {
+                    board.nextGeneration();
+                }
                 recountCellsAndGeneration();
                 canvasController.recalculateTableBounds(board);
                 canvasController.draw(board);

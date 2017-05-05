@@ -32,6 +32,7 @@ public class ArrayListBoard implements Board {
     private static List<Thread> workers = new ArrayList<>();
     private int parallelLevel = Runtime.getRuntime().availableProcessors();
     private boolean dynamic;
+    private boolean multithreadingEnabled;
 
     private int threadIndex = 0;
 
@@ -85,6 +86,7 @@ public class ArrayListBoard implements Board {
             }
         }
         this.dynamic = board.getDynamic();
+        this.multithreadingEnabled = board.getMultithreading();
     }
 
     /**
@@ -767,7 +769,26 @@ public class ArrayListBoard implements Board {
     }
 
     /**
-     * Sets the value of a cell.
+     * Getter for multithreading status
+     * @return the status of multithreadingEnabled
+     */
+    @Override
+    public boolean getMultithreading() {
+        return multithreadingEnabled;
+    }
+
+    /**
+     * Setter for multithreading
+     * @param multithreadingEnabled
+     */
+    @Override
+    public void setMultithreading(boolean multithreadingEnabled) {
+        lastGetEnumerableGen = -1;
+        this.multithreadingEnabled = multithreadingEnabled;
+    }
+
+    /**
+     * Sets the value of a cell
      * @param y coordinate
      * @param x coordinate
      * @param alive required status.
