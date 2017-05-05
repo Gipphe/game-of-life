@@ -1,9 +1,5 @@
 package RLE;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 /**
  * RLE parser toolbox class for reading and writing RLE strings to two-dimensional byte arrays.
  */
