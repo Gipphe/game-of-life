@@ -51,7 +51,7 @@ public class EditorController extends Stage implements Initializable {
     private int gifHeight;
     private int gifTimeBetweenFramesMS = 500;
     private int gifCellSize = 20;
-    private String gifFilepath = "C:\\Users\\yanis\\Desktop\\file.gif";
+    private String gifFilepath;
     private java.awt.Color gifAliveColor;
     private java.awt.Color gifDeadColor;
 
@@ -186,7 +186,6 @@ public class EditorController extends Stage implements Initializable {
         Board clonedBoard = new ArrayListBoard(editorBoard);
         writeGOLSequenceToGif(gifWriter, clonedBoard, counter);
         gifWriter.close();
-        System.out.println("FERDIG!");
     }
 
     public void writeGOLSequenceToGif(lieng.GIFWriter gifWriter, Board boardToGif, int counter) throws IOException{
@@ -194,7 +193,6 @@ public class EditorController extends Stage implements Initializable {
             return;
         }
         List<List<Boolean>> gameBoardToGif = boardToGif.getEnumerable();
-        System.out.println("Counter: " + counter);
         for (int y = 0; y < gameBoardToGif.size(); y++) {
             for (int x = 0; x < gameBoardToGif.get(0).size(); x++) {
                 if (gameBoardToGif.get(y).get(x)){
