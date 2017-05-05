@@ -3,6 +3,7 @@ package app;
 import javafx.scene.control.TextInputDialog;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import lieng.GIFWriter;
 
 import java.io.*;
 import java.net.URL;
@@ -94,5 +95,21 @@ class FileHandler {
         BufferedWriter bw = new BufferedWriter(new FileWriter(f));
         bw.write(RLEString);
         bw.close();
+    }
+
+    /**
+     * Opens a file chooser where it is possible to save a GIF file.
+     *
+     * @return //TODO LEGG TIL TODO
+     * @throws IOException Throws an exception if the IO operation fails.
+     */
+    String writeToGif() throws IOException {
+        FileChooser fs = new FileChooser();
+        fs.setTitle("Save file");
+        fs.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("Text Files", "*.GIF", "*.gif"));
+        File f = fs.showSaveDialog(new Stage());
+
+        return f.getPath();
     }
 }

@@ -262,6 +262,15 @@ public class Board {
         board.add(0, row);
     }
 
+    public void addColLeft(){
+        List<Cell> col = new ArrayList<>(board.size());
+        board.forEach( e -> e.add(0, new ByteCell()));
+//        for (int i = 0; i < board.size(); i++) {
+//            col.add(new ByteCell());
+//            board.get(i).add(0, col.get(i));
+//        }
+    }
+
     public void addColRight(){
         List<Cell> col = new ArrayList<>(board.size());
         for (int i = 0; i < board.size(); i++) {
@@ -270,13 +279,7 @@ public class Board {
         }
     }
 
-    public void addColLeft(){
-        List<Cell> col = new ArrayList<>(board.size());
-        for (int i = 0; i < board.size(); i++) {
-            col.add(new ByteCell());
-            board.get(i).add(0, col.get(i));
-        }
-    }
+
 
     /**
      * Method for checking a specific cell's neighbour count.
