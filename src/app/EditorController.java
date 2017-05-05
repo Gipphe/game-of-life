@@ -376,7 +376,7 @@ public class EditorController extends Stage implements Initializable {
                 coord.getY() >= editorBoard.getSizeY()) {
             return;
         }
-        editorBoard.setCellAlive(coord.getY(), coord.getX(), true);
+        editorBoard.setCellAlive(coord.getY(), coord.getX(), onDragValue);
 
         canvasController.draw(editorBoard);
     }

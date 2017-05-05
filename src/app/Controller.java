@@ -455,7 +455,7 @@ public class Controller implements Initializable {
                 coord.getY() >= board.getSizeY()) {
             return;
         }
-        board.setCellAlive(coord.getY(), coord.getX(), true);
+        board.setCellAlive(coord.getY(), coord.getX(), onDragValue);
 
         canvasController.draw(board);
     }
