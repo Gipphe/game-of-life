@@ -2,29 +2,29 @@ package app;
 
 import RLE.ParsedPattern;
 import RLE.Parser;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.text.Text;
-import javafx.stage.Modality;
-import javafx.geometry.Point2D;
-import javafx.scene.control.*;
-import javafx.scene.layout.Pane;
-import model.board.ArrayListBoard;
-import model.board.Board;
 import javafx.animation.AnimationTimer;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.control.*;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
+import javafx.stage.Modality;
+import model.board.ArrayListBoard;
+import model.board.Board;
 import rules.RuleException;
 import rules.RuleSet;
 import rules.RulesCollection;
-import view.CanvasController;
 import view.BoardCoordinate;
+import view.CanvasController;
 
 import java.io.IOException;
 import java.net.URL;
@@ -37,52 +37,132 @@ import java.util.ResourceBundle;
 import static app.AlertLibrary.iowa;
 import static javafx.scene.input.KeyCode.SHIFT;
 
+/**
+ * Main controller handling the game window and its inputs and outputs.
+ */
 public class Controller implements Initializable {
+    /**
+     * Actual game board that is being run.
+     */
     public Board board;
-    public CanvasController canvasController;
-    private AnimationTimer timer;
-    private double frameInterval;
-    private Pattern[] patterns = PatternCollection.getCollection();
 
+    /**
+     * Canvas controller handling displaying the board.
+     */
+    CanvasController canvasController;
+
+    /**
+     * The animation timer handling drawing the board on each nextGeneration.
+     */
+    private AnimationTimer timer;
+
+    /**
+     * Interval between each {@code AnimationTimer} tick.
+     */
+    private double frameInterval;
+
+    /**
+     * Collection of default patterns available from the drop-down box.
+     */
+    private Pattern[] patterns = PatternCollection.getCollection();
 
     /**
      * Value to paste onto the cells dragged over by the user when clicking and dragging the mouse over the canvas.
      * Is set to the inverse of the value of the first cell clicked.
      */
     private boolean onDragValue;
+
+    /**
+     * Panning speed when using WASD to pan.
+     */
     private byte moveSpeed = 1;
 
+    /**
+     * Hover drop-down menu in the menu bar for selecting rules.
+     */
     @FXML
     private Menu rulesMenu;
+
+    /**
+     * Color picker for selecting color for alive cells.
+     */
     @FXML
     public ColorPicker aliveColorPicker;
+
+    /**
+     * Color picker for selecting color for dead cells.
+     */
     @FXML
     public ColorPicker deadColorPicker;
+
+    /**
+     * Main canvas the game is drawn upon.
+     */
     @FXML
     private Canvas canvas;
+
+    /**
+     * Start/Stop button that starts and halts the {@code AnimationTimer}.
+     */
     @FXML
     private ToggleButton startStopButton;
+
+    /**
+     * Button for toggling between dynamic board and torus board (wrapping board).
+     */
     @FXML
     private ToggleButton dynamicBoardButton;
+
+    /**
+     * Speed adjustment slider for controlling the animation speed of the game.
+     */
     @FXML
-    private Slider tickSlider;
+    private Slider speedSlider;
+
+    /**
+     * Drop-down menu for selecting one of the default patterns. Pattern is then inserted onto the middle of the board.
+     */
     @FXML
     private ComboBox<String> comboBox;
+
+    /**
+     * Main parent pane for the entire window.
+     */
     @FXML
     private BorderPane borderPane;
+
+    /**
+     * Wrapper pane that expands to fill available space, allowing the containing canvas to expand to available space
+     * by binding the canvas' {@code widthProperty} and {@code heightProperty} to this pane's {@code widthProperty} and
+     * {@code heightProperty}.
+     */
     @FXML
     private Pane canvasWrapper;
+
+    /**
+     * Text field for writing the generation count.
+     * @see Board#getGenCount()
+     */
     @FXML
     private Text genCount;
+
+    /**
+     * Text field for writing the currently alive cells count.
+     * @see Board#getAliveCount()
+     */
     @FXML
     private Text aliveCount;
+
+    /**
+     * Text field for writing the count of dead cells.
+     * @see Board#getDeadCount()
+     */
     @FXML
     private Text deadCount;
 
     /**
      * Inserts a premade pattern to the middle of the board.
-     *
-     * @param premadePattern
+     * @param premadePattern Name of the pattern to insert.
      */
     private void setPremadePattern(String premadePattern) {
         for (Pattern pattern : patterns) {
@@ -95,8 +175,6 @@ public class Controller implements Initializable {
     }
 
     /**
-     * Import Parser file.
-     *
      * Displays a file browser for the user to select a file to be imported into the model.
      */
     public void importFile() {
@@ -122,8 +200,6 @@ public class Controller implements Initializable {
     }
 
     /**
-     * Import URL.
-     *
      * Displays a field for the user to input a URI pointing to an Parser file on the network, which is subsequently
      * downloaded and inserted into the model.
      */
@@ -150,8 +226,6 @@ public class Controller implements Initializable {
     }
 
     /**
-     * Export a file.
-     *
      * Displays a file browser for the user to export a file from model.
      */
     public void exportFile() {
@@ -182,7 +256,7 @@ public class Controller implements Initializable {
     /**
      * Creates and opens the pattern editor pane.
      */
-    public void editor(){
+    public void editor() {
         startStopButton.setText("Start");
         stop();
 
@@ -213,7 +287,7 @@ public class Controller implements Initializable {
     }
 
     /**
-     * Toggles the dynamic state boolean of board depending on dy ToggleButton.
+     * Toggles the board between being a dynamic board and a torus board (wrapping board).
      */
     public void toggleDynamicBoard() {
         board.setDynamic(!board.getDynamic());
@@ -226,7 +300,7 @@ public class Controller implements Initializable {
 
 
     /**
-     * Clears the model entirely.
+     * Clears the board entirely.
      */
     public void clearBoard() {
         board.clearBoard();
@@ -250,9 +324,8 @@ public class Controller implements Initializable {
     }
 
     /**
-     * Returns a new animation timer to be used
-     *
-     * @return (AnimationTimer) an Animation timer instance
+     * Creates the main animation timer.
+     * @return A new animation timer, which draws the board each animation tick.
      */
     private AnimationTimer getAnimationTimer() {
         return new AnimationTimer() {
@@ -274,10 +347,15 @@ public class Controller implements Initializable {
     /**
      * Handles the user pressing a button on their keyboard.
      *
-     * @param event (KeyEvent)
+     * Pans the board if W, A, S or D are pressed.
+     * Increases the panning speed if shift is pressed.
+     * Toggles the simulation when Q is pressed.
+     * Steps one frame forward when E is pressed.
+     *
+     * @param event Keyboard event.
      */
-    public void onKeyPressed(KeyEvent event){
-        if(event.getCode() == SHIFT){
+    public void onKeyPressed(KeyEvent event) {
+        if (event.getCode() == SHIFT) {
             moveSpeed = 5;
         }
 
@@ -304,22 +382,19 @@ public class Controller implements Initializable {
         }
     }
 
-    public void onKeyReleased(KeyEvent event){
+    /**
+     * Sets the panning speed back to its default value on releasing shift.
+     * @param event Keyboard event.
+     */
+    public void onKeyReleased(KeyEvent event) {
         switch (event.getCode()){
             case SHIFT:
                 moveSpeed = 1;
         }
     }
 
-    private void logMemory() {
-        System.gc();
-        Runtime rt = Runtime.getRuntime();
-        long usedKB = (rt.totalMemory() - rt.freeMemory()) / 1024;
-        System.out.println("memory usage " + usedKB + "KB");
-    }
-
     /**
-     * Sets the aliveColor value to the current value of the aliveColorPicker, then draws the GraphicsContext.
+     * Sets the aliveColor value to the current value of the aliveColorPicker.
      */
     public void setAliveColor() {
         canvasController.setAliveColor(aliveColorPicker.getValue());
@@ -327,7 +402,7 @@ public class Controller implements Initializable {
     }
 
     /**
-     * Sets the deadColor value to the current value of the deadColorPicker, then draws the GraphicsContext.
+     * Sets the deadColor value to the current value of the deadColorPicker.
      */
     public void setDeadColor() {
         canvasController.setDeadColor(deadColorPicker.getValue());
@@ -343,8 +418,7 @@ public class Controller implements Initializable {
 
     /**
      * Sets the time between each next generation.
-     *
-     * @param interval (int) The value, from 1 to 10, indicating the requested speed of the simulation.
+     * @param interval The value, from 1 to 10, indicating the requested speed of the simulation.
      */
     private void setFrameInterval(double interval) {
         interval += 1;
@@ -358,7 +432,7 @@ public class Controller implements Initializable {
     }
 
     /**
-     * Calls the boards nextGeneration() method and re-draws the grid.
+     * Calls the boards nextGeneration() method and re-draws the board.
      */
     public void nextFrame() {
         board.nextGeneration();
@@ -366,6 +440,9 @@ public class Controller implements Initializable {
         canvasController.draw(board);
     }
 
+    /**
+     * Updates the generation counter, alive cells counter and dead cells counter in the window.
+     */
     private void recountCellsAndGeneration() {
         genCount.setText(String.valueOf(board.getGenCount()));
         aliveCount.setText(String.valueOf(board.getAliveCount()));
@@ -373,9 +450,7 @@ public class Controller implements Initializable {
     }
 
     /**
-     * Handles scrolling and starts the zoom() method for each.
-     * Initializes on each mouse-scroll.
-     *
+     * Zooms the board in and out on scrolling.
      * @param event The scroll event passed by the canvas.
      */
     @FXML
@@ -392,10 +467,8 @@ public class Controller implements Initializable {
     }
 
     /**
-     * Handles clicks on the canvas.
      * Toggles alive/dead cells on click.
-     *
-     * @param event (MouseEvent)
+     * @param event Mouse event where the click happened.
      */
     @FXML
     public void onClick(MouseEvent event) {
@@ -423,11 +496,11 @@ public class Controller implements Initializable {
             canvasController.draw(board);
         }
     }
+
     /**
-     * Handles "prolonged clicks" - drags.
-     * Toggles alive/dead cells on drag.
-     *
-     * @param event (MouseEvent)
+     * Toggles alive/dead cells on drag, setting all cells that are dragged over to the state determined by the initial
+     * state of the cell where the click that began the drag happened.
+     * @param event Mouse event where the drag event was fired.
      */
     @FXML
     public void onDrag(MouseEvent event) {
@@ -451,7 +524,8 @@ public class Controller implements Initializable {
     }
 
     /**
-     * Creates, tests and draws the model onto the GraphicsContext. Contains Listeners for various sliders.
+     * Initializes this controller by setting up the default colors, initializing the game board itself and sets up the
+     * {@code canvasController}. Also registers listeners for various key events that alter the state of the program.
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -464,7 +538,7 @@ public class Controller implements Initializable {
         ObservableList<String> patternNames = FXCollections.observableArrayList(PatternCollection.getNames());
         comboBox.setItems(patternNames);
 
-        tickSlider.valueProperty().addListener((observable, oldValue, newValue) -> setFrameInterval(newValue.intValue()));
+        speedSlider.valueProperty().addListener((observable, oldValue, newValue) -> setFrameInterval(newValue.intValue()));
 
         comboBox.valueProperty().addListener((observable, oldValue, newValue) -> {
             clearBoard();
@@ -474,7 +548,7 @@ public class Controller implements Initializable {
         });
 
         // Init simulation interval with slider's default value.
-        setFrameInterval(tickSlider.getValue());
+        setFrameInterval(speedSlider.getValue());
 
         // Get main GraphicsContext for the canvas.
         canvasController = new CanvasController(canvas);
