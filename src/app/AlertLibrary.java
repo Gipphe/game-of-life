@@ -24,6 +24,7 @@ public class AlertLibrary {
         alert.showAndWait();
     }
 
+
     /**
      * Returns an exception notifying the user that the program is trying to change the value of a cell which is beyond the compass of the array.
      *
