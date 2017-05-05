@@ -40,6 +40,7 @@ public class ParsedPattern {
      * @param name The name of this parsed pattern.
      * @param author The author of this parsed pattern.
      * @param description The description for this pattern.
+     * @param date The date this pattern was created.
      * @param rule The rule string this pattern was designed for.
      * @param pattern The pattern itself.
      */

@@ -12,7 +12,6 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.ColorPicker;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
@@ -40,22 +39,52 @@ import java.util.ResourceBundle;
 
 import static app.AlertLibrary.iowa;
 
+/**
+ * Controller class for handling the pattern editor window and its inputs and outputs.
+ */
 public class EditorController extends Stage implements Initializable {
+    /**
+     * The main board to display in the pattern editor.
+     */
     private Board editorBoard;
+
+    /**
+     * Color for representing alive cells in the pattern editor.
+     */
     private Color aliveColor = Color.BLACK;
+
+    /**
+     * Color for representing dead cells in the pattern editor.
+     */
     private Color deadColor = Color.WHITE;
+
+    /**
+     * Main graphics context for drawing on the canvas.
+     */
     private GraphicsContext gc;
-    private int cellWidth = 20;
+
+    /**
+     * Rule set of the pattern contained in the editor.
+     */
     private RuleSet ruleSet;
+
+    /**
+     * Value to paste onto the cells dragged over by the user when clicking and dragging the mouse over the canvas.
+     * Is set to the inverse of the value of the first cell clicked.
+     */
     private boolean onDragValue;
+
+    /**
+     * Parent controller this editor controller was initialized from.
+     */
     private Controller mainController;
+
+    /**
+     * Canvas controller handling displaying the board.
+     */
     private CanvasController canvasController;
 
-    private int gifWidth;
-    private int gifHeight;
-    private int gifTimeBetweenFramesMS = 500;
     private int gifCellSize = 20;
-    private String gifFilepath;
     private java.awt.Color gifAliveColor;
     private java.awt.Color gifDeadColor;
 
@@ -80,19 +109,14 @@ public class EditorController extends Stage implements Initializable {
     @FXML
     private Canvas strip;
     @FXML
-    private ColorPicker aliveColorPicker;
-    @FXML
-    private ColorPicker deadColorPicker;
-    @FXML
     private BorderPane editorBorderPane;
 
-
-
     /**
-     * Constructor for EditorController.
-     *
-     * @param ruleSet
-     * @param receivedBoard
+     * Constructor.
+     * Initializes with the passed rule set, board subset and parent controller.
+     * @param ruleSet Rule set to initialize with.
+     * @param receivedBoard Subset of the parent controller's board.
+     * @param mainController Parent controller.
      */
     public EditorController(RuleSet ruleSet, Board receivedBoard, Controller mainController) {
         aliveColor = mainController.aliveColorPicker.getValue();
@@ -126,6 +150,9 @@ public class EditorController extends Stage implements Initializable {
 
     }
 
+    /**
+     * Saves the contained pattern to an RLE file.
+     */
     public void onSaveRleButtonAction() {
         String ruleString = ruleSet.getRuleString();
 
@@ -173,22 +200,26 @@ public class EditorController extends Stage implements Initializable {
     }
 
     /**
-     * Closes Editor.fxml.
+     * Closes the pattern editor.
      */
-    public void onCloseButtonAction() throws CloneNotSupportedException {
+    public void onCloseButtonAction() {
         close();
     }
 
-
-    public void onSaveGifButtonAction() throws Exception {    //Throws CloneNotSupportedException and IOException
+    /**
+     * Exports the contained pattern as a GIF.
+     * @throws Exception Throws if clone fails or if there is an IO error.
+     */
+    public void onSaveGifButtonAction() throws Exception {
         int counter = 0;
-        gifWidth = editorBoard.getSizeX();
-        gifHeight = editorBoard.getSizeY();
+        int gifWidth = editorBoard.getSizeX();
+        int gifHeight = editorBoard.getSizeY();
         FileHandler fileHandler = new FileHandler();
-        gifFilepath = fileHandler.writeToGif();
+        String gifFilepath = fileHandler.writeToGif();
         Alert waitAlert = gifWaitAlert();
         waitAlert.show();
-        lieng.GIFWriter gifWriter = new GIFWriter(gifWidth*gifCellSize+1, gifHeight*gifCellSize+1, gifFilepath, gifTimeBetweenFramesMS);
+        int gifTimeBetweenFramesMS = 500;
+        lieng.GIFWriter gifWriter = new GIFWriter(gifWidth *gifCellSize+1, gifHeight *gifCellSize+1, gifFilepath, gifTimeBetweenFramesMS);
         gifWriter.setBackgroundColor(gifDeadColor);
         Board clonedBoard = new ArrayListBoard(editorBoard);
         writeGOLSequenceToGif(gifWriter, clonedBoard, counter);
@@ -196,6 +227,10 @@ public class EditorController extends Stage implements Initializable {
         waitAlert.close();
     }
 
+    /**
+     * Constructs a modal informing the user that the GIF is being exported.
+     * @return The alert box.
+     */
     private Alert gifWaitAlert() {
         Alert waitAlert = new Alert(Alert.AlertType.INFORMATION);
         waitAlert.setTitle("Loading (...)");
@@ -205,6 +240,13 @@ public class EditorController extends Stage implements Initializable {
         return waitAlert;
     }
 
+    /**
+     * Writes a number of generations of the passed board to a GIF image.
+     * @param gifWriter GIF writer to utilize.
+     * @param boardToGif The board to write as a GIF.
+     * @param counter Number of generations to write.
+     * @throws IOException Throws if there is an error in writing the GIF to disk.
+     */
     public void writeGOLSequenceToGif(lieng.GIFWriter gifWriter, Board boardToGif, int counter) throws IOException{
         if (counter > 10) {
             return;
@@ -237,7 +279,7 @@ public class EditorController extends Stage implements Initializable {
     }
 
     /**
-     * Updates the current strip with the need
+     * Updates the current strip with the next 10 generations of the current pattern in the editor.
      */
     public void updateStrip() {
         Board clonedBoard = new ArrayListBoard(editorBoard);
@@ -275,11 +317,11 @@ public class EditorController extends Stage implements Initializable {
     /**
      * Draws a passed board as a series of generations to a canvas.
      * @param gcs Graphics context of the canvas where the Strip should be drawn
-     * @param clonedBoard
+     * @param board Board to draw onto strip.
      * @param stripCellWidth Width of each strip "snapshot".
      */
-    public void drawToStrip(GraphicsContext gcs, Board clonedBoard, double stripCellWidth) {
-        List<List<Cell>> gameBoard = clonedBoard.getThisGen();
+    public void drawToStrip(GraphicsContext gcs, Board board, double stripCellWidth) {
+        List<List<Cell>> gameBoard = board.getThisGen();
         for (int y = 0; y < gameBoard.size(); y++) {
             List<Cell> row = gameBoard.get(y);
 
@@ -309,6 +351,7 @@ public class EditorController extends Stage implements Initializable {
 
         List<List<Cell>> gameBoard = editorBoard.getThisGen();
         int borderWidth = 1;
+        int cellWidth = 20;
         int cellWithBorder = cellWidth - borderWidth;
         gcd.getCanvas().setHeight(cellWidth * gameBoard.size());
         gcd.getCanvas().setWidth(cellWidth * gameBoard.get(0).size());
@@ -331,42 +374,26 @@ public class EditorController extends Stage implements Initializable {
     }
 
     /**
-     * Sets the aliveColor value to the current value of the aliveColorPicker, then draws the GraphicsContext.
-     */
-    public void setAliveColor() {
-        aliveColor = aliveColorPicker.getValue();
-        draw();
-    }
-
-    /**
-     * Sets the deadColor value to the current value of the deadColorPicker, then draws the GraphicsContext.
-     */
-    public void setDeadColor() {
-        deadColor = deadColorPicker.getValue();
-        draw();
-    }
-
-    /**
      * Expands the editor board if the user tries drawing over current bounds.
-     * @param coord Contains click coordinate.
+     * @param coordinate Contains click coordinate.
      */
-    public void patternEditorExpander(BoardCoordinate coord) {
-        if (coord.getX() == 0){
+    public void patternEditorExpander(BoardCoordinate coordinate) {
+        if (coordinate.getX() == 0){
             editorBoard.addColLeft();
             canvasController.recalculateTableBounds(editorBoard);
             canvasController.draw(editorBoard);
         }
-        if (coord.getY() == 0){
+        if (coordinate.getY() == 0){
             editorBoard.addRowTop();
             canvasController.recalculateTableBounds(editorBoard);
             canvasController.draw(editorBoard);
         }
-        if (coord.getX() == editorBoard.getSizeX()-1){
+        if (coordinate.getX() == editorBoard.getSizeX()-1){
             editorBoard.addColRight();
             canvasController.recalculateTableBounds(editorBoard);
             canvasController.draw(editorBoard);
         }
-        if (coord.getY() == editorBoard.getSizeY()-1){
+        if (coordinate.getY() == editorBoard.getSizeY()-1){
             editorBoard.addRowBottom();
             canvasController.recalculateTableBounds(editorBoard);
             canvasController.draw(editorBoard);
@@ -374,9 +401,8 @@ public class EditorController extends Stage implements Initializable {
     }
 
     /**
-     * Handles clicks on the canvas.
      * Toggles alive/dead cells on click.
-     * @param event (MouseEvent)
+     * @param event Mouse event where the click happened.
      */
     @FXML
     public void onClick(MouseEvent event) {
@@ -409,9 +435,9 @@ public class EditorController extends Stage implements Initializable {
     }
 
     /**
-     * Handles "prolonged clicks" - drags.
-     * Toggles alive/dead cells on drag.
-     * @param event (MouseEvent)
+     * Toggles alive/dead cells on drag, setting all cells that are dragged over to the state determined by the initial
+     * state of the cell where the click that began the drag happened.
+     * @param event Mouse event where the drag event was fired.
      */
     @FXML
     public void onDrag(MouseEvent event) throws IndexOutOfBoundsException {
@@ -430,8 +456,7 @@ public class EditorController extends Stage implements Initializable {
     }
 
     /**
-     * Handles scrolling and starts the zoom() method for each.
-     * Initializes on each mouse-scroll.
+     * Zooms the board in and out on scrolling.
      * @param event The scroll event passed by the canvas.
      */
     @FXML
@@ -447,6 +472,11 @@ public class EditorController extends Stage implements Initializable {
         }
     }
 
+    /**
+     * Initializes this controller by initializing the game board itself, adds two rows and columns to the each side
+     * of the board, and sets up the {@code canvasController}. Also registers listeners for various key events that
+     * alter the state of the program.
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         editorBoard.addRowTop();
