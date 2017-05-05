@@ -5,6 +5,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
+import model.Size;
 import model.board.Board;
 import model.board.Cell;
 
@@ -92,18 +93,18 @@ public class CanvasController {
         // Clear the canvas first.
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
 
-        List<List<Boolean>> gameBoard = board.getEnumerable();
+        List<List<Cell>> gameBoard = board.getThisGen();
         double cellWithBorder = cellScale - borderWidth;
 
         recalculateOffset();
 
         for (int y = 0; y < rowDiff; y++) {
-            List<Boolean> row = gameBoard.get(firstRowIndex + y);
+            List<Cell> row = gameBoard.get(firstRowIndex + y);
 
             for (int x = 0; x < colDiff; x++) {
-                Boolean cellState = row.get(firstColIndex + x);
+                Cell cell = row.get(firstColIndex + x);
 
-                if (cellState) {
+                if (cell.getState().isAlive()) {
                     gc.setFill(aliveColor);
                 } else {
                     gc.setFill(deadColor);
@@ -131,6 +132,15 @@ public class CanvasController {
         }
         if (rowDiff == boardHeight) {
             offsetRow = (int) Math.round(((double) canvasHeightInCells - (double) boardHeight) / 2);
+        }
+    }
+
+    public void correctOffsetForGrowth(Size size) {
+        if (size.getDeltaTop() > 0) {
+            setPanningY(panningY + 1);
+        }
+        if (size.getDeltaLeft() > 0) {
+            setPanningX(panningX + 1);
         }
     }
 

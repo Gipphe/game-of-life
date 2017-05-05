@@ -81,11 +81,14 @@ public class ArrayListBoard implements Board {
         createWorkers();
         try {
             runWorkers();
-        }catch (InterruptedException ie){
+        } catch (InterruptedException ie){
             ie.printStackTrace();
         }
         workers.clear();
         threadIndex = 0;
+        if (dynamic) {
+            postGenerationGrow();
+        }
     }
 
     /**
@@ -234,6 +237,9 @@ public class ArrayListBoard implements Board {
                 prevGen.get(relY).get(relX).getState().setAlive(cellAlive);
             }
         }
+        if (dynamic) {
+            postGenerationGrow();
+        }
     }
 
     private List<List<Cell>> killBoard(List<List<Cell>> board) {
@@ -257,9 +263,14 @@ public class ArrayListBoard implements Board {
             for (int x = -1; x <= 1; x++) {
                 int actualX = coordinate.getX() + x;
 
-                if (actualX > 0 &&
+                if (!dynamic) {
+                    actualY = wrap(getSizeY(), 0, actualY);
+                    actualX = wrap(getSizeX(), 0, actualX);
+                }
+
+                if (actualX >= 0 &&
                         actualX < getSizeX() &&
-                        actualY > 0 &&
+                        actualY >= 0 &&
                         actualY < getSizeY()) {
                     result.add(new BoardCoordinate(actualY, actualX));
                 }
@@ -303,6 +314,65 @@ public class ArrayListBoard implements Board {
             State newState = ruleSet.getNewState(cell.getState(), numNeighbors);
             thisGen.get(coordinate.getY()).get(coordinate.getX()).getState().setAlive(newState.isAlive());
         }
+        if (dynamic) {
+            postGenerationGrow();
+        }
+    }
+
+    public boolean[] growthSummary(boolean up, boolean right, boolean down, boolean left) {
+        return new boolean[]{up, right, down, left};
+    }
+
+    private void postGenerationGrow() {
+        boolean leftAdded = false;
+        boolean rightAdded = false;
+        boolean topAdded = false;
+        boolean bottomAdded = false;
+        int width = thisGen.get(0).size() - 1;
+        int height = thisGen.size() - 1;
+        for (List<Cell> row : thisGen) {
+            Cell leftCell = row.get(0);
+            if (leftCell.getState().isAlive() && !leftAdded) {
+                addColLeft();
+                leftAdded = true;
+            }
+
+            Cell rightCell = row.get(width);
+            if (rightCell.getState().isAlive() && !rightAdded) {
+                addColRight();
+                rightAdded = true;
+            }
+
+            if (rightAdded && leftAdded) {
+                break;
+            }
+        }
+        for (int i = 0; i < thisGen.get(0).size(); i++) {
+            Cell topCell = thisGen.get(0).get(i);
+            if (topCell.getState().isAlive() && !topAdded) {
+                addRowTop();
+                topAdded = true;
+            }
+
+            Cell bottomCell = thisGen.get(height).get(i);
+            if (bottomCell.getState().isAlive() && !bottomAdded) {
+                addRowBottom();
+                bottomAdded = true;
+            }
+            if (topAdded && bottomAdded) {
+                break;
+            }
+        }
+        if (topAdded || bottomAdded || rightAdded || leftAdded) {
+            callPostResizeListeners(new Size(
+                    getSizeY(),
+                    getSizeX(),
+                    topAdded ? 1 : 0,
+                    rightAdded ? 1 : 0,
+                    bottomAdded ? 1 : 0,
+                    leftAdded ? 1 : 0
+            ));
+        }
     }
 
     public void tester() {
@@ -343,10 +413,10 @@ public class ArrayListBoard implements Board {
     public void addColLeft(){
         lastGetEnumerableGen = -1;
         for (int i = 0; i < thisGen.size(); i++) {
-            List<Cell> row = thisGen.get(i);
             List<Cell> prevRow = prevGen.get(i);
-            row.add(0, new ByteCell());
+            List<Cell> row = thisGen.get(i);
             prevRow.add(0, new ByteCell());
+            row.add(0, new ByteCell());
         }
     }
 
@@ -362,26 +432,6 @@ public class ArrayListBoard implements Board {
         int boardRowLen = board.size();
         int num = 0;
 
-        Boolean isAlive = board.get(cellY).get(cellX).getState().isAlive();
-        if (dynamic && isAlive){
-            if (cellX == 0) {
-                addColLeft();
-                callResizeListeners();
-            }
-            if (cellX == boardColLen - 1) {
-                addColRight();
-                callResizeListeners();
-            }
-            if (cellY == 0) {
-                addRowTop();
-                callResizeListeners();
-            }
-            if (cellY == boardRowLen - 1) {
-                addRowBottom();
-                callResizeListeners();
-            }
-        }
-
         for (int relativeY = -1; relativeY < 2; relativeY++) {
             for (int relativeX = -1; relativeX < 2; relativeX++) {
                 if (relativeX == 0 && relativeY == 0) {
@@ -395,7 +445,7 @@ public class ArrayListBoard implements Board {
                     neighborY = wrap(boardRowLen, 0, neighborY);
                     neighborX = wrap(boardColLen, 0, neighborX);
                 }
-                if (neighborX < 0 || neighborY < 0 || neighborX > getSizeX() - 1 || neighborY > getSizeY()) {
+                if (neighborX < 0 || neighborY < 0 || neighborX > getSizeX() - 1 || neighborY > getSizeY() - 1) {
                     continue;
                 }
                 if (board.get(neighborY).get(neighborX).getState().isAlive()) {
@@ -497,15 +547,32 @@ public class ArrayListBoard implements Board {
         return bb;
     }
 
-    private List<Consumer<Size>> listeners = new ArrayList<>();
+    private List<Consumer<Size>> postResizeListeners = new ArrayList<>();
+    private List<Consumer<Size>> preResizeListeners = new ArrayList<>();
 
     @Override
-    public void addResizeListener(Consumer<Size> runner) {
-        listeners.add(runner);
+    public void addPostResizeListener(Consumer<Size> runner) {
+        postResizeListeners.add(runner);
+    }
+    @Override
+    public void addPreResizeListener(Consumer<Size> runner) {
+        preResizeListeners.add(runner);
     }
 
-    private void callResizeListeners() {
-        for (Consumer<Size> runner : listeners) {
+    private void callPostResizeListeners() {
+        for (Consumer<Size> runner : postResizeListeners) {
+            runner.accept(new Size(getSizeY(), getSizeX()));
+        }
+    }
+
+    private void callPostResizeListeners(Size size) {
+        for (Consumer<Size> runner : postResizeListeners) {
+            runner.accept(size);
+        }
+    }
+
+    private void callPreResizeListeners() {
+        for (Consumer<Size> runner : preResizeListeners) {
             runner.accept(new Size(getSizeY(), getSizeX()));
         }
     }
@@ -545,6 +612,11 @@ public class ArrayListBoard implements Board {
     }
 
     @Override
+    public List<List<Cell>> getThisGen() {
+        return thisGen;
+    }
+
+    @Override
     public List<List<Boolean>> getEnumerable() {
         if (genCount == lastGetEnumerableGen) {
             return enumerable;
@@ -572,7 +644,6 @@ public class ArrayListBoard implements Board {
         lastGetEnumerableGen = -1;
         this.dynamic = dynamic;
     }
-
 
     @Override
     public void setCellAlive(int y, int x, boolean alive) {

@@ -10,12 +10,14 @@ public interface Board {
     void nextGenerationConcurrent();
     void nextGeneration();
     void insertPattern(byte[][] pattern);
-    void addResizeListener(Consumer<Size> runner);
+    void addPostResizeListener(Consumer<Size> runner);
+    void addPreResizeListener(Consumer<Size> runner);
     RuleSet getRuleSet();
     void setRuleSet(RuleSet ruleSet);
     int getSizeX();
     int getSizeY();
     List<List<Boolean>> getEnumerable();
+    List<List<Cell>> getThisGen();
     Board patternToBoard();
     boolean getDynamic();
     void setDynamic(boolean dynamic);
