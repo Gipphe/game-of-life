@@ -3,7 +3,6 @@ package app;
 import javafx.scene.control.TextInputDialog;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import lieng.GIFWriter;
 
 import java.io.*;
 import java.net.URL;

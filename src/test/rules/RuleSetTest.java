@@ -4,7 +4,7 @@ import model.state.ReferenceState;
 import model.state.State;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class RuleSetTest {
     @Test

@@ -6,15 +6,17 @@
  */
 package model.board;
 
-import java.util.*;
-
 import model.BoundingBox;
 import model.Size;
 import model.state.State;
-
-import java.util.function.Consumer;
 import rules.RuleSet;
 import view.BoardCoordinate;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.function.Consumer;
 
 import static utils.Utils.wrap;
 
