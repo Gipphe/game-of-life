@@ -70,8 +70,6 @@ public class EditorController extends Stage implements Initializable {
     @FXML
     private Button closeButton;
     @FXML
-    private Button updateStrip;
-    @FXML
     private Pane canvasWrapper;
     @FXML
     private Canvas canvas;
@@ -222,6 +220,9 @@ public class EditorController extends Stage implements Initializable {
         writeGOLSequenceToGif(gifWriter, boardToGif, counter + 1);
     }
 
+    /**
+     * Updates the current strip with the need
+     */
     public void updateStrip() {
         Board clonedBoard = new ArrayListBoard(editorBoard);
         double stripCellWidth;
@@ -255,6 +256,12 @@ public class EditorController extends Stage implements Initializable {
         strip.getGraphicsContext2D().clearRect(0, 0, strip.getWidth(), strip.getHeight());
     }
 
+    /**
+     * Draws a passed board as a series of generations to a canvas.
+     * @param gcs Graphics context of the canvas where the Strip should be drawn
+     * @param clonedBoard
+     * @param stripCellWidth Width of each strip "snapshot".
+     */
     public void drawToStrip(GraphicsContext gcs, Board clonedBoard, double stripCellWidth) {
         List<List<Boolean>> gameBoard = clonedBoard.getEnumerable();
         for (int y = 0; y < gameBoard.size(); y++) {
@@ -274,7 +281,7 @@ public class EditorController extends Stage implements Initializable {
         }
         gcs.setFill(Color.ORANGERED);
         //Draws separator line between each drawn generation
-        gcs.fillRect(gameBoard.get(0).size() * stripCellWidth, 0, 5, 255);
+        gcs.fillRect(gameBoard.get(0).size() * stripCellWidth, 0, 5, 230);
     }
 
     /**
@@ -322,10 +329,37 @@ public class EditorController extends Stage implements Initializable {
         deadColor = deadColorPicker.getValue();
         draw();
     }
+
+    /**
+     * Expands the editor board if the user tries drawing over current bounds.
+     * @param coord Contains click coordinate.
+     */
+    public void patternEditorExpander(BoardCoordinate coord) {
+        if (coord.getX() == 0){
+            editorBoard.addColLeft();
+            canvasController.recalculateTableBounds(editorBoard);
+            canvasController.draw(editorBoard);
+        }
+        if (coord.getY() == 0){
+            editorBoard.addRowTop();
+            canvasController.recalculateTableBounds(editorBoard);
+            canvasController.draw(editorBoard);
+        }
+        if (coord.getX() == editorBoard.getSizeX()-1){
+            editorBoard.addColRight();
+            canvasController.recalculateTableBounds(editorBoard);
+            canvasController.draw(editorBoard);
+        }
+        if (coord.getY() == editorBoard.getSizeY()-1){
+            editorBoard.addRowBottom();
+            canvasController.recalculateTableBounds(editorBoard);
+            canvasController.draw(editorBoard);
+        }
+    }
+
     /**
      * Handles clicks on the canvas.
      * Toggles alive/dead cells on click.
-     *
      * @param event (MouseEvent)
      */
     @FXML
@@ -338,11 +372,13 @@ public class EditorController extends Stage implements Initializable {
 
         BoardCoordinate coord = canvasController.getPointOnTable(new Point2D(event.getX(), event.getY()));
         if (coord.getX() < 0 ||
-                coord.getX() >= editorBoard.getSizeX() ||
-                coord.getY() < 0 ||
-                coord.getY() >= editorBoard.getSizeY()) {
-            return;
+            coord.getX() >= editorBoard.getSizeX() ||
+            coord.getY() < 0 ||
+            coord.getY() >= editorBoard.getSizeY()) {
+                return;
         }
+        patternEditorExpander(coord);
+
         boolean cell = editorBoard.getCellAlive(coord.getY(), coord.getX());
         if (!cell) {
             editorBoard.setCellAlive(coord.getY(), coord.getX(), true);
@@ -353,15 +389,16 @@ public class EditorController extends Stage implements Initializable {
             onDragValue = false;
             canvasController.draw(editorBoard);
         }
+        updateStrip();
     }
+
     /**
      * Handles "prolonged clicks" - drags.
      * Toggles alive/dead cells on drag.
-     *
      * @param event (MouseEvent)
      */
     @FXML
-    public void onDrag(MouseEvent event) {
+    public void onDrag(MouseEvent event) throws IndexOutOfBoundsException {
         if (event.isSecondaryButtonDown()) {
             canvasController.panXY(event);
             canvasController.recalculateTableBounds(editorBoard);
@@ -370,21 +407,15 @@ public class EditorController extends Stage implements Initializable {
         }
 
         BoardCoordinate coord = canvasController.getPointOnTable(new Point2D(event.getX(), event.getY()));
-        if (coord.getX() < 0 ||
-                coord.getX() >= editorBoard.getSizeX() ||
-                coord.getY() < 0 ||
-                coord.getY() >= editorBoard.getSizeY()) {
-            return;
-        }
+        patternEditorExpander(coord);
         editorBoard.setCellAlive(coord.getY(), coord.getX(), onDragValue);
-
         canvasController.draw(editorBoard);
+        updateStrip();
     }
 
     /**
      * Handles scrolling and starts the zoom() method for each.
      * Initializes on each mouse-scroll.
-     *
      * @param event The scroll event passed by the canvas.
      */
     @FXML
