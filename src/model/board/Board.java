@@ -16,7 +16,6 @@ public interface Board {
     int getSizeX();
     int getSizeY();
     List<List<Boolean>> getEnumerable();
-    List<List<Cell>> getThisGen();
     Board patternToBoard();
     boolean getDynamic();
     void setDynamic(boolean dynamic);
@@ -27,4 +26,5 @@ public interface Board {
     void addColLeft();
     void addColRight();
     void clearBoard();
+    int getGenCount();
 }
