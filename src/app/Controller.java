@@ -72,30 +72,11 @@ public class Controller implements Initializable {
     @FXML
     private Pane canvasWrapper;
 
-    public void testButton() {
-        nextGenerationConcurrentPrintPerformance();
-//        nextGenerationPrintPerformance();
-        canvasController.draw(board);
-    }
-
-    public void nextGenerationPrintPerformance() {
-        long x1 = System.currentTimeMillis();
-        for (int i = 0; i < 100; i++){
-            board.nextGeneration();
-        }
-        long deltaX = System.currentTimeMillis() - x1;
-        System.out.println("Counting time (ms): " + deltaX);
-    }
-
-    public void nextGenerationConcurrentPrintPerformance() {
-        long x1 = System.currentTimeMillis();
-        for (int i = 0; i < 100; i++){
-            board.nextGenerationConcurrent();
-        }
-        long deltaX = System.currentTimeMillis() - x1;
-        System.out.println("Counting time (ms): " + deltaX);
-    }
-
+    /**
+     * Inserts a premade pattern to the middle of the board.
+     *
+     * @param premadePattern
+     */
     private void setPremadePattern(String premadePattern) {
         for (Pattern pattern : patterns) {
             if (pattern.getName().equals(premadePattern)) {
@@ -280,6 +261,7 @@ public class Controller implements Initializable {
                 past = now;
 
                 board.nextGeneration();
+                canvasController.recalculateTableBounds(board);
                 canvasController.draw(board);
             }
         };
@@ -513,7 +495,10 @@ public class Controller implements Initializable {
             canvasController.draw(board);
         });
 
-        board.addResizeListener((size -> canvasController.recalculateTableBounds(board)));
+        board.addPostResizeListener(size -> {
+            canvasController.recalculateTableBounds(board);
+            canvasController.correctOffsetForGrowth(size);
+        });
 
         canvasController.initialize(board);
     }
