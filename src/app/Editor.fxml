@@ -15,10 +15,13 @@
 
 <BorderPane prefWidth="800.0" styleClass="border-pane" stylesheets="@stylesheet.css" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1">
    <center>
-      <Canvas fx:id="canvas" height="200.0" width="200.0" BorderPane.alignment="CENTER">
-         <cursor>
-            <Cursor fx:constant="CROSSHAIR" />
-         </cursor></Canvas>
+      <Pane fx:id="canvasWrapper">
+         <Canvas fx:id="canvas" onMouseDragged="#onDrag" onMousePressed="#onClick" onScroll="#scrollEvent" height="200.0" width="200.0" BorderPane.alignment="CENTER">
+            <cursor>
+               <Cursor fx:constant="CROSSHAIR" />
+            </cursor>
+         </Canvas>
+      </Pane>
    </center>
    <left>
       <VBox alignment="TOP_CENTER" prefHeight="515.0" prefWidth="225.0" styleClass="left-pane" BorderPane.alignment="CENTER">
