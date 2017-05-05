@@ -373,9 +373,8 @@ public class Controller implements Initializable {
      * Calls the boards nextGeneration() method and re-draws the grid.
      */
     public void nextFrame() {
-        testButton();
-//        board.nextGeneration();
-//        canvasController.draw(board);
+        board.nextGeneration();
+        canvasController.draw(board);
     }
 
     /**

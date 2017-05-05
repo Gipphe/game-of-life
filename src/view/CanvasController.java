@@ -92,18 +92,18 @@ public class CanvasController {
         // Clear the canvas first.
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
 
-        List<List<Cell>> gameBoard = board.getThisGen();
+        List<List<Boolean>> gameBoard = board.getEnumerable();
         double cellWithBorder = cellScale - borderWidth;
 
         recalculateOffset();
 
         for (int y = 0; y < rowDiff; y++) {
-            List<Cell> row = gameBoard.get(firstRowIndex + y);
+            List<Boolean> row = gameBoard.get(firstRowIndex + y);
 
             for (int x = 0; x < colDiff; x++) {
-                Cell cell = row.get(firstColIndex + x);
+                Boolean cellState = row.get(firstColIndex + x);
 
-                if (cell.getState().isAlive()) {
+                if (cellState) {
                     gc.setFill(aliveColor);
                 } else {
                     gc.setFill(deadColor);

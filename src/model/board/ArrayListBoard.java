@@ -18,6 +18,11 @@ import view.BoardCoordinate;
 
 import static utils.Utils.wrap;
 
+/**
+ * ArrayList implementation of Board. Handles the internal table as a two-dimensional ArrayList containing Cell objects.
+ * Enables easier dynamic board implementation, but incurs a sizable computation overhead when iterating through the
+ * table.
+ */
 public class ArrayListBoard implements Board {
     private List<List<Cell>> thisGen;
     private List<List<Cell>> prevGen;
@@ -29,6 +34,19 @@ public class ArrayListBoard implements Board {
     private boolean dynamic;
 
     private int threadIndex = 0;
+
+    /**
+     * Number of generations since this board's creation.
+     */
+    private int genCount = 0;
+    /**
+     * The genCount where the enumerable was last created.
+     */
+    private int lastGetEnumerableGen = -1;
+    /**
+     * The cached enumerable two-dimensional Boolean List.
+     */
+    private List<List<Boolean>> enumerable;
 
     /**
      * Constructor accepting the initial sizes of the thisGen.
@@ -59,6 +77,7 @@ public class ArrayListBoard implements Board {
      */
     @Override
     public void nextGenerationConcurrent() {
+        genCount++;
         createWorkers();
         try {
             runWorkers();
@@ -191,6 +210,7 @@ public class ArrayListBoard implements Board {
      */
     @Override
     public void insertPattern(byte[][] pattern) {
+        lastGetEnumerableGen = -1;
         while (pattern.length > thisGen.size()) {
             doubleRows();
         }
@@ -268,6 +288,8 @@ public class ArrayListBoard implements Board {
      */
     @Override
     public void nextGeneration() {
+        genCount++;
+
         List<List<Cell>> temp = thisGen;
         thisGen = prevGen;
         prevGen = temp;
@@ -297,16 +319,19 @@ public class ArrayListBoard implements Board {
     }
 
     public void addRowBottom(){
+        lastGetEnumerableGen = -1;
         thisGen.add(getEmptyRow());
         prevGen.add(getEmptyRow());
     }
 
     public void addRowTop(){
+        lastGetEnumerableGen = -1;
         thisGen.add(0, getEmptyRow());
         prevGen.add(0, getEmptyRow());
     }
 
     public void addColRight(){
+        lastGetEnumerableGen = -1;
         for (int i = 0; i < thisGen.size(); i++) {
             List<Cell> row = thisGen.get(i);
             List<Cell> prevRow = prevGen.get(i);
@@ -316,6 +341,7 @@ public class ArrayListBoard implements Board {
     }
 
     public void addColLeft(){
+        lastGetEnumerableGen = -1;
         for (int i = 0; i < thisGen.size(); i++) {
             List<Cell> row = thisGen.get(i);
             List<Cell> prevRow = prevGen.get(i);
@@ -408,6 +434,7 @@ public class ArrayListBoard implements Board {
         return sb.toString();
     }
 
+
     /**
      * Returns a 1/0 String of only the pattern within the bounding box.
      *
@@ -424,7 +451,6 @@ public class ArrayListBoard implements Board {
         }
         return sb.toString();
     }
-
 
     public Board patternToBoard() {
         BoundingBox bb = getBoundingBox();
@@ -516,6 +542,9 @@ public class ArrayListBoard implements Board {
 
     @Override
     public List<List<Boolean>> getEnumerable() {
+        if (genCount == lastGetEnumerableGen) {
+            return enumerable;
+        }
         List<List<Boolean>> result = new ArrayList<>(getSizeY());
         for (int y = 0; y < getSizeY(); y++) {
             List<Boolean> row = new ArrayList<>(getSizeX());
@@ -524,12 +553,9 @@ public class ArrayListBoard implements Board {
                 row.add(thisGen.get(y).get(x).getState().isAlive());
             }
         }
+        this.enumerable = result;
+        lastGetEnumerableGen = genCount;
         return result;
-    }
-
-    @Override
-    public List<List<Cell>> getThisGen() {
-        return thisGen;
     }
 
     @Override
@@ -539,17 +565,24 @@ public class ArrayListBoard implements Board {
 
     @Override
     public void setDynamic(boolean dynamic) {
+        lastGetEnumerableGen = -1;
         this.dynamic = dynamic;
     }
 
 
     @Override
     public void setCellAlive(int y, int x, boolean alive) {
+        lastGetEnumerableGen = -1;
         thisGen.get(y).get(x).getState().setAlive(alive);
     }
 
     @Override
     public boolean getCellAlive(int y, int x) {
         return thisGen.get(y).get(x).getState().isAlive();
+    }
+
+    @Override
+    public int getGenCount() {
+        return genCount;
     }
 }
