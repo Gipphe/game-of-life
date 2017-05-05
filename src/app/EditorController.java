@@ -3,12 +3,10 @@ package app;
 import RLE.ParsedPattern;
 import RLE.Parser;
 import javafx.application.Platform;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Point2D;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -16,6 +14,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.input.ScrollEvent;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.transform.Affine;
 import javafx.stage.Stage;
@@ -23,15 +23,13 @@ import lieng.GIFWriter;
 import model.board.ArrayListBoard;
 import model.board.Board;
 import rules.RuleSet;
-import rules.RulesCollection;
+import view.BoardCoordinate;
 import view.CanvasController;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -43,11 +41,9 @@ public class EditorController extends Stage implements Initializable {
     private Color aliveColor = Color.BLACK;
     private Color deadColor = Color.WHITE;
     private GraphicsContext gc;
-    private Pattern[] patterns = PatternCollection.getCollection();
-    private double pressedX, pressedY;
-    int cellWidth = 20;
+    private int cellWidth = 20;
     private RuleSet ruleSet;
-    private byte onDragValue;
+    private boolean onDragValue;
     private Controller mainController;
     private CanvasController canvasController;
 
@@ -75,6 +71,8 @@ public class EditorController extends Stage implements Initializable {
     private Button closeButton;
     @FXML
     private Button updateStrip;
+    @FXML
+    private Pane canvasWrapper;
     @FXML
     private Canvas canvas;
     @FXML
@@ -225,43 +223,44 @@ public class EditorController extends Stage implements Initializable {
     }
 
     public void updateStrip() {
-        Board clonedBoard = new ArrayListBoard(0, 0);
-        clonedBoard = new ArrayListBoard(editorBoard);
-        double stripCellWidth = 0;
+        Board clonedBoard = new ArrayListBoard(editorBoard);
+        double stripCellWidth;
         double stripCellHeight = 225;
-        Affine xform = new Affine();
-        double xpadding = 5;
-        double tx = xpadding;
+        Affine xTransform = new Affine();
+        double xPadding = 5;
+        double transform = xPadding;
+
         if (clonedBoard.getEnumerable().size() > clonedBoard.getEnumerable().get(0).size()) {
             stripCellWidth = stripCellHeight / clonedBoard.getEnumerable().size();
         } else {
             stripCellWidth = stripCellHeight / clonedBoard.getEnumerable().get(0).size();
         }
-        GraphicsContext gcs = strip.getGraphicsContext2D();
-        gcs.clearRect(0, 0, strip.widthProperty().doubleValue(), strip.heightProperty().doubleValue());
+        GraphicsContext gc = strip.getGraphicsContext2D();
+        clearStrip();
 
-        for (int nextGenerationCounter = 0; nextGenerationCounter < 10; nextGenerationCounter++){
-            xform.setTx(tx);
-            gcs.setTransform(xform);
-            if (!(nextGenerationCounter == 0)) {
-                // We have not used multi-threading here as a user-generated pattern is probably not all that large,
-                // and thus would benefit from a single-thread nextGen-call.
-                clonedBoard.nextGeneration();
+        for (int nextGenCounter = 0; nextGenCounter < 10; nextGenCounter++){
+            xTransform.setTx(transform);
+            gc.setTransform(xTransform);
+            if (nextGenCounter != 0) {
+                clonedBoard.nextGenerationConcurrent();
             }
-            drawToStrip(gcs, clonedBoard, clonedBoard.getEnumerable(), stripCellWidth);
-            tx += stripCellHeight + xpadding;
+            drawToStrip(gc, clonedBoard, stripCellWidth);
+            transform += stripCellHeight + xPadding;
         }
 
-        xform.setTx(0.0);
-        gcs.setTransform(xform);
+        xTransform.setTx(0.0);
+        gc.setTransform(xTransform);
+    }
+    private void clearStrip() {
+        strip.getGraphicsContext2D().clearRect(0, 0, strip.getWidth(), strip.getHeight());
     }
 
-    public void drawToStrip(GraphicsContext gcs, Board clonedBoard, List<List<Boolean>> gameBoard, double stripCellWidth) {
-        List<List<Boolean>> clonedBoardEnumerable = clonedBoard.getEnumerable();
+    public void drawToStrip(GraphicsContext gcs, Board clonedBoard, double stripCellWidth) {
+        List<List<Boolean>> gameBoard = clonedBoard.getEnumerable();
         for (int y = 0; y < gameBoard.size(); y++) {
             List<Boolean> row = gameBoard.get(y);
 
-            for (int x = 0; x < clonedBoardEnumerable.get(0).size(); x++) {
+            for (int x = 0; x < gameBoard.get(0).size(); x++) {
                 Boolean cell = row.get(x);
 
                 if (cell) {
@@ -275,7 +274,7 @@ public class EditorController extends Stage implements Initializable {
         }
         gcs.setFill(Color.ORANGERED);
         //Draws separator line between each drawn generation
-        gcs.fillRect(clonedBoardEnumerable.get(0).size() * stripCellWidth, 0, 5, 255);
+        gcs.fillRect(gameBoard.get(0).size() * stripCellWidth, 0, 5, 255);
     }
 
     /**
@@ -323,82 +322,82 @@ public class EditorController extends Stage implements Initializable {
         deadColor = deadColorPicker.getValue();
         draw();
     }
-
     /**
      * Handles clicks on the canvas.
      * Toggles alive/dead cells on click.
      *
      * @param event (MouseEvent)
      */
-    /*
     @FXML
     public void onClick(MouseEvent event) {
-        int x = (int) event.getX() / cellWidth;
-        int y = (int) event.getY() / cellWidth;
+        if (event.isSecondaryButtonDown()) {
+            canvasController.setLastMouseX(event.getX());
+            canvasController.setLastMouseY(event.getY());
+            return;
+        }
 
-        if (!editorBoard.getCell(x, y).getState().isAlive()) {
-            editorBoard.getCell(x, y).getState().setAlive(true);
-            if (x == 0) {
-                editorBoard.addColLeft();
-            }
-            if (x == editorBoard.getSizeX()-1) {
-                editorBoard.addColRight();
-            }
-            if (y == 0) {
-                editorBoard.addRowTop();
-            }
-            if (y == editorBoard.getSizeY()-1) {
-                editorBoard.addRowBottom();
-            }
-            onDragValue = 1;
-            draw();
+        BoardCoordinate coord = canvasController.getPointOnTable(new Point2D(event.getX(), event.getY()));
+        if (coord.getX() < 0 ||
+                coord.getX() >= editorBoard.getSizeX() ||
+                coord.getY() < 0 ||
+                coord.getY() >= editorBoard.getSizeY()) {
+            return;
+        }
+        boolean cell = editorBoard.getCellAlive(coord.getY(), coord.getX());
+        if (!cell) {
+            editorBoard.setCellAlive(coord.getY(), coord.getX(), true);
+            onDragValue = true;
+            canvasController.draw(editorBoard);
         } else {
-            editorBoard.getCell(x, y).getState().setAlive(false);;
-            onDragValue = 0;
-            draw();
+            editorBoard.setCellAlive(coord.getY(), coord.getX(), false);
+            onDragValue = false;
+            canvasController.draw(editorBoard);
         }
     }
-    */
-
-
     /**
      * Handles "prolonged clicks" - drags.
      * Toggles alive/dead cells on drag.
      *
      * @param event (MouseEvent)
      */
-
-
     @FXML
     public void onDrag(MouseEvent event) {
-        int x = (int)event.getX() /cellWidth;
-        int y = (int)event.getY()/  cellWidth;
+        if (event.isSecondaryButtonDown()) {
+            canvasController.panXY(event);
+            canvasController.recalculateTableBounds(editorBoard);
+            canvasController.draw(editorBoard);
+            return;
+        }
 
-        try {
-            editorBoard.setCellAlive(y, x, onDragValue == 1);
-            if (x == 0) {
-                if (onDragValue == 1){
-                    editorBoard.addColLeft();
-                }
-            }
-            if (x == editorBoard.getSizeX()-1) {
-                if (onDragValue == 1) {
-                    editorBoard.addColRight();
-                }
-            }
-            if (y == 0) {
-                if (onDragValue == 1) {
-                    editorBoard.addRowTop();
-                }
-            }
-            if (y == editorBoard.getSizeY()-1) {
-                if (onDragValue == 1) {
-                    editorBoard.addRowBottom();
-                }
-            }
-        } catch (IndexOutOfBoundsException ignored) {}
+        BoardCoordinate coord = canvasController.getPointOnTable(new Point2D(event.getX(), event.getY()));
+        if (coord.getX() < 0 ||
+                coord.getX() >= editorBoard.getSizeX() ||
+                coord.getY() < 0 ||
+                coord.getY() >= editorBoard.getSizeY()) {
+            return;
+        }
+        editorBoard.setCellAlive(coord.getY(), coord.getX(), true);
 
-        draw();
+        canvasController.draw(editorBoard);
+    }
+
+    /**
+     * Handles scrolling and starts the zoom() method for each.
+     * Initializes on each mouse-scroll.
+     *
+     * @param event The scroll event passed by the canvas.
+     */
+    @FXML
+    public void scrollEvent(ScrollEvent event) {
+        if (event.getDeltaY() > 0) {
+            canvasController.zoomIn();
+            canvasController.recalculateTableBounds(editorBoard);
+            canvasController.draw(editorBoard);
+        } else {
+            canvasController.zoomOut();
+            canvasController.recalculateTableBounds(editorBoard);
+            canvasController.draw(editorBoard);
+        }
     }
 
     @Override
@@ -413,11 +412,21 @@ public class EditorController extends Stage implements Initializable {
         editorBoard.addColRight();
         gc = canvas.getGraphicsContext2D();
         Platform.runLater(() -> saveGifButton.requestFocus());
-        List<RuleSet> ruleSets = RulesCollection.getCollection();
         updateStrip();
         canvasController = new CanvasController(canvas);
-        canvasController.recalculateTableBounds(editorBoard);
 
-        canvasController.draw(editorBoard);
+        // Bind canvas' width and height to its parent Pane's width and height, and make it redraw on resize.
+        canvas.widthProperty().bind(canvasWrapper.widthProperty());
+        canvas.heightProperty().bind(canvasWrapper.heightProperty());
+        canvas.widthProperty().addListener(e -> {
+            canvasController.recalculateTableBounds(editorBoard);
+            canvasController.draw(editorBoard);
+        });
+        canvas.heightProperty().addListener(e -> {
+            canvasController.recalculateTableBounds(editorBoard);
+            canvasController.draw(editorBoard);
+        });
+
+        canvasController.initialize(editorBoard);
     }
 }
