@@ -12,6 +12,8 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         Rectangle2D visualBounds = Screen.getPrimary().getVisualBounds();
+        primaryStage.setMinWidth(950);
+        primaryStage.setMinHeight(750);
 
         Parent root = FXMLLoader.load(getClass().getResource("window.fxml"));
         Scene primaryScene = new Scene(root, visualBounds.getWidth()/1.2, visualBounds.getHeight()/1.2);    //Sets window size relative to the users screen

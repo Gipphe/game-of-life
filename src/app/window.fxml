@@ -17,8 +17,8 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
-<?import javafx.scene.layout.Pane?>
-<BorderPane fx:id="borderPane" onKeyPressed="#onKeyPressed" onKeyReleased="#onKeyReleased" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.Controller">
+
+<BorderPane fx:id="borderPane" onKeyPressed="#onKeyPressed" onKeyReleased="#onKeyReleased" stylesheets="@stylesheet.css" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.Controller">
     <center>
         <Pane fx:id="canvasWrapper" prefHeight="545.0" prefWidth="353.0">
             <Canvas fx:id="canvas" onMouseDragged="#onDrag" onMousePressed="#onClick" onScroll="#scrollEvent" BorderPane.alignment="CENTER">
@@ -93,7 +93,7 @@
                   <Insets bottom="20.0" />
                </VBox.margin>
             </HBox>
-                 <ComboBox fx:id="comboBox" prefHeight="31.0" prefWidth="330.0" promptText="Pattern">
+                 <ComboBox fx:id="comboBox" prefWidth="330.0" promptText="Pattern">
                <VBox.margin>
                   <Insets bottom="20.0" left="10.0" right="10.0" />
                </VBox.margin></ComboBox>
@@ -155,6 +155,22 @@
                   <Insets bottom="15.0" />
                </VBox.margin>
             </HBox>
+            <VBox alignment="CENTER" prefHeight="100.0" prefWidth="100.0" styleClass="bottom">
+               <children>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Created by:">
+                     <VBox.margin>
+                        <Insets bottom="5.0" />
+                     </VBox.margin></Text>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Jonas Iversen, Victor Bakke">
+                     <VBox.margin>
+                        <Insets bottom="5.0" />
+                     </VBox.margin></Text>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="and Yanislav Zagorov">
+                     <VBox.margin>
+                        <Insets bottom="5.0" />
+                     </VBox.margin></Text>
+               </children>
+            </VBox>
          </children>
          <opaqueInsets>
             <Insets />
