@@ -264,7 +264,7 @@ public class Controller implements Initializable {
                 past = now;
 
                 board.nextGeneration();
-                genCount.setText(String.valueOf(board.getGenCount()));
+                recountCellsAndGeneration();
                 canvasController.recalculateTableBounds(board);
                 canvasController.draw(board);
             }
@@ -362,7 +362,14 @@ public class Controller implements Initializable {
      */
     public void nextFrame() {
         board.nextGeneration();
+        recountCellsAndGeneration();
         canvasController.draw(board);
+    }
+
+    private void recountCellsAndGeneration() {
+        genCount.setText(String.valueOf(board.getGenCount()));
+        aliveCount.setText(String.valueOf(board.getAliveCount()));
+        deadCount.setText(String.valueOf(board.getDeadCount()));
     }
 
     /**

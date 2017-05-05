@@ -37,7 +37,7 @@
                 </Menu>
                 <Menu mnemonicParsing="false" text="Export to...">
                     <MenuItem mnemonicParsing="false" onAction="#exportFile" text="*.RLE" />
-               <MenuItem fx:id="editor" mnemonicParsing="false" onAction="#editor" text="Editor" />
+                    <MenuItem fx:id="editor" mnemonicParsing="false" onAction="#editor" text="Editor" />
                 </Menu>
                 <MenuItem onAction="#exit" text="E_xit" />
             </Menu>
@@ -45,143 +45,131 @@
             </Menu>
         </MenuBar>
     </top>
-   <left>
-      <VBox alignment="TOP_CENTER" prefHeight="481.0" prefWidth="400.0" styleClass="left-pane" BorderPane.alignment="CENTER">
-         <children>
+    <left>
+        <VBox alignment="TOP_CENTER" prefHeight="481.0" prefWidth="400.0" styleClass="left-pane"
+              BorderPane.alignment="CENTER">
+            <opaqueInsets>
+                <Insets/>
+            </opaqueInsets>
             <VBox alignment="CENTER" prefHeight="100.0" prefWidth="100.0" styleClass="top">
-               <children>
-                  <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Game of Life">
-                     <font>
-                        <Font name="System Bold" size="48.0" />
-                     </font>
-                     <VBox.margin>
-                        <Insets />
-                     </VBox.margin>
-                  </Text>
-               </children>
-               <VBox.margin>
-                  <Insets bottom="25.0" top="10.0" />
-               </VBox.margin>
+                <VBox.margin>
+                    <Insets bottom="25.0" top="10.0"/>
+                </VBox.margin>
+                <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Game of Life">
+                    <font>
+                        <Font name="System Bold" size="48.0"/>
+                    </font>
+                    <VBox.margin>
+                        <Insets/>
+                    </VBox.margin>
+                </Text>
             </VBox>
-                 <Button mnemonicParsing="false" onAction="#nextFrame" prefWidth="180.0" text="NextFrame">
-                     <cursor>
-                         <Cursor fx:constant="HAND" />
-                     </cursor>
-               <VBox.margin>
-                  <Insets bottom="20.0" />
-               </VBox.margin>
-                 </Button>
+            <ToggleButton fx:id="startStopButton" mnemonicParsing="false" prefWidth="180.0" onAction="#toggleStartStop"
+                          text="Start">
+                <cursor>
+                    <Cursor fx:constant="HAND"/>
+                </cursor>
+                <VBox.margin>
+                    <Insets bottom="20.0"/>
+                </VBox.margin>
+            </ToggleButton>
+
             <HBox alignment="CENTER" prefHeight="31.0" prefWidth="200.0">
-               <children>
-                       <ToggleButton fx:id="startStopButton" mnemonicParsing="false" onAction="#toggleStartStop" text="Start">
-                           <cursor>
-                               <Cursor fx:constant="HAND" />
-                           </cursor>
-                     <HBox.margin>
-                        <Insets right="15.0" />
-                     </HBox.margin>
-                       </ToggleButton>
-                       <Button mnemonicParsing="false" onAction="#clearBoard" text="Clear">
-                           <cursor>
-                               <Cursor fx:constant="HAND" />
-                           </cursor>
-                       </Button>
-               </children>
-               <VBox.margin>
-                  <Insets bottom="20.0" />
-               </VBox.margin>
-            </HBox>
-                 <ComboBox fx:id="comboBox" prefWidth="330.0" promptText="Pattern">
-               <VBox.margin>
-                  <Insets bottom="20.0" left="10.0" right="10.0" />
-               </VBox.margin></ComboBox>
-                <Slider fx:id="tickSlider" blockIncrement="1" majorTickUnit="1" max="10" minorTickCount="0" prefWidth="225.0" showTickMarks="true" snapToTicks="true" value="5">
+                <VBox.margin>
+                    <Insets bottom="20.0"/>
+                </VBox.margin>
+                <Button mnemonicParsing="false" onAction="#nextFrame" text="Step">
                     <cursor>
-                        <Cursor fx:constant="HAND" />
+                        <Cursor fx:constant="HAND"/>
                     </cursor>
-               <VBox.margin>
-                  <Insets top="5.0" />
-               </VBox.margin>
-               <padding>
-                  <Insets left="20.0" right="20.0" />
-               </padding>
-                </Slider>
-                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Speed">
-               <VBox.margin>
-                  <Insets bottom="20.0" />
-               </VBox.margin></Text>
+                    <HBox.margin>
+                        <Insets right="15.0"/>
+                    </HBox.margin>
+                </Button>
+                <Button mnemonicParsing="false" onAction="#clearBoard" text="Clear">
+                    <cursor>
+                        <Cursor fx:constant="HAND"/>
+                    </cursor>
+                </Button>
+            </HBox>
+            <ComboBox fx:id="comboBox" prefWidth="330.0" promptText="Pattern">
+                <VBox.margin>
+                    <Insets bottom="20.0" left="10.0" right="10.0"/>
+                </VBox.margin>
+            </ComboBox>
+            <Slider fx:id="tickSlider" blockIncrement="1" majorTickUnit="1" max="10" minorTickCount="0"
+                    prefWidth="225.0" showTickMarks="true" snapToTicks="true" value="5">
+                <cursor>
+                    <Cursor fx:constant="HAND"/>
+                </cursor>
+                <VBox.margin>
+                    <Insets top="5.0"/>
+                </VBox.margin>
+                <padding>
+                    <Insets left="20.0" right="20.0"/>
+                </padding>
+            </Slider>
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Speed">
+                <VBox.margin>
+                    <Insets bottom="20.0"/>
+                </VBox.margin>
+            </Text>
             <HBox alignment="CENTER" prefHeight="70.0" prefWidth="200.0">
-               <children>
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Alive color">
-                     <HBox.margin>
-                        <Insets right="15.0" />
-                     </HBox.margin>
-                  </Text>
-                         <ColorPicker fx:id="aliveColorPicker" onAction="#setAliveColor" promptText="Alive Color">
-                             <opaqueInsets>
-                                 <Insets />
-                             </opaqueInsets>
-                         </ColorPicker>
-               </children>
-               <VBox.margin>
-                  <Insets bottom="15.0" />
-               </VBox.margin>
+                <VBox.margin>
+                    <Insets bottom="15.0"/>
+                </VBox.margin>
+                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Alive color">
+                    <HBox.margin>
+                        <Insets right="15.0"/>
+                    </HBox.margin>
+                </Text>
+                <ColorPicker fx:id="aliveColorPicker" onAction="#setAliveColor" promptText="Alive Color">
+                    <opaqueInsets>
+                        <Insets/>
+                    </opaqueInsets>
+                </ColorPicker>
             </HBox>
             <HBox alignment="CENTER" prefHeight="70.0" prefWidth="200.0">
-               <children>
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Dead color">
-                     <HBox.margin>
-                        <Insets right="15.0" />
-                     </HBox.margin>
-                  </Text>
-                         <ColorPicker fx:id="deadColorPicker" onAction="#setDeadColor" />
-               </children>
-               <VBox.margin>
-                  <Insets bottom="15.0" />
-               </VBox.margin>
+                <VBox.margin>
+                    <Insets bottom="15.0"/>
+                </VBox.margin>
+                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Dead color">
+                    <HBox.margin>
+                        <Insets right="15.0"/>
+                    </HBox.margin>
+                </Text>
+                <ColorPicker fx:id="deadColorPicker" onAction="#setDeadColor"/>
             </HBox>
             <HBox alignment="CENTER" prefHeight="70.0" prefWidth="200.0">
-               <children>
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Dynamic board">
-                     <HBox.margin>
-                        <Insets right="15.0" />
-                     </HBox.margin>
-                  </Text>
-                        <ToggleButton fx:id="dynamicBoardButton" alignment="TOP_CENTER" mnemonicParsing="false" onAction="#toggleDynamicBoard" prefWidth="125.0" text="Turn on" textAlignment="CENTER" />
-               </children>
-               <VBox.margin>
-                  <Insets bottom="15.0" />
-               </VBox.margin>
+                <VBox.margin>
+                    <Insets bottom="15.0"/>
+                </VBox.margin>
+                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Dynamic board">
+                    <HBox.margin>
+                        <Insets right="15.0"/>
+                    </HBox.margin>
+                </Text>
+                <ToggleButton fx:id="dynamicBoardButton" alignment="TOP_CENTER" mnemonicParsing="false"
+                              onAction="#toggleDynamicBoard" prefWidth="125.0" text="Turn on"
+                              textAlignment="CENTER"/>
             </HBox>
             <VBox alignment="CENTER" prefHeight="100.0" prefWidth="100.0" styleClass="bottom">
-               <children>
-                  <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
-                     <children>
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Generation: " />
-                        <Text fx:id="genCount" strokeType="OUTSIDE" strokeWidth="0.0" text="0" />
-                     </children>
-                  </HBox>
-                  <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
-                     <children>
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Alive: " />
-                        <Text fx:id="aliveCount" strokeType="OUTSIDE" strokeWidth="0.0" text="0" />
-                     </children>
-                  </HBox>
-                  <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
-                     <children>
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Dead: " />
-                        <Text fx:id="deadCount" strokeType="OUTSIDE" strokeWidth="0.0" text="0" />
-                     </children>
-                  </HBox>
-               </children>
-               <VBox.margin>
-                  <Insets />
-               </VBox.margin>
+                <VBox.margin>
+                    <Insets/>
+                </VBox.margin>
+                <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Generation: "/>
+                    <Text fx:id="genCount" strokeType="OUTSIDE" strokeWidth="0.0" text="0"/>
+                </HBox>
+                <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Alive: "/>
+                    <Text fx:id="aliveCount" strokeType="OUTSIDE" strokeWidth="0.0" text="0"/>
+                </HBox>
+                <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Dead: "/>
+                    <Text fx:id="deadCount" strokeType="OUTSIDE" strokeWidth="0.0" text="0"/>
+                </HBox>
             </VBox>
-         </children>
-         <opaqueInsets>
-            <Insets />
-         </opaqueInsets>
-      </VBox>
-   </left>
+        </VBox>
+    </left>
 </BorderPane>

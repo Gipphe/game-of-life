@@ -36,6 +36,16 @@ public class ArrayListBoard implements Board {
     private int threadIndex = 0;
 
     /**
+     * Number of alive cells in this generation.
+     */
+    private int aliveCount = 0;
+
+    /**
+     * Number of dead cells since this board started.
+     */
+    private long deadCount = 0;
+
+    /**
      * Number of generations since this board's creation.
      */
     private int genCount = 0;
@@ -115,6 +125,8 @@ public class ArrayListBoard implements Board {
             int numNeighbors = neighbours(oldBoard, aliveCoordinate);
             State newState = ruleSet.getNewState(cell.getState(), numNeighbors);
             thisGen.get(aliveCoordinate.getY()).get(aliveCoordinate.getX()).getState().setAlive(newState.isAlive());
+            if (newState.isAlive()) aliveCount++;
+            else deadCount++;
         }
     }
 
@@ -253,6 +265,9 @@ public class ArrayListBoard implements Board {
 
     public void clearBoard() {
         killBoard(thisGen);
+        genCount = 0;
+        aliveCount = 0;
+        deadCount = 0;
         lastGetEnumerableGen = -1;
     }
 
@@ -306,6 +321,7 @@ public class ArrayListBoard implements Board {
         thisGen = prevGen;
         prevGen = temp;
         thisGen = killBoard(thisGen);
+        aliveCount = 0;
 
         aliveCells = getCellsOfInterest(prevGen, 0, getSizeY());
 
@@ -314,6 +330,8 @@ public class ArrayListBoard implements Board {
             Cell cell = prevGen.get(coordinate.getY()).get(coordinate.getX());
             State newState = ruleSet.getNewState(cell.getState(), numNeighbors);
             thisGen.get(coordinate.getY()).get(coordinate.getX()).getState().setAlive(newState.isAlive());
+            if (newState.isAlive()) aliveCount++;
+            else deadCount++;
         }
         if (dynamic) {
             postGenerationGrow();
@@ -657,8 +675,27 @@ public class ArrayListBoard implements Board {
         return thisGen.get(y).get(x).getState().isAlive();
     }
 
+    /**
+     * @return The number of generation advanced since clearing this board.
+     */
     @Override
     public int getGenCount() {
         return genCount;
+    }
+
+    /**
+     * @return The number of alive cells in this generation.
+     */
+    @Override
+    public int getAliveCount() {
+        return aliveCount;
+    }
+
+    /**
+     * @return The number of dead cells since clearing this board.
+     */
+    @Override
+    public long getDeadCount() {
+        return deadCount;
     }
 }

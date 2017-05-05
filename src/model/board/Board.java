@@ -29,4 +29,7 @@ public interface Board {
     void addColRight();
     void clearBoard();
     int getGenCount();
+
+    int getAliveCount();
+    long getDeadCount();
 }
